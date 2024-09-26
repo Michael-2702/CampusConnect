@@ -7,7 +7,7 @@ const userSchema = new Schema({
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     imagePath: {type: String, required: false},
-    departmen: {type: String, required: true},
+    department: {type: String, required: true},
     graduationYear: {type: Number, required: true},
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -21,13 +21,14 @@ const postsSchema = new Schema({
     image: String,
     likes: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
     comments: [{
+        content: String,
         user: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
         date: {type: Date, default: Date.now}
     }]
 }, { timestamps: true })
 
-const userModel = mongoose.Schema('users', userSchema)
-const postModel = mongoose.Schema('posts', postsSchema)
+const userModel = mongoose.model('users', userSchema)
+const postModel = mongoose.model('posts', postsSchema)
 
 module.exports = {
     userModel,
