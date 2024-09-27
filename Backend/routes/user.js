@@ -5,9 +5,37 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("../config")
 const { userMiddleware } = require("../middlewares/auth")
+const { z } = require("zod")
 
 // signup
 userRouter.post("/signup", async (req, res) => {
+    const mySchema = z.object({
+        name: z.string(),
+        username: z.string(),
+        email: z.string().email(),
+        password: z.string()
+                .min(8, "Password Should be of atleast 8 characters")
+                .max(100, "Password Should not exceed 100 characters")
+                .regex(/[a-z]/, "Password must contain atleast 1 lowercase letter")
+                .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
+                .regex(/[0-9]/, "Password must contain atleast 1 number")
+                .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character"),
+        imagePath: z.string(), 
+        department: z.string(),
+        graduationYear: z.number()
+    }).strict({
+       messageg: "Extra Fields not allowed"
+    })
+
+    const response = mySchema.safeParse(req.body)
+
+    if(!response.success){
+        return res.status(403).json({
+            msg: "Incorrect Format",
+            error: response.error.errors
+        })
+    }
+
     const { name, username, email, password, imagePath, department, graduationYear} = req.body
 
     try{    
@@ -15,15 +43,17 @@ userRouter.post("/signup", async (req, res) => {
             email: email
         })
 
-        const existingUserName = await userModel.findOne({
-            username
-        })
-        
         if(existingUserEmail){
             return res.status(403).json({
                 msg: "Email Already Exists"
             })
         }
+
+        const existingUserName = await userModel.findOne({
+            username
+        })
+        
+        
         if(existingUserName){
             return res.status(403).json({
                 msg: "Username Already Exists"
@@ -56,6 +86,27 @@ userRouter.post("/signup", async (req, res) => {
 
 // signin
 userRouter.post("/signin", async (req, res) => {
+    const mySchema = z.object({
+        email: z.string().email(),
+        password: z.string()
+                .min(8, "Password Should be of atleast 8 characters")
+                .max(100, "Password Should not exceed 100 characters")
+                .regex(/[a-z]/, "Password must contain atleast 1 lowercase letter")
+                .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
+                .regex(/[0-9]/, "Password must contain atleast 1 number")
+                .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character")
+    }).strict({
+       messageg: "Extra Fields not allowed"
+    })
+
+    const response = mySchema.safeParse(req.body)
+
+    if(!response.success){
+        return res.status(403).json({
+            msg: "Incorrect Format",
+            error: response.error.errors
+        })
+    }
     const {email, password} = req.body
 
     try{
