@@ -11,7 +11,7 @@ userRouter.post("/signup", async (req, res) => {
     const { name, username, email, password, imagePath, department, graduationYear} = req.body
 
     try{    
-        const existingUser = userModel.findOne({
+        const existingUser = await userModel.findOne({
             email: email
         })
         
@@ -108,14 +108,35 @@ userRouter.get("/viewProfile", userMiddleware, async (req, res) => {
    
 })
 
-// view all posts
-userRouter.get("/viewPosts", (req, res) => {
-    
-})
-
 // view other people's profile
-userRouter.get("/viewOtherProfile", (req, res) => {
+userRouter.get("/viewOtherProfile/:id", userMiddleware, async (req, res) => {
+    const { id } = req.params
+    const userId = req.userId
+    try{
+        const user = await userModel.findById(id)
+
+        
+        if(user){
+            if(userId == user._id){ 
+                return res.json({
+                    msg: "this is your own profile",
+                    userInfo: user
+                })
+            }
     
+            res.json({
+                userInfo: user
+            })
+        }
+        else{
+            res.status(404).json({
+                msg: "user doesn't exist"
+            })
+        }
+    }
+    catch(e){
+        console.log(e)
+    }
 })
 
 
