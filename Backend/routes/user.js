@@ -4,6 +4,7 @@ const { userModel, postModel } = require("../models/db")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("../config")
+const { userMiddleware } = require("../middlewares/auth")
 
 // signup
 userRouter.post("/signup", async (req, res) => {
@@ -83,8 +84,28 @@ userRouter.post("/signin", async (req, res) => {
 })
 
 // view own profile
-userRouter.get("/viewProfile", (req, res) => {
-    
+userRouter.get("/viewProfile", userMiddleware, async (req, res) => {
+    const userId = req.userId
+    try{
+        const findUser = await userModel.findOne({
+            _id: userId
+        })
+        if(findUser){
+            res.json({
+                userInfo: findUser
+            })
+        }
+        else{
+            res.status(403).json({
+                msg: "something went wrong"
+            })
+        }
+    }
+    catch(e){
+        console.log(e);
+        
+    }
+   
 })
 
 // view all posts
