@@ -11,13 +11,22 @@ userRouter.post("/signup", async (req, res) => {
     const { name, username, email, password, imagePath, department, graduationYear} = req.body
 
     try{    
-        const existingUser = await userModel.findOne({
+        const existingUserEmail = await userModel.findOne({
             email: email
         })
+
+        const existingUserName = await userModel.findOne({
+            username
+        })
         
-        if(existingUser){
-            res.status(403).json({
-                msg: "User Already Exists"
+        if(existingUserEmail){
+            return res.status(403).json({
+                msg: "Email Already Exists"
+            })
+        }
+        if(existingUserName){
+            return res.status(403).json({
+                msg: "Username Already Exists"
             })
         }
 
