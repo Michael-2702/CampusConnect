@@ -12,6 +12,11 @@ postRouter.delete("/deletePost", (req, res) => {
     
 })
 
+// view posts
+postRouter.get("/deletePost", (req, res) => {
+    
+})
+
 // like on a post
 postRouter.put("/like", (req, res) => {
     
