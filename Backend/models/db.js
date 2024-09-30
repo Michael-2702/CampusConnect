@@ -12,7 +12,15 @@ const userSchema = new Schema({
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'postsModel'
-    }]
+    }],
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'userModel'
+    }],
+    friendRequests: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User' 
+    }],
 }, { timestamps: true })
 
 const postsSchema = new Schema({

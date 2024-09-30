@@ -69,7 +69,9 @@ userRouter.post("/signup", async (req, res) => {
             imagePath,
             department,
             graduationYear,
-            posts: []
+            posts: [],
+            friends: [],
+            friendRequests: []
         })
 
         res.json({
@@ -199,6 +201,203 @@ userRouter.get("/viewOtherProfile/:id", userMiddleware, async (req, res) => {
     }
 })
 
+// view friends
+userRouter.get("/friends", userMiddleware, async (req, res) => {
+    const userId = req.userId
+
+    try{
+        const findUser = await userModel.findOne({
+            _id: userId
+        })
+
+        if (!findUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const friends = findUser.friends
+
+        const findFriends = await userModel.find({
+            _id: friends
+        })
+        
+
+        const friendsNames = findFriends.map( user =>  user.name)
+
+        if(findUser){
+            res.json({
+                friendsCount: findUser.friends.length,
+                friends: findUser.friends,
+                friendsNames
+            })
+        }
+    }
+    catch(e){
+        console.log(e);
+    }
+})
+
+// send a friend request
+userRouter.post("/sendFriendRequest", userMiddleware, async (req, res) => {
+    const userId = req.userId;
+    const friendId = req.body.id;
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+
+        const friend = await userModel.findById(friendId);
+        if ( !friend) {
+          return res.status(404).json({ message: 'friend not found' });
+        }
+  
+      if (user.friends.includes(friendId)) {
+        return res.status(400).json({ message: 'Already friends' });
+      }
+  
+      if (friend.friendRequests.includes(userId)) {
+        return res.status(400).json({ message: 'Friend request already sent' });
+      }
+  
+      friend.friendRequests.push(userId);
+      await friend.save();
+  
+      res.json({ message: 'Friend request sent successfully' });
+    } catch (e) {
+      console.error(e);
+      
+    }
+});
+
+// view friend Requests
+userRouter.get("/friendRequests", userMiddleware, async (req, res) => {
+    const userId = req.userId
+
+    try{
+        const findUser = await userModel.findOne({
+            _id: userId
+        })
+
+        if (!findUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const friendReq = findUser.friendRequests
+
+        const findFriends = await userModel.find({
+            _id: friendReq
+        })
+        // console.log(friendReq)
+        // console.log(findFriends);
+        // console.log(findFriends.map( user =>  user.name ))
+
+        const friendsNames = findFriends.map( user =>  user.name)
+        if(findUser){
+            res.json({
+                
+                friendRequestsCount: findUser.friendRequests.length,
+                friendRequests: findUser.friendRequests,
+                friendRequestsNames: friendsNames
+                
+            })
+        }
+    }
+    catch(e){
+        console.log(e);
+    }
+})
+  
+// accept a friend request
+userRouter.post("/acceptFriendRequest", userMiddleware, async (req, res) => {
+    const userId = req.userId;
+    const friendId = req.body.id;
+    try {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const friend = await userModel.findById(friendId);
+      if ( !friend) {
+        return res.status(404).json({ message: 'friend not found' });
+      }
+  
+      if (!user.friendRequests.includes(friendId)) {
+        return res.status(400).json({ message: 'No friend request from this user' });
+      }
+  
+      user.friendRequests = user.friendRequests.filter(id => id.toString() !== friendId);
+  
+      user.friends.push(friendId);
+      friend.friends.push(userId);
+  
+      await user.save();
+      await friend.save();
+  
+      res.json({ message: 'Friend request accepted', friends: user.friends });
+    } catch (e) {
+      console.error(e);
+      
+    }
+});
+  
+// reject a friend request
+userRouter.post("/rejectFriendRequest", userMiddleware, async (req, res) => {
+    const userId = req.userId;
+    const friendId = req.body.id;
+    try {
+      const user = await userModel.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      if (!user.friendRequests.includes(friendId)) {
+        return res.status(400).json({ message: 'No friend request from this user' });
+      }
+  
+      user.friendRequests = user.friendRequests.filter(id => id.toString() !== friendId);
+      await user.save();
+  
+      res.json({ message: 'Friend request rejected' });
+    } catch (e) {
+      console.error(e);
+    }
+});
+
+// delete a friend
+userRouter.delete("/deleteFriend", userMiddleware, async (req, res) => {
+    const userId = req.userId;
+    const friendId = req.body.id;
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+
+        const friend = await userModel.findById(friendId);
+        if ( !friend) {
+          return res.status(404).json({ message: 'friend not found' });
+        }
+  
+      if (user.friends.includes(friendId)) {
+        // return res.status(400).json({ message: 'Already friends' });
+        user.friends = user.friends.filter(id => id.toString() !== friendId);
+        await user.save();
+      }
+
+      if (friend.friends.includes(userId)) {
+        // return res.status(400).json({ message: 'Already friends' });
+        friend.friends = friend.friends.filter(id => id.toString() !== userId);
+        await friend.save();
+      }
+
+      res.json({ message: 'Friend delete successfully' });
+    } catch (e) {
+      console.error(e);
+      
+    }
+});
 
 module.exports = {
     userRouter
