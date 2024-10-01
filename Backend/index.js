@@ -5,7 +5,7 @@ const { userRouter } = require("./routes/user")
 const { postRouter } = require("./routes/posts")
 const cors = require("cors")
 
-// app.use(cors());
+app.use(cors());
 const app = express()
 
 app.use(express.json())
