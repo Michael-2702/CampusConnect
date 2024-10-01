@@ -25,14 +25,14 @@ const userSchema = new Schema({
 
 const postsSchema = new Schema({
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
+    imagePath: String,
     text: String,
-    image: String,
     likes: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
-    comments: [{
-        content: String,
-        user: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
-        date: {type: Date, default: Date.now}
-    }]
+    // comments: [{
+    //     content: String,
+    //     user: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
+    //     date: {type: Date, default: Date.now}
+    // }]
 }, { timestamps: true })
 
 const userModel = mongoose.model('users', userSchema)
