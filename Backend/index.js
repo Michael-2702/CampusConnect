@@ -1,9 +1,10 @@
-require('dotenv').config()
-const express = require("express")
-const mongoose = require("mongoose")
-const { userRouter } = require("./routes/user")
-const { postRouter } = require("./routes/posts")
-const cors = require("cors")
+require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const { userRouter } = require("./routes/user");
+const { postRouter } = require("./routes/posts");
+const cors = require("cors");
+const port = 3000;
 
 app.use(cors());
 const app = express()
@@ -17,7 +18,7 @@ async function main(){
     await mongoose.connect(process.env.MONGO_URL)
     console.log("connected to mongodb");
     
-    app.listen(3000)
+    app.listen(port)
 }
 
 main()
