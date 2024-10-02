@@ -20,7 +20,7 @@ userRouter.post("/signup", async (req, res) => {
                 .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
                 .regex(/[0-9]/, "Password must contain atleast 1 number")
                 .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character"),
-        imagePath: z.string(), 
+        // imagePath: z.string(), 
         department: z.string(),
         graduationYear: z.number()
     }).strict({
@@ -28,8 +28,9 @@ userRouter.post("/signup", async (req, res) => {
     })
 
     const response = mySchema.safeParse(req.body)
-
+    console.log(req.body)
     if(!response.success){
+        console.log("error")
         return res.status(403).json({
             msg: "Incorrect Format",
             error: response.error.errors
@@ -98,11 +99,11 @@ userRouter.post("/signin", async (req, res) => {
                 .regex(/[0-9]/, "Password must contain atleast 1 number")
                 .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character")
     }).strict({
-       messageg: "Extra Fields not allowed"
+       message: "Extra Fields not allowed"
     })
 
     const response = mySchema.safeParse(req.body)
-
+    
     if(!response.success){
         return res.status(403).json({
             msg: "Incorrect Format",
@@ -125,7 +126,7 @@ userRouter.post("/signin", async (req, res) => {
             const token = jwt.sign({
                 userId: user._id
             }, JWT_SECRET)
-            
+
             res.json({
                 msg: "signed in successfully",
                 token
