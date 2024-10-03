@@ -10,29 +10,16 @@ export default function Post({ postId }) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`https://localhost:3000/api/v1/viewPosts/`);
+        const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${postId}`);
         setPost(response.data);
         setLike(response.data.likes || 0); // Assume the API returns a `likes` field
       } catch (err) {
         console.error("Error fetching post data", err);
       }
     };
-    /*
-      data: [{
-         "_id": "",
-        "postedBy": "",
-        "imagePath": "",
-        "text": "",
-        "likes": [
-        ],
-        "createdAt": "",
-        "updatedAt": "",
-        "__v": 4
-      }]
-    */
 
     fetchPost();
-  });
+  }, [postId]);
 
   const likeHandler = () => {
     setLike(isLiked ? like + 1 : like + 1);
