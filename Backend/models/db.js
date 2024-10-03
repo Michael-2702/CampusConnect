@@ -9,6 +9,7 @@ const userSchema = new Schema({
     imagePath: {type: String, required: false},
     department: {type: String, required: true},
     graduationYear: {type: Number, required: true},
+    bio: {type: String, maxlength: 200},
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'postsModel'

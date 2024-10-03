@@ -70,6 +70,7 @@ userRouter.post("/signup", async (req, res) => {
             imagePath,
             department,
             graduationYear,
+            bio: "",
             posts: [],
             friends: [],
             friendRequests: []
@@ -399,6 +400,118 @@ userRouter.delete("/deleteFriend", userMiddleware, async (req, res) => {
       
     }
 });
+
+// set user bio
+userRouter.post("/setBio", userMiddleware, async (req, res) => {
+    const { bio } = req.body
+    const userId = req.userId
+
+    if (!bio || typeof bio !== 'string') {
+        return res.status(400).json({ msg: "Bio must be a non-empty string" });
+    }
+
+    if (bio.length > 200) {  
+        return res.status(400).json({
+            msg: "Bio cannot exceed 200 characters"
+        });
+    }
+
+    try{
+        const findUser = await userModel.findById(userId);
+
+        if (!findUser) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        if (findUser.bio && findUser.bio !== "") {
+            return res.status(400).json({ msg: "Bio is already set. Use the update endpoint to modify it." });
+        }
+
+        findUser.bio = bio; 
+        await findUser.save();
+
+        res.status(201).json({
+            msg: "Bio set successfully",
+            bio
+        });
+    }
+    catch(e){
+        console.log(e);
+    }
+})
+
+// update bio
+userRouter.put("/updateBio", userMiddleware, async (req, res) => {
+    const { bio } = req.body;
+    const userId = req.userId;
+
+    if (!bio || typeof bio !== 'string') {
+        return res.status(400).json({ msg: "Bio must be a non-empty string" });
+    }
+
+    if (bio.length > 200) {  
+        return res.status(400).json({
+            msg: "Bio cannot exceed 200 characters"
+        });
+    }
+
+    try {
+        const findUser = await userModel.findById(userId);
+
+        if (!findUser) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        if (!findUser.bio || findUser.bio === "") {
+            return res.status(400).json({ msg: "Bio is not set. Use the set bio endpoint first." });
+        }
+
+        findUser.bio = bio;
+        await findUser.save();
+
+        res.json({
+            msg: "Bio updated successfully",
+            bio
+        });
+        
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            msg: "An error occurred while updating the bio"
+        });
+    }
+});
+
+userRouter.delete("/deleteBio", userMiddleware, async (req, res) => {
+    const userId = req.userId;
+
+    try {
+        const findUser = await userModel.findById(userId);
+
+        if (!findUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (!findUser.bio || findUser.bio === "") {
+            return res.status(400).json({ msg: "Bio is already empty" });
+        }
+
+        findUser.bio = "";
+        await findUser.save();
+
+        res.json({
+            msg: "Bio deleted successfully",
+            bio: findUser.bio
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            msg: "An error occurred while updating the bio"
+        });
+    }
+});
+
+
 
 module.exports = {
     userRouter
