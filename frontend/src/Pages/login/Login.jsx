@@ -74,7 +74,7 @@ function Login() {
           <div className="mt-3">
             <label htmlFor="password" className="block text-base mb-2">Password</label>
             <input
-              type="password"
+              type="text"
               name="password"
               className="border w-full text-base px-2 py-1 focus:outline-none"
               placeholder="Enter your Password..."

@@ -117,7 +117,7 @@ userRouter.post("/signin", async (req, res) => {
 
         if(!user){
             return res.status(404).json({
-                msg: "Incorrect Email or User Doesn't Exist, Please signup first"
+                msg: "Incorrect Email or User Doesn't Exist"
             })
         }
         

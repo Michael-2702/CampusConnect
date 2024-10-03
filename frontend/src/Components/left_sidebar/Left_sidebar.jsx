@@ -1,11 +1,21 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 function Left_sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem("authorization");
+    
+    // Navigate to the login page
+    navigate('/login');
+  }
+
   return (
-    <div className="flex relative h-36 w-72  ">
-      <div className="p-2  fixed  mt-5 ml-5">
-        <ul className=" hi">
+    <div className="flex relative h-36 w-72">
+      <div className="p-2 fixed mt-5 ml-5">
+        <ul className="hi">
           <li className="flex items-center mb-5">
             <span className="text-xl cursor-pointer">Home</span>
           </li>
@@ -13,9 +23,7 @@ function Left_sidebar() {
             <span className="text-xl cursor-pointer">Profile</span>
           </li>
         </ul>
-        <NavLink to = "/login">
-        <button className="text-xl">Log out</button>
-        </NavLink>
+        <button className="text-xl" onClick={handleLogout}>Log out</button>
       </div>
     </div>
   )

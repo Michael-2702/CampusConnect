@@ -18,33 +18,85 @@ function Register() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
-    // Clear the error for this field when the user starts typing
     setErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    // Check required fields
+    ['name', 'username', 'email', 'password', 'department'].forEach(field => {
+      if (!data[field].trim()) {
+        newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+        isValid = false;
+      }
+    });
+
+    // Validate email format
+    if (data.email && !/\S+@\S+\.\S+/.test(data.email)) {
+      newErrors.email = 'Invalid email format';
+      isValid = false;
+    }
+
+    // Validate password
+    if (data.password) {
+      if (data.password.length < 8) {
+        newErrors.password = 'Password should be at least 8 characters long';
+        isValid = false;
+      } else if (!/[a-z]/.test(data.password)) {
+        newErrors.password = 'Password must contain at least 1 lowercase letter';
+        isValid = false;
+      } else if (!/[A-Z]/.test(data.password)) {
+        newErrors.password = 'Password must contain at least 1 uppercase letter';
+        isValid = false;
+      } else if (!/[0-9]/.test(data.password)) {
+        newErrors.password = 'Password must contain at least 1 number';
+        isValid = false;
+      } else if (!/[^A-Za-z0-9]/.test(data.password)) {
+        newErrors.password = 'Password must contain at least 1 special character';
+        isValid = false;
+      }
+    }
+
+    // Validate graduation year
+    if (data.graduationYear) {
+      const year = parseInt(data.graduationYear, 10);
+      if (isNaN(year) || year < 2025 || year > 2099) {
+        newErrors.graduationYear = 'Graduation year must be between 2025 and 2099';
+        isValid = false;
+      }
+    } else {
+      newErrors.graduationYear = 'Graduation year is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors({});
     setGeneralError("");
 
-    // Convert graduationYear to number
+    if (!validateForm()) {
+      return;
+    }
+
     const formData = {
       ...data,
-      graduationYear: data.graduationYear ? parseInt(data.graduationYear, 10) : undefined
+      graduationYear: parseInt(data.graduationYear, 10)
     };
 
-    axios
-      .post("http://localhost:3000/api/v1/user/signup", formData)
+    axios.post("http://localhost:3000/api/v1/user/signup", formData)
       .then((res) => {
         console.log("Registered Successfully", res);
-        // alert("Registered Successfully");
         navigate('/Login');
       })
       .catch((err) => {
         console.log("Error", err);
         if (err.response) {
           if (err.response.data.error) {
-            // Handle Zod validation errors
             const zodErrors = err.response.data.error;
             const formattedErrors = {};
             zodErrors.forEach(error => {
@@ -52,7 +104,6 @@ function Register() {
             });
             setErrors(formattedErrors);
           } else if (err.response.data.msg) {
-            // Handle other backend errors
             setGeneralError(err.response.data.msg);
           }
         } else {
@@ -73,66 +124,23 @@ function Register() {
           </div>
         )}
         <form onSubmit={handleSubmit}>
-          <div className="mt-3">
-            <label htmlFor="name" className="block text-base mb-2">Name</label>
-            <input
-              type="text"
-              name="name"
-              className="border w-full text-base px-2 py-1 focus:outline-none"
-              placeholder="Enter your name..."
-              value={data.name}
-              onChange={handleInputChange}
-            />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-          </div>
-          <div className="mt-3">
-            <label htmlFor="username" className="block text-base mb-2">Username</label>
-            <input
-              type="text"
-              name="username"
-              className="border w-full text-base px-2 py-1 focus:outline-none"
-              placeholder="Enter your username..."
-              value={data.username}
-              onChange={handleInputChange}
-            />
-            {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
-          </div>
-          <div className="mt-3">
-            <label htmlFor="email" className="block text-base mb-2">Email ID</label>
-            <input
-              type="email"
-              name="email"
-              className="border w-full text-base px-2 py-1 focus:outline-none"
-              placeholder="Enter your Email ID..."
-              value={data.email}
-              onChange={handleInputChange}
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
-          <div className="mt-3">
-            <label htmlFor="password" className="block text-base mb-2">Password</label>
-            <input
-              type="text"
-              name="password"
-              className="border w-full text-base px-2 py-1 focus:outline-none"
-              placeholder="Enter your password..."
-              value={data.password}
-              onChange={handleInputChange}
-            />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-          </div>
-          <div className="mt-3">
-            <label htmlFor="department" className="block text-base mb-2">Department</label>
-            <input
-              type="text"
-              name="department"
-              className="border w-full text-base px-2 py-1 focus:outline-none"
-              placeholder="Enter your department..."
-              value={data.department}
-              onChange={handleInputChange}
-            />
-            {errors.department && <p className="text-red-500 text-sm mt-1">{errors.department}</p>}
-          </div>
+          {['name', 'username', 'email', 'password', 'department'].map((field) => (
+            <div key={field} className="mt-3">
+              <label htmlFor={field} className="block text-base mb-2">
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+              </label>
+              <input
+                // type={field === 'password' ? 'password' : 'text'}
+                type="text"
+                name={field}
+                className="border w-full text-base px-2 py-1 focus:outline-none"
+                placeholder={`Enter your ${field}...`}
+                value={data[field]}
+                onChange={handleInputChange}
+              />
+              {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+            </div>
+          ))}
           <div className="mt-3">
             <label htmlFor="graduationYear" className="block text-base mb-2">Graduation Year</label>
             <input
