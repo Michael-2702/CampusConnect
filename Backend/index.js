@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { userRouter } = require("./routes/user");
 const { postRouter } = require("./routes/posts");
+const { adminRouter } = require("./routes/admin")
 const cors = require("cors");
 const port = 3000;
 
@@ -13,6 +14,7 @@ app.use(express.json())
 
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/post", postRouter)
+app.use("/api/v1/admin", adminRouter)
 
 async function main(){
     await mongoose.connect(process.env.MONGO_URL)
