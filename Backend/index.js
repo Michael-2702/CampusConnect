@@ -18,25 +18,16 @@ app.use("/api/v1/post", postRouter);
 app.use("/api/v1/admin", adminRouter)
 
 async function main() {
-    console.log('MONGO_URL:', process.env.MONGO_URL);
-
-    if (!process.env.MONGO_URL) {
-        throw new Error('MONGO_URL is undefined. Please check your .env file.');
-    }
 
     try {
-        await mongoose.connect(process.env.MONGO_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(process.env.MONGO_URL);
         console.log("Connected to MongoDB");
-
-        app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
-        });
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
+
+    // Start the server after successful connection
+    app.listen(port);
 }
 
-main().catch((err) => console.error('Error in main function:', err));
+main()
