@@ -39,6 +39,13 @@ userRouter.post("/signup", async (req, res) => {
 
     const { name, username, email, password, imagePath, department, graduationYear} = req.body
 
+    if (!email.endsWith('@pvppcoe.ac.in')) {
+        return res.status(403).json({
+            msg: "You must be a Student of PVPPCOE"
+        });
+    }
+    
+
     try{    
         const existingUserEmail = await userModel.findOne({
             email: email
