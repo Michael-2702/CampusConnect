@@ -12,7 +12,9 @@ userRouter.post("/signup", async (req, res) => {
     const mySchema = z.object({
         name: z.string(),
         username: z.string(),
-        email: z.string().email(),
+        email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
+            message: "Only Emails ending with @pvppcoe.ac.in can login"
+        }),
         password: z.string()
                 .min(8, "Password Should be of atleast 8 characters")
                 .max(100, "Password Should not exceed 100 characters")
@@ -28,9 +30,8 @@ userRouter.post("/signup", async (req, res) => {
     })
 
     const response = mySchema.safeParse(req.body)
-    console.log(req.body)
+
     if(!response.success){
-        console.log("error")
         return res.status(403).json({
             msg: "Incorrect Format",
             error: response.error.errors
@@ -41,7 +42,7 @@ userRouter.post("/signup", async (req, res) => {
 
     if (!email.endsWith('@pvppcoe.ac.in')) {
         return res.status(403).json({
-            msg: "You must be a Student of PVPPCOE"
+           msg: "Only Emails ending with @pvppcoe.ac.in can Register"
         });
     }
     
@@ -98,7 +99,9 @@ userRouter.post("/signup", async (req, res) => {
 // signin
 userRouter.post("/signin", async (req, res) => {
     const mySchema = z.object({
-        email: z.string().email(),
+        email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
+            message: "Only Emails ending with @pvppcoe.ac.in can login"
+        }),
         password: z.string()
                 .min(8, "Password Should be of atleast 8 characters")
                 .max(100, "Password Should not exceed 100 characters")
@@ -119,6 +122,12 @@ userRouter.post("/signin", async (req, res) => {
         })
     }
     const {email, password} = req.body
+
+    if (!email.endsWith('@pvppcoe.ac.in')) {
+        return res.status(403).json({
+            msg: "Only Emails ending with @pvppcoe.ac.in can login"
+        });
+    }
 
     try{
         const user = await userModel.findOne({ email })
