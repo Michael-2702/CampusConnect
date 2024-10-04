@@ -24,6 +24,13 @@ const userSchema = new Schema({
     }],
 }, { timestamps: true })
 
+const adminSchema = new Schema({
+    name: { type: String, required: true },
+    adminId: { type: String, required: true, unique: true }, 
+    password: { type: String, required: true },
+    role: { type: String, default: 'admin' } 
+}, { timestamps: true });
+
 const postsSchema = new Schema({
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
     imagePath: String,
@@ -38,8 +45,10 @@ const postsSchema = new Schema({
 
 const userModel = mongoose.model('users', userSchema)
 const postModel = mongoose.model('posts', postsSchema)
+const adminModel = mongoose.model('admins', adminSchema)
 
 module.exports = {
     userModel,
-    postModel
+    postModel,
+    adminModel
 }
