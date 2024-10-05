@@ -13,13 +13,21 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
         const { text } = req.body;
         const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
 
+        if(text.length > 200){
+            return res.status(500).json({
+                msg: "Text cannot exceed 200 characters"
+            })
+        }
+
         const user = await userModel.findById(userId)
 
         const username = user.username
+        const userImagePath = user.profileImagePath
 
         const newPost = await postModel.create({
             postedBy: userId,
             username,
+            userImagePath,
             postsImagePath: imagePath,
             text,
             likes: [],

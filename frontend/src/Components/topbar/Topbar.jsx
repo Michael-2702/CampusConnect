@@ -68,7 +68,7 @@ export default function Topbar() {
       <NavLink to="/profile" >
       <div className="flex items-center relative left-[29rem]">
         <img
-          src={`http://localhost:3000${profileImagePath}`}
+          src={profileImagePath? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
           alt="Profile"
           className="w-11 h-11 rounded-full object-cover bg-white mr-4 cursor-pointer"
         />

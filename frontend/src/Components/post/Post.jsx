@@ -17,8 +17,10 @@ const PostList = React.memo(() => {
 
         console.log("Fetched Posts:", response.data);
         setPosts(response.data);
+
       } catch (err) {
         console.error("Error fetching posts data", err);
+
       }
     };
 
@@ -36,21 +38,20 @@ const PostList = React.memo(() => {
               <div className="flex items-center">
                 <img
                   className="w-12 h-12 ml-4 mt-4 rounded-full object-cover border-2"
-                  src="https://via.placeholder.com/150"
+                  src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                   alt="Profile"
                 />
                 <span className="size-4 text-black font-medium my-2 mt-5 ml-3 pb-2">
                   {post.username}
                 </span>
               </div>
-              
             </div>
             <hr className="m-5 border-gray-500" />
             <div className="m-5">
               <span className="postText">{post.text}</span>
               {post.postsImagePath && (
                 <img
-                  className="mt-5 w-full max-h-[400px] object-contain"
+                  className="mt-5 w-full max-h-[1800px] max-w-[2880px] object-cover"
                   src={`http://localhost:3000${post.postsImagePath}`} 
                   alt="Post content"
                 />

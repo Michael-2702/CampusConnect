@@ -34,7 +34,7 @@ function Left_sidebar() {
       <div className="profile-section p-5">
         <img
           className="w-[5rem] h-[5rem] rounded-full object-cover"
-          src={`http://localhost:3000${profileImagePath}`}
+          src={profileImagePath? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
           alt="Profile"
         />
         <h2 className="text-2xl font-semibold mt-4">{name}</h2>
