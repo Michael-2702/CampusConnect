@@ -13,8 +13,13 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
         const { text } = req.body;
         const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
 
+        const user = await userModel.findById(userId)
+
+        const username = user.username
+        console.log(username)
         const newPost = await postModel.create({
             postedBy: userId,
+            username,
             postsImagePath: imagePath,
             text,
             likes: [],
@@ -75,7 +80,7 @@ postRouter.delete("/deletePost/:postId", userMiddleware, async (req, res) => {
 postRouter.get("/viewPosts", userMiddleware, async (req, res) => {
     try {
         const posts = await postModel.find() 
-            
+        
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ message: "Error fetching posts", error: error.message });

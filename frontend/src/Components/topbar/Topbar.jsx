@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
+import { NavLink } from "react-router-dom";
 
 export default function Topbar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,12 +16,14 @@ export default function Topbar() {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 h-[50px] w-full bg-red-500 z-50">
+    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full dark:bg-slate-900 z-50">
       {/* Left - Logo */}
       <div className="flex-3">
-        <span className="text-[24px] ml-6 font-bold text-white cursor-pointer">
-          Campus Connect
+        
+        <span className="text-[39px] ml-6 font-bold text-white  cursor-pointer">
+          <a href="home">CampusConnect</a>
         </span>
+       
       </div>
 
       {/* Middle - Search Bar */}

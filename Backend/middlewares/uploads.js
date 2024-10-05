@@ -4,7 +4,7 @@ const express = require("express");
 
 const app = express();
 app.use(express.urlencoded({ extended: false })) // helps in parsing form data
-app.use('/uploads', express.static('uploads')); // Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files from the 'uploads' directory
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

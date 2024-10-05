@@ -33,6 +33,7 @@ const adminSchema = new Schema({
 
 const postsSchema = new Schema({
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
+    username: {type: String},
     postsImagePath: String,
     text: String,
     likes: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
