@@ -3,6 +3,8 @@ const { userModel, postModel } = require("../models/db")
 const postRouter = Router()
 const { userMiddleware } = require("../middlewares/auth")
 const { upload } = require("../middlewares/uploads")
+const path = require("path");
+const fs = require("fs")
 
 // create a post
 postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (req, res) => {
@@ -38,18 +40,31 @@ postRouter.delete("/deletePost/:postId", userMiddleware, async (req, res) => {
         const postId = req.params.postId;
         const userId = req.userId;
 
+        // Find the post by ID
         const post = await postModel.findById(postId);
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
 
+        // Ensure that the user deleting the post is the one who created it
         if (post.postedBy.toString() !== userId) {
             return res.status(403).json({ message: "Not authorized to delete this post" });
         }
 
+        // If post has an image, attempt to delete it
+        if (post.postsImagePath) {
+            const imagePath = path.join(__dirname, "..", post.postsImagePath);
+
+            // Check if the file exists and then delete it
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath); // Delete the post image file
+            }
+        }
+
+        // Delete the post from the database
         await postModel.findByIdAndDelete(postId);
         await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } });
-        
+
         res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting post", error: error.message });

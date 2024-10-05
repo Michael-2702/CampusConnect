@@ -646,7 +646,24 @@ userRouter.delete("/deleteProfilePicture", userMiddleware, async (req, res) => {
 
 // view own Profile picture
 userRouter.get("/viewOwnProfilePicture", userMiddleware, async (req, res) => {
-    
+    const userId = req.userId
+
+    try{
+        const user = await userModel.findById(userId)
+
+        const profilePic = user.profileImagePath
+
+        res.json({
+            msg: "viewing profile Picture",
+            profilePic
+        })
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({
+            msg: "error in viewing own profile"
+        })
+    }
 })
 
 // view other's profile picture

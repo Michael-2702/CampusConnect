@@ -5,6 +5,8 @@ const { userMiddleware } = require("../middlewares/auth")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("../config")
+const path = require("path")
+const fs = require("fs")
 
 // createAdmin
 adminRouter.post("/createAdmin", async (req, res) => {
@@ -107,30 +109,38 @@ adminRouter.get("/viewAdminInfo", userMiddleware, async (req, res) => {
 
 // delete a post
 adminRouter.delete("/deletePost/:postId", userMiddleware, async (req, res) => {
-    const uniqueId = req.userId
-    const { postId } = req.params
-    try{
-        const post = await postModel.findById(postId)
+    try {
+        const postId = req.params.postId;
+        const uniqueId = req.userId;
+        
 
-        if(!post){
-            res.status(403).json({
-                msg: "post doesnt exist"
-            })
-        }   
+        // Find the post by ID
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
 
         const userId = post.postedBy
 
-        // console.log(userId)
+        console.log(userId)
 
+        // If post has an image, attempt to delete it
+        if (post.postsImagePath) {
+            const imagePath = path.join(__dirname, "..", post.postsImagePath);
+
+            // Check if the file exists and then delete it
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath); // Delete the post image file
+            }
+        }
+
+        // Delete the post from the database
         await postModel.findByIdAndDelete(postId);
         await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } });
-        
-        res.json({
-            msg: "Post deleted Successfully"
-        })
-    }
-    catch(e){
 
+        res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting post", error: error.message });
     }
 })
 
@@ -141,7 +151,26 @@ adminRouter.get("/viewPosts", userMiddleware, async (req, res) => {
             
         res.status(200).json(posts);
     } catch (error) {
+        console.log(e)
         res.status(500).json({ message: "Error fetching posts", error: error.message });
+    }
+})
+
+// view other user's profile
+adminRouter.get("/viewUserProfile/:userId", userMiddleware, async (req, res) => {
+    try{
+        const { userId } = req.params
+
+        const user = await userModel.findById(userId)
+
+        res.json({
+            msg: "userInfo fetched successfully",
+            user
+        })
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ message: "Error fetching user profile", error: error.message });
     }
 })
 
