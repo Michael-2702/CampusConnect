@@ -73,11 +73,11 @@ export default function PostList() {
                 />
                 <span className="size-4">{post.likes.length}</span>
               </div>
-              <div className="postBottomRight">
+              {/* <div className="postBottomRight">
                 <span className="cursor-pointer size-4">
                   {post.comments ? post.comments.length : 0} comments
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

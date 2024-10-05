@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { GrGallery } from "react-icons/gr";
-import { HiOutlineHashtag } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Share() {
   const [postText, setPostText] = useState("");
-
   const [userProfile, setUserProfile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // State for the selected file
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,24 +38,40 @@ export default function Share() {
     setPostText(e.target.value);
   };
 
-  const handleShare = () => {
-    try{
-      const token = localStorage.getItem("authorization")
-      axios.post("http://localhost:3000/api/v1/post/createPost", {
-        headers: {
-          authorization: token
-        }
-      })
-    }
-    catch(e){
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]); // Update selectedFile state with the uploaded file
+  };
 
+  const handleShare = async () => {
+    try {
+      const token = localStorage.getItem("authorization");
+      const formData = new FormData(); // Create a FormData object to send files
+
+      formData.append("text", postText); // Append post text
+      if (selectedFile) {
+        formData.append("picture", selectedFile); // Append the selected file
+      }
+
+      const response = await axios.post("http://localhost:3000/api/v1/post/createPost", formData, {
+        headers: {
+          authorization: token,
+          "Content-Type": "multipart/form-data", // Set content type for file upload
+        },
+      });
+
+      console.log(response.data); // Handle response from the server
+      // Optionally reset input fields after successful post
+      setPostText("");
+      setSelectedFile(null);
+      navigate("/Home");
+    } catch (error) {
+      console.error("Error uploading post:", error);
     }
   };
 
   return (
     <div>
-      
-      <div  className="w-[800px] h-[170px] rounded-xl shadow-xl ml-5">
+      <div className="w-[800px] h-[170px] rounded-xl shadow-xl ml-5">
         <div className="p-3">
           <div className="flex items-center">
             {/* Profile picture placeholder */}
@@ -74,16 +91,11 @@ export default function Share() {
           <div className="flex justify-around">
             <div className="flex ml-5">
               <div className="flex items-center mr-[110px] cursor-pointer">
-                
-                <input type="file"></input>
+                <input type="file" accept="image/*" onChange={handleFileChange} /> {/* Input for file selection */}
               </div>
-              {/* <div className="flex items-center mr-4 cursor-pointer">
-                <HiOutlineHashtag />
-                <span className="ml-1 text-lg">Tag</span>
-              </div> */}
             </div>
             <button
-              className="border-none p-2 rounded-md bg-red-600 font-bold mr-5 cursor-pointer text-white"
+              className="border-none p-2 rounded-md bg-red-600 font-bold mr-5 cursor-pointer text-white hover:bg-red-500"
               onClick={handleShare}
             >
               Share
