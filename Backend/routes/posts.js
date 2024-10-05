@@ -16,7 +16,7 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
         const user = await userModel.findById(userId)
 
         const username = user.username
-        console.log(username)
+
         const newPost = await postModel.create({
             postedBy: userId,
             username,
@@ -79,7 +79,7 @@ postRouter.delete("/deletePost/:postId", userMiddleware, async (req, res) => {
 // view posts
 postRouter.get("/viewPosts", userMiddleware, async (req, res) => {
     try {
-        const posts = await postModel.find() 
+        const posts = await postModel.find().sort({ createdAt: -1 });
         
         res.status(200).json(posts);
     } catch (error) {
