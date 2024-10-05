@@ -13,7 +13,6 @@ function HomeScreen() {
       <div className="flex w-full">
         <Left_sidebar />
         <Feed/>
-        <Rightbar/>
       </div>
     </>
     </div>
