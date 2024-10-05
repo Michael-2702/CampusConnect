@@ -12,8 +12,12 @@ function HomeScreen() {
       <Topbar />
       <div className="flex w-full">
         <Left_sidebar />
+        
+      </div>
+      <div className="ml-[21rem]">
         <Feed/>
       </div>
+      
     </>
     </div>
   )

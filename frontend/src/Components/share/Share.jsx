@@ -71,7 +71,7 @@ export default function Share() {
 
   return (
     <div>
-      <div className="w-[800px] h-[170px] rounded-xl shadow-xl ml-5">
+      <div className="w-[800px] mt-6 h-[170px] rounded-xl shadow-xl ml-5">
         <div className="p-3">
           <div className="flex items-center">
             {/* Profile picture placeholder */}
@@ -95,7 +95,7 @@ export default function Share() {
               </div>
             </div>
             <button
-              className="border-none p-2 rounded-md bg-red-600 font-bold mr-5 cursor-pointer text-white hover:bg-red-500"
+              className="border-none p-2 rounded-md dark:bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:dark:bg-slate-700"
               onClick={handleShare}
             >
               Share

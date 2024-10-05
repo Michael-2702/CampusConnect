@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { CiSearch } from "react-icons/ci";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation after logout
+import { useNavigate } from "react-router-dom"; 
+import { NavLink } from 'react-router-dom';
 import axios from "axios";
 
 export default function Topbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [userProfile, setUserProfile] = useState(null);
-  const navigate = useNavigate(); // useNavigate hook for programmatic navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -64,15 +65,19 @@ export default function Topbar() {
       </div> */}
 
       {/* Right - Profile Section */}
-      <div className="flex items-center">
+      <NavLink to="/profile" >
+      <div className="flex items-center relative left-[29rem]">
         <img
           src={`http://localhost:3000${profileImagePath}`}
           alt="Profile"
-          className="w-9 h-9 rounded-full object-cover bg-white mr-4 cursor-pointer"
+          className="w-11 h-11 rounded-full object-cover bg-white mr-4 cursor-pointer"
         />
+      </div>
+      </NavLink>
+      <div>
         <button
           type="button"
-          className="border-2 mr-6 text-white py-1 px-2 h-8 rounded-md focus:outline-none flex items-center"
+          className="border-2 mr-6 text-white py-1 px-3 h-10 rounded-md focus:outline-none flex items-center hover:dark:bg-slate-700 hover:pointer"
           onClick={handleLogout}
         >
           Log Out
