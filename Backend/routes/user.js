@@ -6,6 +6,9 @@ const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("../config")
 const { userMiddleware } = require("../middlewares/auth")
 const { z } = require("zod")
+const { upload } = require("../middlewares/uploads")
+const fs = require("fs")
+const path = require("path")
 
 // signup
 userRouter.post("/signup", async (req, res) => {
@@ -38,7 +41,7 @@ userRouter.post("/signup", async (req, res) => {
         })
     }
 
-    const { name, username, email, password, imagePath, department, graduationYear} = req.body
+    const { name, username, email, password, department, graduationYear} = req.body
 
     if (!email.endsWith('@pvppcoe.ac.in')) {
         return res.status(403).json({
@@ -75,7 +78,7 @@ userRouter.post("/signup", async (req, res) => {
             username,
             email, 
             password: hashedPassword, 
-            imagePath,
+            profileImagePath: "",
             department,
             graduationYear,
             bio: "",
@@ -527,7 +530,129 @@ userRouter.delete("/deleteBio", userMiddleware, async (req, res) => {
     }
 });
 
+// set/upload profile picture
+userRouter.post("/uploadProfilePicture", userMiddleware,  upload.single("picture"), async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { text } = req.body;
+        const profileImagePath = req.file ? `/uploads/profileImages/${req.file.filename}` : null;
 
+        const user = await userModel.findById(userId)
+
+        if(user.profileImagePath === "" || user.profileImagePath === null){
+            user.profileImagePath = profileImagePath
+
+            await user.save()
+
+            res.json({
+                msg: "Profile Picture uploaded successfully",
+                user
+            })
+        }
+        else{
+            return res.json({
+                msg: "Profile picture is already uploaded, use updateProfilePicture endpoint to update it"
+            })
+        }
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ msg: "Error uploading profile picture", error: e });
+    }
+})
+
+// update profile picture
+userRouter.put("/updateProfilePicture", userMiddleware, upload.single("picture"), async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { text } = req.body;
+        const profileImagePath = req.file ? `/uploads/profileImages/${req.file.filename}` : null;
+
+        const user = await userModel.findById(userId)
+
+         // Check if the user exists
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        // If the user already has a profile picture, delete the old image file
+        if (user.profileImagePath && user.profileImagePath !== "") {
+            const oldImagePath = path.join(__dirname, "..", user.profileImagePath); // Construct the old image path
+            if (fs.existsSync(oldImagePath)) {
+                console.log("deleted previous file")
+                fs.unlinkSync(oldImagePath); // Delete the old image file
+            }
+        }
+
+        // Update the user's profile picture with the new one
+        user.profileImagePath = profileImagePath;
+
+        // Save the updated user data
+        await user.save();
+
+        res.json({
+            msg: "Profile Picture updated successfully",
+            user
+        });
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ msg: "Error updating profile picture", error: e });
+    }
+})
+
+// delete profile picture
+userRouter.delete("/deleteProfilePicture", userMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        // Find the user by ID
+        const user = await userModel.findById(userId);
+
+        // Check if the user exists
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        // Check if the user has an existing profile picture
+        if (!user.profileImagePath || user.profileImagePath === "") {
+            return res.status(400).json({ msg: "No profile picture to delete" });
+        }
+
+        // Construct the full file path of the current profile picture
+        const imagePath = path.join(__dirname, "..", user.profileImagePath);
+
+        // Check if the file exists and delete it
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath); // Delete the profile picture file
+        }
+
+        // Remove the profile picture path from the user's profile
+        user.profileImagePath = "";
+
+        // Save the updated user profile
+        await user.save();
+
+        res.json({
+            msg: "Profile picture deleted successfully",
+            user
+        });
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ msg: "Error deleting profile picture", error: e });
+    }
+})
+
+// view own Profile picture
+userRouter.get("/viewOwnProfilePicture", userMiddleware, async (req, res) => {
+    
+})
+
+// view other's profile picture
+userRouter.get("/viewOthersProfilePicture", userMiddleware, async (req, res) => {
+    
+})
 
 module.exports = {
     userRouter

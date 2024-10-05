@@ -6,7 +6,7 @@ const userSchema = new Schema({
     username: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    imagePath: {type: String, required: false},
+    profileImagePath: {type: String, required: false, default: ""},
     department: {type: String, required: true},
     graduationYear: {type: Number, required: true},
     bio: {type: String, maxlength: 200},
@@ -33,7 +33,7 @@ const adminSchema = new Schema({
 
 const postsSchema = new Schema({
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
-    imagePath: String,
+    postsImagePath: String,
     text: String,
     likes: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
     // comments: [{

@@ -9,11 +9,11 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
     try {
         const userId = req.userId;
         const { text } = req.body;
-        const imagePath = req.file ? `/uploads/${req.file.filename}` : null
+        const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
 
         const newPost = await postModel.create({
             postedBy: userId,
-            imagePath,
+            postsImagePath: imagePath,
             text,
             likes: [],
             comments: []
@@ -28,6 +28,7 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
     }
     catch(e){
         console.log(e)
+        res.status(500).json({ msg: "Error uploading post", error: e });
     }
 })
 
