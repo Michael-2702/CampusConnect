@@ -667,8 +667,23 @@ userRouter.get("/viewOwnProfilePicture", userMiddleware, async (req, res) => {
 })
 
 // view other's profile picture
-userRouter.get("/viewOthersProfilePicture", userMiddleware, async (req, res) => {
-    
+userRouter.get("/viewOthersProfilePicture/:userId", userMiddleware, async (req, res) => {
+    try{
+        const { userId } = req.params
+
+        const user = await userModel.findById(userId)
+
+        const pfp = user.profileImagePath
+
+        res.json({
+            msg: "Other user's pfp fetched successfully",
+            pfp
+        })
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ message: "Error fetching user profile", error: error.message });
+    }
 })
 
 module.exports = {
