@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { IoCaretBackSharp } from "react-icons/io5";
 
 function Profile() {
   const [userProfile, setUserProfile] = useState(null);
@@ -107,9 +108,15 @@ function Profile() {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
+      
       <div className="w-[650px] rounded-3xl p-8 text-black shadow-xl">
         <div className="flex mb-6">
+        <a href="home">
+          <img className='w-10 h-10 pointer' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoTGv-jWGC-M2rxoKNw4Ge5X-__8z-TGEhEg&s" />
+        </a>
+        
           <div className="w-32 h-32 rounded-full border-2 border-white overflow-hidden">
+          
             <img 
               src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
               alt="Profile" 
