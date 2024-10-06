@@ -47,11 +47,12 @@ const PostList = React.memo(() => {
               </div>
             </div>
             <hr className="m-5 border-gray-500" />
-            <div className="m-5">
-              <span className="postText">{post.text}</span>
+            <div className="postText ml-6 max-w-[800px]">{post.text}</div>
+            <div className="m-5 flex justify-center">
+             
               {post.postsImagePath && (
                 <img
-                  className="mt-5 w-full max-h-[1800px] max-w-[2880px] object-cover"
+                  className="mt-5  max-h-[500px] w-auto object-fit:contain"
                   src={`http://localhost:3000${post.postsImagePath}`} 
                   alt="Post content"
                 />

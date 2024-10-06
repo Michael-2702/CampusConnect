@@ -18,7 +18,8 @@ export default function Share() {
             authorization: token,
           },
         });
-        setUserProfile(response.data.userInfo); // Set the user profile data
+        setUserProfile(response.data.userInfo);
+         
       } catch (err) {
         console.error("Error fetching profile data", err);
       }
@@ -63,7 +64,7 @@ export default function Share() {
       // Optionally reset input fields after successful post
       setPostText("");
       setSelectedFile(null);
-      navigate("/Home");
+      window.location.reload(); 
     } catch (error) {
       console.error("Error uploading post:", error);
     }

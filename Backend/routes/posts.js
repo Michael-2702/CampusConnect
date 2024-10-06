@@ -19,6 +19,12 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
             })
         }
 
+        if(text.length == 0 && !req.file){
+            res.status(500).json({
+                msg: "empty file and text"
+            })
+        }
+
         const user = await userModel.findById(userId)
 
         const username = user.username
