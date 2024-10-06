@@ -107,9 +107,9 @@ function Profile() {
   };
 
   return (
-    <div className="flex flex-wrap min-h-screen mt-6">
+    <div className="flex min-h-screen mt-6">
       
-      <div className="sticky top-6 max-h-[500px] w-[600px] rounded-3xl p-8 text-black shadow-xl">
+      <div className="sticky top-6 max-h-[600px] w-[600px] rounded-3xl p-8 text-black shadow-xl">
         <div className="flex mb-6">
         <a href="home">
           <img className='w-25 h-25 ml-[-1rem] pointer' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoTGv-jWGC-M2rxoKNw4Ge5X-__8z-TGEhEg&s" />

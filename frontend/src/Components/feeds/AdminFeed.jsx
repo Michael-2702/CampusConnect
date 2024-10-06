@@ -1,5 +1,5 @@
 import React from 'react'
-import Post from '../post/Post'
+import AdminPost from '../post/AdminPosts'
 
 
 function AdminFeed() {
@@ -8,7 +8,7 @@ function AdminFeed() {
       <div className="feedWrapper">
         
         
-        <Post />
+        <AdminPost />
         
       </div>
     </div>
