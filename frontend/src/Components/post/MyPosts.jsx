@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from 'react-router-dom';
 import axios from "axios";
 
-const PostList = React.memo(() => {
+const MyPostList = React.memo(() => {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -12,7 +12,7 @@ const PostList = React.memo(() => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/post/viewPosts", {
+        const response = await axios.get("http://localhost:3000/api/v1/post/myPosts", {
           headers: {
             authorization: token,
           },
@@ -78,12 +78,13 @@ const PostList = React.memo(() => {
               </div>
 
               {/* 3-dot menu */}
-              {/* <div className="relative">
+              <div className="relative mr-8">
                 <button
-                  className="text-gray-600 hover:text-gray-800 focus:outline-none"
+                  className="text-black  hover:text-gray-800 focus:outline-none"
                   onClick={() => toggleMenu(post._id)}
+                  style={{ fontSize: '24px', width: '40px', height: '40px' }}
                 >
-                  &#x22EE;
+                &#8942;{/* 3-dot icon */}
                 </button>
                 
                 {showMenu[post._id] && (
@@ -96,7 +97,7 @@ const PostList = React.memo(() => {
                     </button>
                   </div>
                 )}
-              </div> */}
+              </div>
             </div>
             <hr className="m-5 border-gray-500" />
             <div className="postText ml-6 max-w-[800px]">{post.text}</div>
@@ -125,4 +126,4 @@ const PostList = React.memo(() => {
   );
 });
 
-export default PostList;
+export default MyPostList;

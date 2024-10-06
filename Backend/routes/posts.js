@@ -110,13 +110,10 @@ postRouter.get("/viewPosts", userMiddleware, async (req, res) => {
 postRouter.get("/myPosts", userMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
-        const posts = await postModel.find({ postedBy: userId })
+        const posts = await postModel.find({ postedBy: userId }).sort({ createdAt: -1 });
             
 
-        res.status(200).json({
-            message: "Your posts retrieved successfully",
-            posts: posts
-        });
+        res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ message: "Error fetching your posts", error: error.message });
     }

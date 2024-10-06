@@ -188,7 +188,6 @@ userRouter.get("/viewProfile", userMiddleware, async (req, res) => {
         console.log(e);
         
     }
-   
 })
 
 // view other people's profile
@@ -594,7 +593,7 @@ userRouter.put("/updateProfilePicture", userMiddleware, upload.single("picture")
             { postedBy: userId },
             { $set: { userImagePath: profileImagePath } }
         );
-        
+
         res.json({
             msg: "Profile Picture updated successfully",
             user
