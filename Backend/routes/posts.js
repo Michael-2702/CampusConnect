@@ -9,49 +9,54 @@ const fs = require("fs")
 // create a post
 postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (req, res) => {
     try {
-        const userId = req.userId;
-        const { text } = req.body;
-        const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
-
-        if(text.length > 200){
-            return res.status(500).json({
-                msg: "Text cannot exceed 200 characters"
-            })
-        }
-
-        if(text.length == 0 && !req.file){
-            res.status(500).json({
-                msg: "empty file and text"
-            })
-        }
-
-        const user = await userModel.findById(userId)
-
-        const username = user.username
-        const userImagePath = user.profileImagePath
-
-        const newPost = await postModel.create({
-            postedBy: userId,
-            username,
-            userImagePath,
-            postsImagePath: imagePath,
-            text,
-            likes: [],
-            comments: []
-        })
-
-        await userModel.findByIdAndUpdate(userId, { $push: { posts: newPost._id } });
-
-        res.json({
-            msg: "Post uploaded successfully",
-            post: newPost
-        })
+      const userId = req.userId;
+      const text = req.body.text || ""; // Default to an empty string if text is not provided
+      const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
+  
+      // Validate text length
+      if (text.length > 200) {
+        return res.status(400).json({
+          msg: "Text cannot exceed 200 characters",
+        });
+      }
+  
+      // Ensure either text or an image is provided
+      if (!text && !req.file) {
+        return res.status(400).json({
+          msg: "Please provide either text or an image for the post",
+        });
+      }
+  
+      // Fetch user information
+      const user = await userModel.findById(userId);
+      const username = user.username;
+      const userImagePath = user.profileImagePath;
+  
+      // Create a new post
+      const newPost = await postModel.create({
+        postedBy: userId,
+        username,
+        userImagePath,
+        postsImagePath: imagePath, // Image may or may not be present
+        text, // Text can be empty
+        likes: [],
+        comments: [],
+      });
+  
+      // Update user's posts array
+      await userModel.findByIdAndUpdate(userId, { $push: { posts: newPost._id } });
+  
+      // Respond with success message and the new post
+      res.json({
+        msg: "Post uploaded successfully",
+        post: newPost,
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ msg: "Error uploading post", error: e });
     }
-    catch(e){
-        console.log(e)
-        res.status(500).json({ msg: "Error uploading post", error: e });
-    }
-})
+});
+  
 
 // delete a post
 postRouter.delete("/deletePost/:postId", userMiddleware, async (req, res) => {

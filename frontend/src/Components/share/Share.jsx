@@ -6,8 +6,8 @@ import axios from "axios";
 export default function Share() {
   const [postText, setPostText] = useState("");
   const [userProfile, setUserProfile] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null); // State for the selected file
-  const navigate = useNavigate();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -19,7 +19,6 @@ export default function Share() {
           },
         });
         setUserProfile(response.data.userInfo);
-         
       } catch (err) {
         console.error("Error fetching profile data", err);
       }
@@ -28,9 +27,8 @@ export default function Share() {
     fetchProfile();
   }, []);
 
-  // Handle loading state
   if (!userProfile) {
-    return <div>Loading...</div>; // Show a loading message while data is being fetched
+    return <div>Loading...</div>;
   }
 
   const { profileImagePath } = userProfile;
@@ -40,33 +38,47 @@ export default function Share() {
   };
 
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]); // Update selectedFile state with the uploaded file
+    setSelectedFile(e.target.files[0]);
   };
 
-  const handleShare = async () => {
-    try {
-      const token = localStorage.getItem("authorization");
-      const formData = new FormData(); // Create a FormData object to send files
+  const handleShare = async (e) => {
+    e.preventDefault();
+    
+    if (!postText.trim() && !selectedFile) {
+      alert("Please enter some text or select an image to post.");
+      return;
+    }
 
-      formData.append("text", postText); // Append post text
+    try {
+      setError(null);
+      const token = localStorage.getItem("authorization");
+      const formData = new FormData();
+
+      if (postText.trim()) {
+        formData.append("text", postText.trim());
+      }
       if (selectedFile) {
-        formData.append("picture", selectedFile); // Append the selected file
+        formData.append("picture", selectedFile);
       }
 
       const response = await axios.post("http://localhost:3000/api/v1/post/createPost", formData, {
         headers: {
           authorization: token,
-          "Content-Type": "multipart/form-data", // Set content type for file upload
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      console.log(response.data); // Handle response from the server
-      // Optionally reset input fields after successful post
+      console.log(response.data);
       setPostText("");
       setSelectedFile(null);
-      window.location.reload(); 
+      window.location.reload();
     } catch (error) {
       console.error("Error uploading post:", error);
+      if (error.response && error.response.data) {
+        alert(error.response.data.msg || "An error occurred while creating the post.");
+      } else {
+        alert("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -75,7 +87,6 @@ export default function Share() {
       <div className="w-[800px] mt-6 h-[170px] rounded-xl shadow-xl ml-5">
         <div className="p-3">
           <div className="flex items-center">
-            {/* Profile picture placeholder */}
             <img
               className="w-12 h-12 rounded-full object-cover mr-3 border-2"
               src={`http://localhost:3000${profileImagePath}`}
@@ -92,7 +103,7 @@ export default function Share() {
           <div className="flex justify-around">
             <div className="flex ml-5">
               <div className="flex items-center mr-[110px] cursor-pointer">
-                <input type="file" accept="image/*" onChange={handleFileChange} /> {/* Input for file selection */}
+                <input type="file" accept="image/*" onChange={handleFileChange} />
               </div>
             </div>
             <button

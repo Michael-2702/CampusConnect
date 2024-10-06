@@ -65,7 +65,9 @@ function Profile() {
           "Content-Type": "multipart/form-data",
         },
       });
+      
       window.location.reload();
+      
       setSelectedFile(null);
     } catch (error) {
       console.error("Error uploading profile picture:", error);

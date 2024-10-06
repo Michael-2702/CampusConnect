@@ -538,7 +538,7 @@ userRouter.post("/uploadProfilePicture", userMiddleware,  upload.single("picture
         const profileImagePath = req.file ? `/uploads/profileImages/${req.file.filename}` : null;
 
         const user = await userModel.findById(userId)
-
+        
         if(user.profileImagePath === "" || user.profileImagePath === null){
             user.profileImagePath = profileImagePath
 
@@ -590,6 +590,11 @@ userRouter.put("/updateProfilePicture", userMiddleware, upload.single("picture")
         // Save the updated user data
         await user.save();
 
+        await postModel.updateMany(
+            { postedBy: userId },
+            { $set: { userImagePath: profileImagePath } }
+        );
+        
         res.json({
             msg: "Profile Picture updated successfully",
             user
