@@ -30,7 +30,7 @@ function Left_sidebar() {
   const { profileImagePath, name, username, bio, department, friends } = userProfile;
 
   return (
-    <div className="fixed left-0 flex flex-col w-72 h-[22rem] ml-8 mt-8 p-5 bg-gray-200 m-3 shadow-2xl rounded-xl ">
+    <div className="fixed left-0 flex flex-col w-72 max-h-[32rem] ml-8 mt-8 p-5 bg-gray-200 m-3 shadow-2xl rounded-xl ">
       <div className="profile-section p-5">
         <img
           className="w-[5rem] h-[5rem] rounded-full object-cover"

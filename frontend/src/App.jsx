@@ -7,6 +7,7 @@ import Share from './Components/share/Share';
 import HomeScreen from './Pages/Home/HomeScreen';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Profile from './Pages/viewProfile/profile';
 
 function App() {
   const router = createBrowserRouter([
@@ -26,6 +27,10 @@ function App() {
       path: "/home",
       element: <HomeScreen />,
     },
+    {
+      path: "/profile",
+      element: <Profile />
+    }
   ]);
 
   return (
