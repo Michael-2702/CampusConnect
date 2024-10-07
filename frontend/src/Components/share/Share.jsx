@@ -107,7 +107,7 @@ export default function Share() {
               </div>
             </div>
             <button
-              className="border-none p-2 rounded-md dark:bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:dark:bg-slate-700"
+              className="border-none p-2 rounded-md bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:bg-slate-700"
               onClick={handleShare}
             >
               Share

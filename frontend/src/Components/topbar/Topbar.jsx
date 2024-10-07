@@ -41,7 +41,7 @@ export default function Topbar() {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full dark:bg-slate-900 z-50">
+    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-slate-900 z-50">
       {/* Left - Logo */}
       <div className="flex-3">
         <span className="text-[39px] ml-6 font-bold text-white cursor-pointer">
@@ -77,7 +77,7 @@ export default function Topbar() {
       <div>
         <button
           type="button"
-          className="border-2 mr-6 text-white py-1 px-3 h-10 rounded-md focus:outline-none flex items-center hover:dark:bg-slate-700 hover:pointer"
+          className="border-2 mr-6 text-white py-1 px-3 h-10 rounded-md focus:outline-none flex items-center hover:bg-slate-700 hover:pointer"
           onClick={handleLogout}
         >
           Log Out
