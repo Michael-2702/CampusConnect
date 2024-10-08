@@ -4,9 +4,7 @@ import axios from "axios";
 
 const PostList = React.memo(() => {
   const [posts, setPosts] = useState([]);
-  const [like, setLike] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [showMenu, setShowMenu] = useState({}); // Track which post's menu is shown
+  const [showMenu, setShowMenu] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -23,30 +21,25 @@ const PostList = React.memo(() => {
 
       } catch (err) {
         console.error("Error fetching posts data", err);
-
       }
     };
 
     fetchPosts();
-  }, []); // Empty dependency array ensures it runs once after mount
-
-  const likeHandler = () => {
-    setLike(isLiked ? like - 1 : like + 1);
-    setIsLiked(!isLiked);
-  };
+  }, []);
 
   const toggleMenu = (postId) => {
     setShowMenu((prev) => ({
       ...prev,
-      [postId]: !prev[postId], // Toggle the menu visibility for the clicked post
+      [postId]: !prev[postId],
     }));
   };
 
-  const reportPost = async (postId) => {
+  const handleReportToggle = async (postId, isReported) => {
     try {
       const token = localStorage.getItem("authorization");
-      await axios.put(
-        `http://localhost:3000/api/v1/post/reportPost/${postId}`,
+      const endpoint = isReported ? 'unReportPost' : 'reportPost';
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/post/${endpoint}/${postId}`,
         {},
         {
           headers: {
@@ -54,37 +47,15 @@ const PostList = React.memo(() => {
           },
         }
       );
-      setPosts(posts.map(post => 
-        post._id === postId 
-          ? { ...post, isReported: true, isreportedByUser: true } 
-          : post
+      
+      // Update the post in the state with the returned data
+      setPosts(prevPosts => prevPosts.map(post => 
+        post._id === postId ? response.data.post : post
       ));
-      console.log("Post reported successfully");
+      
+      console.log(`Post ${isReported ? 'unreported' : 'reported'} successfully`);
     } catch (err) {
-      console.error("Error reporting post", err);
-    }
-  };
-  
-  const unReportPost = async (postId) => {
-    try {
-      const token = localStorage.getItem("authorization");
-      await axios.put(
-        `http://localhost:3000/api/v1/post/unReportPost/${postId}`,
-        {},
-        {
-          headers: {
-            authorization: token,
-          },
-        }
-      );
-      setPosts(posts.map(post => 
-        post._id === postId 
-          ? { ...post, isReported: false, isreportedByUser: false } 
-          : post
-      ));
-      console.log("Post unreported successfully");
-    } catch (err) {
-      console.error("Error unreporting post", err);
+      console.error(`Error ${isReported ? 'unreporting' : 'reporting'} post`, err);
     }
   };
 
@@ -107,29 +78,22 @@ const PostList = React.memo(() => {
                 </NavLink>
               </div>
 
-              {/* 3-dot menu */}
               <div className="relative mr-8">
                 <button
-                  className="text-black  hover:text-gray-800 focus:outline-none"
+                  className="text-black hover:text-gray-800 focus:outline-none"
                   onClick={() => toggleMenu(post._id)}
                   style={{ fontSize: '24px', width: '40px', height: '40px' }}
                 >
-                &#8942;{/* 3-dot icon */}
+                &#8942;
                 </button>
                 
                 {showMenu[post._id] && (
                   <div className="absolute top-0 right-0 mt-8 bg-white border rounded shadow-md z-10">
                     <button
                       className="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
-                      onClick={() => {
-                          if (!post.isreportedByUser) {
-                            reportPost(post._id);
-                          } else {
-                            unReportPost(post._id);
-                          }
-                        }}
-                      >
-                        {post.isreportedByUser ? "Unreport" : "Report"}
+                      onClick={() => handleReportToggle(post._id, post.isReported)}
+                    >
+                      {post.reportButtonText}
                     </button>
                   </div>
                 )}
@@ -146,14 +110,14 @@ const PostList = React.memo(() => {
                 />
               )}
             </div>
-            <div className="flex">
+            <div className="flex items-center">
               <img
                 className="w-6 h-6 ml-5 mr-2 cursor-pointer"
                 src="public\hand-thumb.png"
-                onClick={likeHandler}
                 alt="Like button"
               />
-              <span className="size-4">{like}</span>
+              <span className="size-4">{post.likes.length}</span>
+              <span className="ml-4">Reports: {post.reportCount}</span>
             </div>
           </div>
         </div>

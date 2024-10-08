@@ -38,10 +38,10 @@ const postsSchema = new Schema({
     postsImagePath: String,
     text: {type: String, maxlength: 200},
     likes: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
-    isReported: {type: Boolean},
+    // isReported: {type: Boolean},
     reportedBy: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
-    reportedByUsername: [{type: String, unique: true}],
-    isReportedByUser: {type: Boolean}
+    // reportedByUsername: [{type: String, unique: true}],
+    // isReportedByUser: {type: Boolean}
     // comments: [{
     //     content: String,
     //     user: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
