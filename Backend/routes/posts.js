@@ -40,8 +40,11 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
         postsImagePath: imagePath, // Image may or may not be present
         text, // Text can be empty
         likes: [],
-        comments: [],
-      });
+        isReported: false,
+        reportedBy: [],
+        reportedByUsername: [],
+        isReportedByUser: false
+      })
   
       // Update user's posts array
       await userModel.findByIdAndUpdate(userId, { $push: { posts: newPost._id } });
@@ -97,10 +100,21 @@ postRouter.delete("/deletePost/:postId", userMiddleware, async (req, res) => {
 
 // view posts
 postRouter.get("/viewPosts", userMiddleware, async (req, res) => {
+    const userId = req.userId
     try {
         const posts = await postModel.find().sort({ createdAt: -1 });
+
+        const postsWithReportInfo = posts.map(post => {
+            // Convert post to a plain JavaScript object
+            const postObject = post.toObject();
+
+            // Check if the current user has reported this post
+            postObject.isReportedByUser = post.reportedBy.some(id => id.toString() === userId);
+
+            return postObject;
+        });
         
-        res.status(200).json(posts);
+        res.status(200).json(postsWithReportInfo);
     } catch (error) {
         res.status(500).json({ message: "Error fetching posts", error: error.message });
     }
@@ -169,6 +183,104 @@ postRouter.put("/like/:postId", userMiddleware, async (req, res) => {
         res.status(500).json({ message: "Error liking/unliking post", error: error.message });
     }
 });
+
+
+// report a post
+postRouter.put("/reportPost/:postId", userMiddleware, async (req, res) => {
+    const userId = req.userId
+    const postId = req.params.postId
+
+    try{
+        const post = await postModel.findById(postId);
+
+        const user = await userModel.findById(userId);
+
+        const checkReported = post.reportedBy.forEach( p => {
+            if(p.reportedBy === userId){
+                return true
+            }
+            else 
+                return false
+        })
+        if(checkReported === true){
+            res.status(500).json({
+                msg: "You have already reported on this post"
+            })
+        }
+        else {
+            post.isReported = true;
+            post.reportedBy.push(userId);
+            post.reportedByUsername.push(user.username);
+            post.isReportedByUser = true
+            await post.save();
+            res.json({
+                msg: "Post reported Successfully",
+                post
+            })
+        }
+        
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ message: "Error in reporting a post", e: e.message });
+    }
+})
+
+// unReport a post
+postRouter.put("/unReportPost/:postId", userMiddleware, async (req, res) => {
+    const userId = req.userId
+    const postId = req.params.postId
+
+    try{
+        const post = await postModel.findById(postId);
+ 
+        const user = await userModel.findById(userId);
+
+        
+        const checkReported = post.reportedBy.map( p => {
+            if(p.reportedBy === userId){
+                return true
+            }
+            else 
+                return false;
+        })
+
+        if(checkReported){
+            
+            post.isReported = false;
+            post.isReportedByUser = false;
+
+            await postModel.findByIdAndUpdate(postId, {
+                $pull : {reportedBy: userId}
+            })
+
+            await postModel.findByIdAndUpdate(postId, {
+                $pull : {reportedByUsername: user.username}
+            })
+            
+            await post.save();
+            const newPost = await postModel.findById(postId)
+            res.json({
+                msg: "You have unreported this post",
+                newPost
+            })
+        }
+        else{
+            res.json({
+                msg: "You did not report on this post"
+            })
+        }
+        
+        // res.json({
+        //     msg: "Post reported Successfully",
+            
+        // })
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ message: "Error in reporting a post", e: e.message });
+    }
+})
 
 // Comment on a post
 // postRouter.put("/comment/:postId", userMiddleware, async (req, res) => {

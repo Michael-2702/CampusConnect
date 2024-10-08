@@ -42,19 +42,49 @@ const PostList = React.memo(() => {
     }));
   };
 
-  const deletePost = async (postId) => {
+  const reportPost = async (postId) => {
     try {
       const token = localStorage.getItem("authorization");
-      await axios.delete(`http://localhost:3000/api/v1/post/deletePost/${postId}`, {
-        headers: {
-          authorization: token,
-        },
-      });
-
-      // Remove the deleted post from the local state
-      setPosts(posts.filter(post => post._id !== postId));
+      await axios.put(
+        `http://localhost:3000/api/v1/post/reportPost/${postId}`,
+        {},
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+      setPosts(posts.map(post => 
+        post._id === postId 
+          ? { ...post, isReported: true, isreportedByUser: true } 
+          : post
+      ));
+      console.log("Post reported successfully");
     } catch (err) {
-      console.error("Error deleting post", err);
+      console.error("Error reporting post", err);
+    }
+  };
+  
+  const unReportPost = async (postId) => {
+    try {
+      const token = localStorage.getItem("authorization");
+      await axios.put(
+        `http://localhost:3000/api/v1/post/unReportPost/${postId}`,
+        {},
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+      setPosts(posts.map(post => 
+        post._id === postId 
+          ? { ...post, isReported: false, isreportedByUser: false } 
+          : post
+      ));
+      console.log("Post unreported successfully");
+    } catch (err) {
+      console.error("Error unreporting post", err);
     }
   };
 
@@ -78,25 +108,32 @@ const PostList = React.memo(() => {
               </div>
 
               {/* 3-dot menu */}
-              {/* <div className="relative">
+              <div className="relative mr-8">
                 <button
-                  className="text-gray-600 hover:text-gray-800 focus:outline-none"
+                  className="text-black  hover:text-gray-800 focus:outline-none"
                   onClick={() => toggleMenu(post._id)}
+                  style={{ fontSize: '24px', width: '40px', height: '40px' }}
                 >
-                  &#x22EE;
+                &#8942;{/* 3-dot icon */}
                 </button>
                 
                 {showMenu[post._id] && (
                   <div className="absolute top-0 right-0 mt-8 bg-white border rounded shadow-md z-10">
                     <button
                       className="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
-                      onClick={() => deletePost(post._id)}
-                    >
-                      Delete
+                      onClick={() => {
+                          if (!post.isreportedByUser) {
+                            reportPost(post._id);
+                          } else {
+                            unReportPost(post._id);
+                          }
+                        }}
+                      >
+                        {post.isreportedByUser ? "Unreport" : "Report"}
                     </button>
                   </div>
                 )}
-              </div> */}
+              </div>
             </div>
             <hr className="m-5 border-gray-500" />
             <div className="postText ml-6 max-w-[800px]">{post.text}</div>
