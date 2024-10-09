@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import MyPostList from '../../Components/post/MyPosts';
+import "./styles.css"
 
 function Profile() {
   const [userProfile, setUserProfile] = useState(null);
@@ -109,13 +110,13 @@ function Profile() {
   return (
     <div className="flex min-h-screen mt-6">
       
-      <div className="sticky top-6 max-h-[600px] w-[600px] rounded-3xl p-8 text-black shadow-xl">
-        <div className="flex mb-6">
+      <div className="sticky top-6 max-h-[600px] w-[600px] rounded-3xl mb-5 p-8 text-black shadow-xl">
+        <div className="flex  flex-col mb-[-6rem]">
         <a href="home">
           <img className='w-[5rem] h-[3rem] ml-[-1rem] pointer' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoTGv-jWGC-M2rxoKNw4Ge5X-__8z-TGEhEg&s" />
         </a>
         
-          <div className="w-[6rem] h-[6rem] ml-[-1.5rem] rounded-full border-2 border-white overflow-hidden">
+          <div className="w-[6rem] h-[6rem] ml-[-1.5rem] relative bottom-[3rem] left-[5rem] rounded-full border-2 border-white overflow-hidden">
           
             <img 
               src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
@@ -123,11 +124,18 @@ function Profile() {
               className="w-full bg-slate-200 h-full object-cover"
             />
           </div>
-          <input type="file" onChange={handleFileChange} accept="image/*"/>
-          <div>
+          <div className="flex items-center justify-center relative bottom-[10rem] right-[-5rem]">
+            <input
+              type="file"
+              className="file-input"
+              onChange={handleFileChange}
+              accept="image/*"
+            />
+          </div>
+          <div >
             <button 
               type="submit" 
-              className="float-right relative bottom-6 right-6 text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
+              className="float-right relative bottom-[9.5rem] right-[16.2rem] text-white px-4 py-2 bg-blue-700 rounded-md hover:bg-blue-600 transition"
               onClick={profilePicHandler}
             >
               Save
@@ -164,13 +172,22 @@ function Profile() {
             </form>
           ) : (
             <>
-              <span>{bio}</span>
+              {/* <span>{bio}</span>
               <button 
                 onClick={() => setIsEditingBio(true)}
-                className="ml-4 text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
+                className="ml-4  text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
               >
                 Edit Bio
-              </button>
+              </button> */}
+              <div>
+                    <p className="text-gray-600">{bio}</p>
+                    <button 
+                      onClick={() => setIsEditingBio(true)}
+                      className="mt-2 text-indigo-600 hover:text-indigo-800 transition"
+                    >
+                      Edit Bio
+                    </button>
+                  </div>
             </>
           )}
         </div>
