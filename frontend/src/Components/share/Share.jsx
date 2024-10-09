@@ -89,7 +89,7 @@ export default function Share() {
           <div className="flex items-center">
             <img
               className="w-12 h-12 rounded-full object-cover mr-3 border-2"
-              src={`http://localhost:3000${profileImagePath}`}
+              src={profileImagePath? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
               alt="Profile"
             />
             <input

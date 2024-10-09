@@ -1,57 +1,42 @@
 // emailService.js
 const nodemailer = require('nodemailer');
-const crypto = require('crypto');
+const { otp } = require("./models/db")
 
-// Create a transporter using SMTP
 const transporter = nodemailer.createTransport({
-  host: 'smtp.example.com',
+  host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // Use TLS
+  secure: false,
   auth: {
-    user: 'your-email@example.com',
-    pass: 'your-password'
+    user: 'your-email@gmail.com',
+    pass: 'your-app-password'
   }
 });
 
-// Generate a verification token
-function generateVerificationToken() {
-  return crypto.randomBytes(32).toString('hex');
+const otp = function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
+await otpModel.create({ email, otp });
 
-// Send verification email
-async function sendVerificationEmail(email, token) {
+async function sendOTP(email, otp) {
   const mailOptions = {
-    from: '"Your App Name" <noreply@yourapp.com>',
+    from: 'michaelhosamani27@gmail.com',
     to: email,
-    subject: 'Email Verification',
-    text: `Please verify your email by clicking on this link: http://yourapp.com/verify/${token}`,
-    html: `<p>Please verify your email by clicking on this link: <a href="http://yourapp.com/verify/${token}">Verify Email</a></p>`
+    subject: 'Email Verification OTP',
+    text: `Your OTP for email verification is: ${otp}`,
+    html: `<p>Your OTP for email verification is: <strong>${otp}</strong></p>`
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Verification email sent');
+    console.log('OTP email sent');
+    return true;
   } catch (error) {
-    console.error('Error sending verification email:', error);
-    throw error;
+    console.error('Error sending OTP email:', error);
+    return false;
   }
 }
 
-// Verify email
-async function verifyEmail(token) {
-  // Here you would typically:
-  // 1. Find the user with this token in your database
-  // 2. Check if the token is still valid (not expired)
-  // 3. If valid, mark the user's email as verified
-  // 4. Clear the verification token
-
-  // This is a placeholder implementation
-  console.log('Verifying token:', token);
-  return true; // Return true if verification successful, false otherwise
-}
-
 module.exports = {
-  generateVerificationToken,
-  sendVerificationEmail,
-  verifyEmail
+  generateOTP,
+  sendOTP
 };

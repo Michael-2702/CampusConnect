@@ -49,12 +49,20 @@ const postsSchema = new Schema({
     // }]
 }, { timestamps: true })
 
+const otpSchema = new Schema({
+    email: { type: String, required: true },
+    otp: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now, expires: 600 } // OTP expires after 10 minutes
+});
+
 const userModel = mongoose.model('users', userSchema)
 const postModel = mongoose.model('posts', postsSchema)
 const adminModel = mongoose.model('admins', adminSchema)
+const otpModel = mongoose.model('otps', otpSchema)
 
 module.exports = {
     userModel,
     postModel,
-    adminModel
+    adminModel,
+    otpModel
 }
