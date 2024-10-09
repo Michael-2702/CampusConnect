@@ -156,6 +156,39 @@ adminRouter.get("/viewPosts", userMiddleware, async (req, res) => {
     }
 })
 
+// view reported posts
+adminRouter.get("/viewReportedPosts", userMiddleware, async (req, res) => {
+    try {
+        const posts = await postModel.find() 
+        
+        const reportedPosts = posts.filter(post =>{
+            if(post.reportedBy.length > 0){
+                if(post !== null){
+                    return {
+                        ...post._doc,
+                        // reportedCount: post.reportedBy.length
+                    }
+                }
+            }
+        })
+
+        const reportedPostsWithCount = reportedPosts.map(post =>{
+            if(post.reportedBy.length > 0){
+                if(post !== null){
+                    return {
+                        ...post._doc,
+                        reportCount: post.reportedBy.length
+                    }
+                }
+            }
+        })
+        res.status(200).json(reportedPostsWithCount);
+    } catch (error) {
+        console.log(e)
+        res.status(500).json({ message: "Error fetching posts", error: error.message });
+    }
+})
+
 // view other user's profile
 adminRouter.get("/viewUserProfile/:userId", userMiddleware, async (req, res) => {
     try{

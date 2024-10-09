@@ -105,9 +105,11 @@ postRouter.get("/viewPosts", userMiddleware, async (req, res) => {
         const posts = await postModel.find().sort({ createdAt: -1 });
 
         const processedPosts = posts.map(post => {
-            const isReported = post.reportedBy.includes(userId);
+            const isReported = post.reportedBy.includes(userId); // to check if the logged in user has reported a certain post or not
+            
             return {
                 ...post._doc,
+                // attach these keys just to avoid complexity in db or model, 
                 isReported,
                 reportButtonText: isReported ? 'Unreport' : 'Report',
                 reportCount: post.reportedBy.length

@@ -10,6 +10,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Profile from './Pages/viewProfile/profile';
 import AdminLogin from './Pages/admin/AdminLogin';
 import AdminHomeScreen from './Pages/Home/AdminHomeScreen';
+import AdminReportedPosts from '../src/Components/post/AdminReportedPosts'
 
 function App() {
   const router = createBrowserRouter([
@@ -40,6 +41,10 @@ function App() {
     {
       path: "/adminhome",
       element: <AdminHomeScreen />,
+    },
+    {
+      path: "/reportedPosts",
+      element: <AdminReportedPosts/>
     }
   ]);
 
