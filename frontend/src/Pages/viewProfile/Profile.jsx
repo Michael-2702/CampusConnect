@@ -124,7 +124,7 @@ function Profile() {
               className="w-full bg-slate-200 h-full object-cover"
             />
           </div>
-          <div className="flex items-center justify-center relative bottom-[10rem] right-[-5rem]">
+          <div className="flex items-center justify-center relative bottom-[8rem] right-[-5rem]">
             <input
               type="file"
               className="file-input"
@@ -135,14 +135,14 @@ function Profile() {
           <div >
             <button 
               type="submit" 
-              className="float-right relative bottom-[9.5rem] right-[16.2rem] text-white px-4 py-2 bg-blue-700 rounded-md hover:bg-blue-600 transition"
+              className="float-right relative bottom-[7.5rem] right-[18rem] text-white px-4 py-2 bg-blue-700 rounded-md hover:bg-blue-600 transition"
               onClick={profilePicHandler}
             >
               Save
             </button>
           </div>
         </div>
-        
+
         <div className="mb-4"><span className='mb-5 text-xl'>Name: </span> <span>{name}</span></div>
         <div className="mb-4"><span className='mb-5 text-xl'>Username: </span> <span>{username}</span></div>
         <div className="mb-4"><span className='mb-5 text-xl'>Email: </span> <span>{email}</span></div>
@@ -164,7 +164,7 @@ function Profile() {
               <div className="pt-4">
                 <button 
                   type="submit" 
-                  className="float-right text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
+                  className="float-right relative bottom-4 text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
                 >
                   Save
                 </button>
@@ -183,7 +183,7 @@ function Profile() {
                     <p className="text-gray-600">{bio}</p>
                     <button 
                       onClick={() => setIsEditingBio(true)}
-                      className="mt-2 text-indigo-600 hover:text-indigo-800 transition"
+                      className="mt-2 text-white bg-blue-700 hover:bg-blue-600 transition p-1.5 rounded-md"
                     >
                       Edit Bio
                     </button>

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 const PostList = React.memo(() => {
   const [posts, setPosts] = useState([]);
   const [showMenu, setShowMenu] = useState({});
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -19,13 +21,29 @@ const PostList = React.memo(() => {
         console.log("Fetched Posts:", response.data);
         setPosts(response.data);
 
+        // Fetch current user's ID
+        const userResponse = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+          headers: {
+            authorization: token,
+          },
+        });
+        setCurrentUserId(userResponse.data.userInfo._id);
+
       } catch (err) {
-        console.error("Error fetching posts data", err);
+        console.error("Error fetching data", err);
       }
     };
 
     fetchPosts();
   }, []);
+
+  const handleProfileClick = (postUserId) => {
+    if (currentUserId === postUserId) {
+      navigate('/profile');
+    } else {
+      navigate(`/viewOtherProfile/${postUserId}`);
+    }
+  };
 
   const toggleMenu = (postId) => {
     setShowMenu((prev) => ({
@@ -71,13 +89,15 @@ const PostList = React.memo(() => {
                   src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                   alt="Profile"
                 />
-                <NavLink to="/profile" className="mt-4 inline-block text-blue-500">
+                <NavLink 
+                  to={currentUserId === post.postedBy ? "/profile" : `/profile/${post.postedBy}`} 
+                  className="mt-4 inline-block text-blue-500"
+                >
                   <span className="size-4 text-black font-medium my-2 mt-5 ml-3 pb-2">
                     {post.username}
                   </span>
                 </NavLink>
               </div>
-
               <div className="relative mr-8">
                 <button
                   className="text-black hover:text-gray-800 focus:outline-none"
@@ -117,7 +137,7 @@ const PostList = React.memo(() => {
                 alt="Like button"
               />
               <span className="size-4">{post.likes.length}</span>
-              <span className="ml-4">Reports: {post.reportCount}</span>
+              {/* <span className="ml-4">Reports: {post.reportCount}</span> */}
             </div>
           </div>
         </div>

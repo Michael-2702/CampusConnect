@@ -196,23 +196,23 @@ userRouter.get("/viewOtherProfile/:id", userMiddleware, async (req, res) => {
     const userId = req.userId
     try{
         const user = await userModel.findById(id)
-
         
-        if(user){
-            if(userId == user._id){ 
+        if (user) {
+            if (userId == user._id) { 
                 return res.json({
-                    msg: "this is your own profile",
-                    userInfo: user
+                    msg: "This is your own profile",
+                    userInfo: user,
+                    isOwnProfile: true
                 })
             }
     
             res.json({
-                userInfo: user
+                userInfo: user,
+                isOwnProfile: false
             })
-        }
-        else{
+        } else {
             res.status(404).json({
-                msg: "user doesn't exist"
+                msg: "User doesn't exist"
             })
         }
     }
@@ -463,7 +463,7 @@ userRouter.put("/updateBio", userMiddleware, async (req, res) => {
     const { bio } = req.body;
     const userId = req.userId;
 
-    if (!bio || typeof bio !== 'string') {
+    if (/*!bio  ||*/  typeof bio !== 'string') {
         return res.status(400).json({ msg: "Bio must be a non-empty string" });
     }
 

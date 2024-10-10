@@ -28,7 +28,7 @@ function Left_sidebar() {
     return <div>Loading...</div>; // Show a loading message while data is being fetched
   }
 
-  const { name, adminId } = userProfile;
+  const { name, adminId, userCount } = userProfile;
 
   return (
     <div className="fixed left-0 flex flex-col w-72 max-h-[32rem] ml-8 mt-8 p-5 bg-gray-200 m-3 shadow-2xl rounded-xl">
@@ -39,7 +39,7 @@ function Left_sidebar() {
           alt="Profile"
         />
         <h2 className="text-2xl font-semibold mt-4">{name}</h2>
-        
+        <h4 className="text-xl font-semibold mt-4">Total users:  {userCount}</h4>
         {/* <NavLink to="/profile" className="mt-4 inline-block text-blue-500">
           View Profile
         </NavLink> */}

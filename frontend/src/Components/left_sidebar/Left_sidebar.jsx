@@ -43,7 +43,7 @@ function Left_sidebar() {
         <h3 className="text-md text-gray-500">@{username}</h3>
         <p className="text-md text-gray-700 mt-2">{bio || "No bio available"}</p>
         <p className="text-md text-gray-700 mt-2">Department: {department}</p>
-        <p className="text-md text-gray-700 mt-2">Total Friends: {friends.length}</p>
+        {/* <p className="text-md text-gray-700 mt-2">Total Friends: {friends.length}</p> */}
         
         <NavLink to="/profile" className="mt-4 inline-block text-blue-500">
           View Profile

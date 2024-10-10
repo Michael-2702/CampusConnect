@@ -97,9 +97,17 @@ adminRouter.get("/viewAdminInfo", userMiddleware, async (req, res) => {
             })
         }
 
+        const users = await userModel.find({})
+        const userCount = users.length
+
+        const newInfo = {
+            ...admin._doc,
+            userCount
+        }
+
         res.json({
             msg: "Admin data fetched successfully",
-            adminInfo: admin
+            adminInfo: newInfo
         })
     }
     catch(e){

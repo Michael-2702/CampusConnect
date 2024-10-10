@@ -11,6 +11,7 @@ import Profile from './Pages/viewProfile/profile';
 import AdminLogin from './Pages/admin/AdminLogin';
 import AdminHomeScreen from './Pages/Home/AdminHomeScreen';
 import AdminReportedPosts from '../src/Components/post/AdminReportedPosts'
+import ViewOtherProfile from './Pages/viewProfile/ViewOtherProfile';
 
 function App() {
   const router = createBrowserRouter([
@@ -33,6 +34,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />
+    },
+    {
+      path: "/profile/:id",
+      element: <ViewOtherProfile />
     },
     {
       path: "/admin",
