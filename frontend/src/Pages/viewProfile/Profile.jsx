@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MyPostList from '../../Components/post/MyPosts';
-import "./styles.css"
+import { FaUserEdit, FaArrowLeft } from 'react-icons/fa';
+import "./styles.css";
 
 function Profile() {
   const [userProfile, setUserProfile] = useState(null);
@@ -31,7 +32,7 @@ function Profile() {
   };
 
   if (!userProfile) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   const { profileImagePath, name, username, email, bio, department, graduationYear, friends } = userProfile;
@@ -108,91 +109,76 @@ function Profile() {
   };
 
   return (
-    <div className="flex min-h-screen mt-6">
+    <div className="container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        <FaArrowLeft /> 
+      </button>
       
-      <div className="sticky top-6 max-h-[600px] w-[600px] rounded-3xl mb-5 p-8 text-black shadow-xl">
-        <div className="flex  flex-col mb-[-6rem]">
-        <a href="home">
-          <img className='w-[5rem] h-[3rem] ml-[-1rem] pointer' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoTGv-jWGC-M2rxoKNw4Ge5X-__8z-TGEhEg&s" />
-        </a>
-        
-          <div className="w-[6rem] h-[6rem] ml-[-1.5rem] relative bottom-[3rem] left-[5rem] rounded-full border-2 border-white overflow-hidden">
-          
-            <img 
-              src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
-              alt="Profile" 
-              className="w-full bg-slate-200 h-full object-cover"
-            />
-          </div>
-          <div className="flex items-center justify-center relative bottom-[8rem] right-[-5rem]">
-            <input
-              type="file"
-              className="file-input"
-              onChange={handleFileChange}
-              accept="image/*"
-            />
-          </div>
-          <div >
-            <button 
-              type="submit" 
-              className="float-right relative bottom-[7.5rem] right-[18rem] text-white px-4 py-2 bg-blue-700 rounded-md hover:bg-blue-600 transition"
-              onClick={profilePicHandler}
-            >
-              Save
-            </button>
+      <div className="profile-grid">
+        <div className="profile-card">
+          <h2 className="card-title">Profile</h2>
+          <div className="profile-content">
+            <div className="profile-image-container">
+              <img
+                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://via.placeholder.com/150"}
+                alt="Profile"
+                className="profile-image"
+              />
+              <input
+                type="file"
+                id="profile-pic-input"
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{display: 'none'}}
+              />
+              <div className="profile-image-buttons">
+                <label htmlFor="profile-pic-input" className="button">Change Picture</label>
+                <button onClick={profilePicHandler} disabled={!selectedFile} className="button">
+                  Save Picture
+                </button>
+              </div>
+            </div>
+
+            <div className="profile-details">
+              <p><strong>Name:</strong> {name}</p>
+              <p><strong>Email:</strong> {email}</p>
+              <p><strong>Department:</strong> {department}</p>
+              <p><strong>Graduation Year:</strong> {graduationYear}</p>
+            </div>
+
+            <div className="bio-section">
+              <p><strong>Bio:</strong></p>
+              {isEditingBio ? (
+                <form onSubmit={handleSubmit} className="bio-form">
+                  <textarea
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    rows="4"
+                    maxLength="200"
+                    placeholder="Write your bio here..."
+                  />
+                  <button type="submit" className="button">Save Bio</button>
+                </form>
+              ) : (
+                <div className="bio-content">
+                  <p>{bio}</p>
+                  <button onClick={() => setIsEditingBio(true)} className="button edit-bio-button">
+                    <FaUserEdit /> Edit Bio
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="mb-4"><span className='mb-5 text-xl'>Name: </span> <span>{name}</span></div>
-        <div className="mb-4"><span className='mb-5 text-xl'>Username: </span> <span>{username}</span></div>
-        <div className="mb-4"><span className='mb-5 text-xl'>Email: </span> <span>{email}</span></div>
-        <div className="mb-4"><span className='mb-5 text-xl'>Department: </span> <span>{department}</span></div>
-        <div className="mb-4"><span className='mb-5 text-xl'>Graduation Year: </span> <span>{graduationYear}</span></div>
-        
-        <div className="mb-4">
-          <span className='mb-5 text-xl'>Bio: </span>
-          {isEditingBio ? (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-                rows="4"
-                maxLength="200"
-              />
-              <div className="pt-4">
-                <button 
-                  type="submit" 
-                  className="float-right relative bottom-4 text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          ) : (
-            <>
-              {/* <span>{bio}</span>
-              <button 
-                onClick={() => setIsEditingBio(true)}
-                className="ml-4  text-white px-4 py-1 bg-blue-700 rounded-md hover:bg-blue-600 transition"
-              >
-                Edit Bio
-              </button> */}
-              <div>
-                    <p className="text-gray-600">{bio}</p>
-                    <button 
-                      onClick={() => setIsEditingBio(true)}
-                      className="mt-2 text-white bg-blue-700 hover:bg-blue-600 transition p-1.5 rounded-md"
-                    >
-                      Edit Bio
-                    </button>
-                  </div>
-            </>
-          )}
+        <div className="posts-card">
+          <h2 className="card-title">My Posts</h2>
+          <div className="posts-content">
+            <MyPostList />
+          </div>
         </div>
       </div>
-      <MyPostList className="justify-self-end "/>
     </div>
   );
 }
