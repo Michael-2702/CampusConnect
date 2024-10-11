@@ -7,7 +7,7 @@ import Share from './Components/share/Share';
 import HomeScreen from './Pages/Home/HomeScreen';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Profile from './Pages/viewProfile/profile';
+import Profile from './Pages/viewProfile/Profile';
 import AdminLogin from './Pages/admin/AdminLogin';
 import AdminHomeScreen from './Pages/Home/AdminHomeScreen';
 import AdminReportedPosts from '../src/Components/post/AdminReportedPosts'
