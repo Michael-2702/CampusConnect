@@ -42,11 +42,11 @@ const postsSchema = new Schema({
     reportedBy: [{type: mongoose.Schema.Types.ObjectId, ref:'userModel'}],
     // reportedByUsername: [{type: String, unique: true}],
     // isReportedByUser: {type: Boolean}
-    // comments: [{
-    //     content: String,
-    //     user: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
-    //     date: {type: Date, default: Date.now}
-    // }]
+    comments: [{
+        content: String,
+        user: {type: mongoose.Schema.Types.ObjectId, ref:'userModel'},
+        date: {type: Date, default: Date.now}
+    }]
 }, { timestamps: true })
 
 const otpSchema = new Schema({

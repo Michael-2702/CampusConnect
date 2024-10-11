@@ -23,7 +23,7 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
       // Ensure either text or an image is provided
       if (!text && !req.file) {
         return res.status(400).json({
-          msg: "Please provide either text or an image for the post",
+          msg: "Please provide either text or an image for the post"
         });
       }
   
@@ -40,10 +40,8 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
         postsImagePath: imagePath, // Image may or may not be present
         text, // Text can be empty
         likes: [],
-        // isReported: false,
         reportedBy: [],
-        // reportedByUsername: [],
-        // isReportedByUser: false
+        comments: []
       })
   
       // Update user's posts array
@@ -245,32 +243,157 @@ postRouter.put("/unReportPost/:postId", userMiddleware, async (req, res) => {
 });
 
 // Comment on a post
-// postRouter.put("/comment/:postId", userMiddleware, async (req, res) => {
-//     try {
-//         const postId = req.params.postId;
-//         const userId = req.userId;
-//         const { content } = req.body;
+postRouter.put("/comment/:postId", userMiddleware, async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const userId = req.userId;
+        const { content } = req.body;
 
-//         if (!content) {
-//             return res.status(400).json({ message: "Comment content is required" });
-//         }
+        if (!content) {
+            return res.status(400).json({ message: "Comment content is required" });
+        }
 
-//         const post = await postModel.findById(postId);
-//         if (!post) {
-//             return res.status(404).json({ message: "Post not found" });
-//         }
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
 
-//         post.comments.push({ content, user: userId });
-//         await post.save();
+        post.comments.push({ content, user: userId });
+        await post.save();
 
-//         res.json({ 
-//             message: "Comment added successfully", 
-//             post 
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: "Error adding comment", error: error.message });
-//     }
-// });
+        const user = await userModel.findById(userId)
+
+        const username = user.username
+        const profileImagePath = user.profileImagePath
+
+        const processedComment = {
+            content,
+            username,
+            profileImagePath
+        }
+        
+        res.json({ 
+            message: "Comment added successfully", 
+            // post,
+            // username, 
+            // profileImagePath
+            processedComment
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding comment", error: error.message });
+    }
+});
+
+// view comments of a specific post
+postRouter.get("/getComments/:postId", userMiddleware, async (req, res) => {
+    const { postId } = req.params
+    const userId = req.userId
+
+    try{
+        const post = await postModel.findById(postId)
+
+        const comments = post.comments
+
+        const user = await userModel.findById(userId)
+
+        const username = user.username
+        const profileImagePath = user.profileImagePath
+
+        const processedComments = comments.map(comment => {
+            return {
+                ...comment._doc,
+                username,
+                profileImagePath
+            }
+        })
+
+        res.json({
+            msg: "Comments fetched Successfully", 
+            processedComments, 
+        })
+    }
+    catch(e){
+        res.status(500).json({ message: "Error getting comments", error: error.message });
+    }
+})
+
+// delete your comment from a post
+postRouter.delete("/deleteComment/:postId/:commentId", userMiddleware, async (req, res) => {
+   
+    try{
+        const { postId, commentId } = req.params;
+        const userId = req.userId;
+
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const comment = post.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        if (comment.user.toString() !== userId.toString()) {
+            return res.status(403).json({ message: "You can only delete your own comments" });
+        }
+
+        await post.updateOne({
+            $pull: { comments: { _id: commentId } }
+        });
+
+        res.json({ message: "Comment deleted successfully" });
+    }
+    catch(e){
+        res.status(500).json({ message: "Error deleting comment", e: e.message });
+    }
+})
+
+// Update your own comment
+postRouter.put("/updateComment/:postId/:commentId", userMiddleware, async (req, res) => {
+    try {
+        const { postId, commentId } = req.params;
+        const userId = req.userId;
+        const { content } = req.body;
+
+        if (!content) {
+            return res.status(400).json({ message: "Updated content is required" });
+        }
+
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Check if the comment exists and belongs to the user
+        const comment = post.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        if (comment.user.toString() !== userId.toString()) {
+            return res.status(403).json({ message: "You can only update your own comments" });
+        }
+
+        // Update the comment's content
+        comment.content = content;
+        await post.save();
+
+        const user = await userModel.findById(userId)
+        const username = user.username
+        const profileImagePath = user.profileImagePath
+
+        const processedComment = {
+            content,
+            username,
+            profileImagePath
+        }
+
+        res.json({ message: "Comment updated successfully", updatedComment: processedComment });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating comment", error: error.message });
+    }
+});
 
 module.exports = {
     postRouter
