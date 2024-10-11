@@ -70,7 +70,7 @@ const AdminPost = React.memo(() => {
                   src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                   alt="Profile"
                 />
-                <NavLink to={`/profile/${post.postedBy}`} className="mt-4 inline-block text-blue-500">
+                <NavLink to={`/adminViewProfile/${post.postedBy}`} className="mt-4 inline-block text-blue-500">
                   <span className="size-4 text-black font-medium my-2 mt-5 ml-3 pb-2">
                     {post.username}
                   </span>
