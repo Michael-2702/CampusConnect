@@ -13,6 +13,7 @@ import AdminHomeScreen from './Pages/Home/AdminHomeScreen';
 import AdminReportedPosts from '../src/Components/post/AdminReportedPosts'
 import ViewOtherProfile from './Pages/viewProfile/ViewOtherProfile';
 import AdminViewOtherProfile from './Pages/viewProfile/AdminViewOtherProfile'
+import { ErrorComponent } from './Pages/errorPage/ErrorComponent';
 
 function App() {
   const router = createBrowserRouter([
@@ -55,6 +56,9 @@ function App() {
     {
       path: "/adminViewProfile/:id",
       element: <AdminViewOtherProfile/>
+    },{
+      path: "*",
+      element: <ErrorComponent />
     }
   ]);
 
