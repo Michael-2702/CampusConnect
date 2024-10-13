@@ -346,6 +346,8 @@ postRouter.get("/getComments/:postId", userMiddleware, async (req, res) => {
 
         const comments = post.comments
 
+        comments.sort((a, b) => new Date(b.date) - new Date(a.date));
+
         // Fetch user information for each comment
         const processedComments = await Promise.all(comments.map(async (comment) => {
             const commentUser = await userModel.findById(comment.user)

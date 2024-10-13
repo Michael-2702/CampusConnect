@@ -50,7 +50,7 @@ const PostList = React.memo(() => {
     if (currentUserId === postUserId) {
       navigate('/profile');
     } else {
-      navigate(`/viewOtherProfile/${postUserId}`);
+      navigate(`/profile/${postUserId}`);
     }
   };
 
@@ -121,21 +121,35 @@ const PostList = React.memo(() => {
 
   const handlePostComment = async (postId) => {
     try {
-      const token = localStorage.getItem("authorization");
-      const response = await axios.put(
-        `http://localhost:3000/api/v1/post/comment/${postId}`,
-        { content: newComments[postId] },
-        { headers: { authorization: token } }
-      );
-      
-      setPosts(prevPosts => prevPosts.map(post => 
-        post._id === postId 
-          ? { ...post, comments: [...post.comments, response.data.processedComment] }
-          : post
-      ));
-      setNewComments(prev => ({ ...prev, [postId]: '' }));
+        const token = localStorage.getItem("authorization");
+        const response = await axios.put(
+            `http://localhost:3000/api/v1/post/comment/${postId}`,
+            { content: newComments[postId] },
+            { headers: { authorization: token } }
+        );
+
+        // Extract the processed comment from the response
+        const { processedComment } = response.data;
+
+        // Update the posts state to include the new comment immediately
+        setPosts((prevPosts) =>
+            prevPosts.map((post) =>
+                post._id === postId
+                    ? {
+                          ...post,
+                          comments: [...post.comments, processedComment], // Add the new comment here
+                      }
+                    : post
+            )
+        );
+
+        // Clear the input field for the new comment
+        setNewComments((prev) => ({ ...prev, [postId]: '' }));
+
+        // Optionally, you can toggle comments to show the newly added comment
+        toggleComments(postId); // if you want to ensure comments are displayed
     } catch (err) {
-      console.error("Error posting comment", err);
+        console.error("Error posting comment", err);
     }
   };
 
@@ -158,6 +172,7 @@ const PostList = React.memo(() => {
   };
 
   const handleEditComment = async (postId, commentId) => {
+    // Check if we are currently editing the comment
     if (editingComments[commentId]) {
       try {
         const token = localStorage.getItem("authorization");
@@ -166,26 +181,40 @@ const PostList = React.memo(() => {
           { content: editingComments[commentId] },
           { headers: { authorization: token } }
         );
-        
-        setPosts(prevPosts => prevPosts.map(post => 
-          post._id === postId 
-            ? { ...post, comments: post.comments.map(comment => 
-                comment._id === commentId ? response.data.updatedComment : comment
-              ) }
-            : post
-        ));
+  
+        // Update the posts state to reflect the edited comment
+        setPosts(prevPosts =>
+          prevPosts.map(post =>
+            post._id === postId
+              ? {
+                  ...post,
+                  comments: post.comments.map(comment =>
+                    comment._id === commentId ? response.data.updatedComment : comment
+                  )
+                }
+              : post
+          )
+        );
+  
+        // Clear the editing comment input
         setEditingComments(prev => ({ ...prev, [commentId]: '' }));
+        toggleComments(postId);
       } catch (err) {
         console.error("Error updating comment", err);
       }
     } else {
-      setEditingComments(prev => ({ 
-        ...prev, 
-        [commentId]: posts.find(post => post._id === postId)
-          .comments.find(comment => comment._id === commentId).content 
+      // Enable editing mode for the selected comment
+      const commentContent = posts
+        .find(post => post._id === postId)
+        .comments.find(comment => comment._id === commentId).content;
+  
+      setEditingComments(prev => ({
+        ...prev,
+        [commentId]: commentContent // Set the content to the current comment's content
       }));
     }
   };
+  
 
   const toggleLikedUsers = async (postId) => {
     if (showLikedUsers[postId]) {
@@ -332,57 +361,64 @@ const PostList = React.memo(() => {
                 </div>
 
                 <div className="space-y-3 max-h-60 overflow-y-auto">
-                  {post.comments && post.comments.map((comment) => (
-                    <div key={comment._id} className="flex space-x-2 bg-gray-50 p-2 rounded-lg">
-                      <img
-                        className="w-8 h-8 rounded-full"
-                        src={comment.user.userProfileImage ? `http://localhost:3000${comment.user.userProfileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
-                        alt={comment.user.username}
-                      />
-                      <div className="flex-grow">
-                        <button 
+                {post.comments && post.comments.map((comment) => (
+                  <div key={comment._id} className="flex space-x-2 bg-gray-50 p-2 rounded-lg">
+                    <img
+                      className="w-8 h-8 rounded-full"
+                      src={
+                        comment.user && comment.user.profileImagePath
+                          ? `http://localhost:3000${comment.user.profileImagePath}`
+                          : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"
+                      }
+                      alt={comment.user ? comment.user.username : "User"}
+                    />
+                    <div className="flex-grow">
+                    
+                      <button 
                           onClick={() => handleProfileClick(comment.user._id)}
                           className="font-medium text-gray-900 hover:underline text-sm"
                         >
-                          {comment.user.username}
+                          {comment.user ? comment.user.username : "unknown user" }
                         </button>
-                        {editingComments[comment._id] ? (
-                          <div className="mt-1 flex items-center space-x-2">
-                            <input
-                              type="text"
-                              className="flex-grow p-1 border rounded-md text-sm"
-                              value={editingComments[comment._id]}
-                              onChange={(e) => setEditingComments(prev => ({ ...prev, [comment._id]: e.target.value }))}
-                            />
-                            <button
-                              onClick={() => handleEditComment(post._id, comment._id)}
-                              className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition text-xs"
-                            >
-                              Save
-                            </button>
-                          </div>
-                        ) : (
-                          <p className="text-gray-600 text-sm">{comment.content}</p>
-                        )}
-                        {currentUserId === comment.user._id && !editingComments[comment._id] && (
-                          <div className="mt-1 space-x-2">
-                            <button
-                              onClick={() => handleEditComment(post._id, comment._id)}
-                              className="text-blue-500 hover:text-blue-600 text-xs"
-                            >
-                              <Edit2 size={12} />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteComment(post._id, comment._id)}
-                              className="text-red-500 hover:text-red-600 text-xs"
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
+
+                      
+                      {editingComments[comment._id] ? (
+                        <div className="mt-1 flex items-center space-x-2">
+                          <input
+                            type="text"
+                            className="flex-grow p-1 border rounded-md text-sm"
+                            value={editingComments[comment._id]}
+                            onChange={(e) => setEditingComments(prev => ({ ...prev, [comment._id]: e.target.value }))}
+                          />
+                          <button
+                            onClick={() => handleEditComment(post._id, comment._id)}
+                            className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition text-xs"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-gray-600 text-sm">{comment.content}</p>
+                      )}
+                      {currentUserId === (comment.user ? comment.user._id : null) && !editingComments[comment._id] && (
+                        <div className="mt-1 space-x-2">
+                          <button
+                            onClick={() => handleEditComment(post._id, comment._id)}
+                            className="text-blue-500 hover:text-blue-600 text-xs relative bottom-[2.8rem] left-[38.7rem]"
+                          >
+                            <Edit2 size={15} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteComment(post._id, comment._id)}
+                            className="text-red-500 hover:text-red-600 text-xs relative bottom-[2.7rem] left-[39rem]"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  ))}
+                  </div>
+                ))}
                 </div>
               </div>
             )}

@@ -66,7 +66,7 @@ const OthersPost = React.memo(({ userId }) => {
           <div className="flex items-center mb-2">
             <img
               className="w-10 h-10 rounded-full object-cover mr-3"
-              src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://via.placeholder.com/40"} 
+              src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
               alt="Profile"
             />
             <span className="font-medium">{post.username}</span>

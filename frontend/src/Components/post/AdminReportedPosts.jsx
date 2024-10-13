@@ -127,12 +127,6 @@ const AdminPost = React.memo(() => {
 
               {/* Like and report count */}
               <div className="flex items-center">
-                <img
-                  className="w-6 h-6 ml-5 mr-2 cursor-pointer"
-                  src="hand-thumb.png"
-                  alt="Like button"
-                />
-                <span className="size-4">{post.likes.length}</span>
                 <span className="ml-4">Reports: {post.reportCount}</span>
               </div>
             </div>

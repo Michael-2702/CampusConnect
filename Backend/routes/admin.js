@@ -230,6 +230,75 @@ adminRouter.get("/viewAllUsers", userMiddleware, async (req, res) => {
     }
 })
 
+// view comments of a specific post
+adminRouter.get("/getComments/:postId", userMiddleware, async (req, res) => {
+    const { postId } = req.params
+    const userId = req.userId
+
+    try {
+        const post = await postModel.findById(postId)
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const comments = post.comments
+
+        comments.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Fetch user information for each comment
+        const processedComments = await Promise.all(comments.map(async (comment) => {
+            const commentUser = await userModel.findById(comment.user)
+            return {
+                ...comment._doc,
+                user: {
+                    _id: commentUser._id,
+                    username: commentUser.username,
+                    profileImagePath: commentUser.profileImagePath || ""
+                }
+            }
+        }))
+
+        res.json({
+            msg: "Comments fetched Successfully", 
+            comments: processedComments, 
+        })
+    }
+    catch(error) {
+        console.error("Error getting comments:", error);
+        res.status(500).json({ message: "Error getting comments", error: error.message });
+    }
+})
+
+// delete your comment from a post
+adminRouter.delete("/deleteComment/:postId/:commentId", userMiddleware, async (req, res) => {
+   
+    try{
+        const { postId, commentId } = req.params;
+        const userId = req.userId;
+
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const comment = post.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        
+
+        await post.updateOne({
+            $pull: { comments: { _id: commentId } }
+        });
+
+        res.json({ message: "Comment deleted successfully" });
+    }
+    catch(e){
+        res.status(500).json({ message: "Error deleting comment", e: e.message });
+    }
+})
+
 module.exports = {
     adminRouter
 }
