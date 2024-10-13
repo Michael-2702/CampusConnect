@@ -211,7 +211,22 @@ adminRouter.get("/viewUserProfile/:userId", userMiddleware, async (req, res) => 
     }
     catch(e){
         console.log(e)
-        res.status(500).json({ message: "Error fetching user profile", error: error.message });
+        res.status(500).json({ message: "Error fetching user profile", error: e.message });
+    }
+})
+
+// view user list
+adminRouter.get("/viewAllUsers", userMiddleware, async (req, res) => {
+    try{
+        const users = await userModel.find({})
+
+        res.json(
+            users
+        )
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({ message: "Error fetching user list", error: e.message });
     }
 })
 

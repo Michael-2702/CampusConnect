@@ -1,35 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { Heart, MessageCircle, MoreVertical } from 'lucide-react';
+import { Heart, MessageCircle, Edit2, Trash2, MoreVertical, Send, X } from 'lucide-react';
 
 const PostList = React.memo(() => {
   const [posts, setPosts] = useState([]);
   const [showMenu, setShowMenu] = useState({});
   const [showComments, setShowComments] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [newComments, setNewComments] = useState({});
+  const [editingComments, setEditingComments] = useState({});
+  const [showLikedUsers, setShowLikedUsers] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/post/viewPosts", {
-          headers: { authorization: token },
-        });
-        setPosts(response.data);
-        
-        const userResponse = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
-          headers: { authorization: token },
-        });
+  
+        // Run both requests in parallel for efficiency
+        const [postsResponse, userResponse] = await Promise.all([
+          axios.get("http://localhost:3000/api/v1/post/viewPosts", {
+            headers: { authorization: token },
+          }),
+          axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+            headers: { authorization: token },
+          })
+        ]);
+  
+        // Ensure each post has comments as an array
+        const postsData = postsResponse.data.map(post => ({
+          ...post,
+          comments: Array.isArray(post.comments) ? post.comments : [], // Ensure comments is an array
+        }));
+  
+        setPosts(postsData);
         setCurrentUserId(userResponse.data.userInfo._id);
+        
       } catch (err) {
         console.error("Error fetching data", err);
       }
     };
-
+  
     fetchPosts();
   }, []);
+  
 
   const handleProfileClick = (postUserId) => {
     if (currentUserId === postUserId) {
@@ -46,25 +61,39 @@ const PostList = React.memo(() => {
     }));
   };
 
-  const toggleComments = (postId) => {
+  const toggleComments = async (postId) => {
     setShowComments((prev) => ({
       ...prev,
       [postId]: !prev[postId],
     }));
+
+    if (!showComments[postId]) {
+      try {
+        const token = localStorage.getItem("authorization");
+        const response = await axios.get(`http://localhost:3000/api/v1/post/getComments/${postId}`, {
+          headers: { authorization: token },
+        });
+        setPosts(prevPosts => prevPosts.map(post => 
+          post._id === postId ? { ...post, comments: response.data.comments } : post
+        ));
+      } catch (err) {
+        console.error("Error fetching comments", err);
+      }
+    }
   };
 
   const handleLike = async (postId) => {
     try {
       const token = localStorage.getItem("authorization");
-      await axios.put(
-        `http://localhost:3000/api/v1/post/likePost/${postId}`,
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/post/like/${postId}`,
         {},
         { headers: { authorization: token } }
       );
       
       setPosts(prevPosts => prevPosts.map(post => 
         post._id === postId 
-          ? { ...post, likes: [...post.likes, currentUserId] }
+          ? { ...post, likes: response.data.likes, likedUsers: response.data.likedUsers }
           : post
       ));
     } catch (err) {
@@ -90,6 +119,94 @@ const PostList = React.memo(() => {
     }
   };
 
+  const handlePostComment = async (postId) => {
+    try {
+      const token = localStorage.getItem("authorization");
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/post/comment/${postId}`,
+        { content: newComments[postId] },
+        { headers: { authorization: token } }
+      );
+      
+      setPosts(prevPosts => prevPosts.map(post => 
+        post._id === postId 
+          ? { ...post, comments: [...post.comments, response.data.processedComment] }
+          : post
+      ));
+      setNewComments(prev => ({ ...prev, [postId]: '' }));
+    } catch (err) {
+      console.error("Error posting comment", err);
+    }
+  };
+
+  const handleDeleteComment = async (postId, commentId) => {
+    try {
+      const token = localStorage.getItem("authorization");
+      await axios.delete(
+        `http://localhost:3000/api/v1/post/deleteComment/${postId}/${commentId}`,
+        { headers: { authorization: token } }
+      );
+      
+      setPosts(prevPosts => prevPosts.map(post => 
+        post._id === postId 
+          ? { ...post, comments: post.comments.filter(comment => comment._id !== commentId) }
+          : post
+      ));
+    } catch (err) {
+      console.error("Error deleting comment", err);
+    }
+  };
+
+  const handleEditComment = async (postId, commentId) => {
+    if (editingComments[commentId]) {
+      try {
+        const token = localStorage.getItem("authorization");
+        const response = await axios.put(
+          `http://localhost:3000/api/v1/post/updateComment/${postId}/${commentId}`,
+          { content: editingComments[commentId] },
+          { headers: { authorization: token } }
+        );
+        
+        setPosts(prevPosts => prevPosts.map(post => 
+          post._id === postId 
+            ? { ...post, comments: post.comments.map(comment => 
+                comment._id === commentId ? response.data.updatedComment : comment
+              ) }
+            : post
+        ));
+        setEditingComments(prev => ({ ...prev, [commentId]: '' }));
+      } catch (err) {
+        console.error("Error updating comment", err);
+      }
+    } else {
+      setEditingComments(prev => ({ 
+        ...prev, 
+        [commentId]: posts.find(post => post._id === postId)
+          .comments.find(comment => comment._id === commentId).content 
+      }));
+    }
+  };
+
+  const toggleLikedUsers = async (postId) => {
+    if (showLikedUsers[postId]) {
+      setShowLikedUsers(prev => ({ ...prev, [postId]: false }));
+    } else {
+      try {
+        const token = localStorage.getItem("authorization");
+        const response = await axios.get(`http://localhost:3000/api/v1/post/likedUsers/${postId}`, {
+          headers: { authorization: token },
+        });
+        setPosts(prevPosts => prevPosts.map(post => 
+          post._id === postId ? { ...post, likedUsers: response.data.likedUsers } : post
+        ));
+        setShowLikedUsers(prev => ({ ...prev, [postId]: true }));
+      } catch (err) {
+        console.error("Error fetching liked users", err);
+      }
+    }
+  };
+
+
   return (
     <div className="mt-8 ml-8">
       <div className="space-y-4">
@@ -103,12 +220,12 @@ const PostList = React.memo(() => {
                     src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                     alt={post.username}
                   />
-                  <NavLink 
-                    to={currentUserId === post.postedBy ? "/profile" : `/profile/${post.postedBy}`}
+                  <button 
+                    onClick={() => handleProfileClick(post.postedBy)}
                     className="font-medium text-gray-900 hover:underline text-sm"
                   >
                     {post.username}
-                  </NavLink>
+                  </button>
                 </div>
                 {currentUserId !== post.postedBy && (
                   <div className="relative">
@@ -145,52 +262,131 @@ const PostList = React.memo(() => {
               )}
               
               <div className="flex items-center space-x-3 mb-2">
-                <button 
-                  onClick={() => handleLike(post._id)}
-                  className="flex items-center space-x-1 text-gray-600 hover:text-red-500 transition"
-                >
-                  <Heart 
-                    size={16}
-                    className={post.likes.includes(currentUserId) ? 'fill-red-500 text-red-500' : ''} 
-                  />
-                  <span className="text-sm">{post.likes.length}</span>
-                </button>
+              <button 
+                onClick={() => handleLike(post._id)}
+                className="flex items-center space-x-1 text-gray-600 hover:text-red-500 transition"
+              >
+                <Heart 
+                  size={16}
+                  className={post.likes.includes(currentUserId) ? 'fill-red-500 text-red-500' : ''} 
+                />
+                <span className="text-sm">{post.likes.length}</span>
+              </button>
+              <button 
+                onClick={() => toggleLikedUsers(post._id)}
+                className="text-sm text-blue-500 hover:underline"
+              >
+                {showLikedUsers[post._id] ? 'Hide' : 'View'} Likes
+              </button>
                 <button 
                   onClick={() => toggleComments(post._id)}
                   className="flex items-center space-x-1 text-gray-600 hover:text-blue-500 transition"
                 >
                   <MessageCircle size={16} />
-                  <span className="text-sm">Comments</span>
+                  <span className="text-sm">{post.comments ? post.comments.length : 0} Comments</span>
                 </button>
               </div>
               
-              {showComments[post._id] && (
-                <div className="mt-3 border-t pt-3">
-                  <div className="mb-3">
-                    <textarea
-                      className="w-full p-2 border rounded-md resize-none text-sm"
-                      placeholder="Write a comment..."
-                      rows="2"
-                    />
-                    <button className="mt-1 px-3 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition text-sm">
-                      Post Comment
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex space-x-2">
+              {showLikedUsers[post._id] && post.likedUsers && (
+              <div className="mt-2 p-2 bg-gray-50 rounded-md">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="font-semibold text-sm">Liked by:</h4>
+                  <button 
+                    onClick={() => setShowLikedUsers(prev => ({ ...prev, [post._id]: false }))}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <div className="max-h-40 overflow-y-auto">
+                  {post.likedUsers.map(user => (
+                    <div key={user._id} className="flex items-center space-x-2 mb-2">
                       <img
-                        className="w-6 h-6 rounded-full"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"
-                        alt="Commenter"
+                        className="w-6 h-6 rounded-full object-cover"
+                        src={user.profileImagePath ? `http://localhost:3000${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                        alt={user.username}
                       />
-                      <div>
-                        <p className="font-medium text-sm">Username</p>
-                        <p className="text-gray-600 text-sm">This is a placeholder comment.</p>
+                      <span className="text-sm">{user.username}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+              
+            {showComments[post._id] && (
+              <div className="mt-3 border-t pt-3">
+                <div className="mb-3 flex items-center space-x-2">
+                  <input
+                    type="text"
+                    className="flex-grow p-2 border rounded-md text-sm"
+                    placeholder="Write a comment..."
+                    value={newComments[post._id] || ''}
+                    onChange={(e) => setNewComments(prev => ({ ...prev, [post._id]: e.target.value }))}
+                  />
+                  <button 
+                    className="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition text-sm flex items-center"
+                    onClick={() => handlePostComment(post._id)}
+                  >
+                    <Send size={16} className="mr-1" /> Post
+                  </button>
+                </div>
+
+                <div className="space-y-3 max-h-60 overflow-y-auto">
+                  {post.comments && post.comments.map((comment) => (
+                    <div key={comment._id} className="flex space-x-2 bg-gray-50 p-2 rounded-lg">
+                      <img
+                        className="w-8 h-8 rounded-full"
+                        src={comment.user.userProfileImage ? `http://localhost:3000${comment.user.userProfileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                        alt={comment.user.username}
+                      />
+                      <div className="flex-grow">
+                        <button 
+                          onClick={() => handleProfileClick(comment.user._id)}
+                          className="font-medium text-gray-900 hover:underline text-sm"
+                        >
+                          {comment.user.username}
+                        </button>
+                        {editingComments[comment._id] ? (
+                          <div className="mt-1 flex items-center space-x-2">
+                            <input
+                              type="text"
+                              className="flex-grow p-1 border rounded-md text-sm"
+                              value={editingComments[comment._id]}
+                              onChange={(e) => setEditingComments(prev => ({ ...prev, [comment._id]: e.target.value }))}
+                            />
+                            <button
+                              onClick={() => handleEditComment(post._id, comment._id)}
+                              className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition text-xs"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        ) : (
+                          <p className="text-gray-600 text-sm">{comment.content}</p>
+                        )}
+                        {currentUserId === comment.user._id && !editingComments[comment._id] && (
+                          <div className="mt-1 space-x-2">
+                            <button
+                              onClick={() => handleEditComment(post._id, comment._id)}
+                              className="text-blue-500 hover:text-blue-600 text-xs"
+                            >
+                              <Edit2 size={12} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteComment(post._id, comment._id)}
+                              className="text-red-500 hover:text-red-600 text-xs"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
+
             </div>
           </div>
         ))}

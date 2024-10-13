@@ -19,9 +19,19 @@ function AdminHomeScreen() {
         <AdminFeed/>
       </div>
       <div>
-        <NavLink to="/reportedPosts">
+        <NavLink to="/viewAllUsers">
           <button
               className="border-none p-2 rounded-md bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:bg-slate-700 fixed right-5 top-20 z-50"
+              style={{ zIndex: 50 }}
+            >
+              View All Users
+            </button>
+        </NavLink>
+      </div>
+      <div>
+        <NavLink to="/reportedPosts">
+          <button
+              className="border-none p-2 rounded-md bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:bg-slate-700 fixed right-5 top-[8rem] z-50"
               style={{ zIndex: 50 }}
             >
               View reported Posts

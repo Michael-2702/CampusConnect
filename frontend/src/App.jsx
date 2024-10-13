@@ -14,6 +14,7 @@ import AdminReportedPosts from '../src/Components/post/AdminReportedPosts'
 import ViewOtherProfile from './Pages/viewProfile/ViewOtherProfile';
 import AdminViewOtherProfile from './Pages/viewProfile/AdminViewOtherProfile'
 import { ErrorComponent } from './Pages/errorPage/ErrorComponent';
+import UserList from './Components/user-Lists/UserList'
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +60,10 @@ function App() {
     },{
       path: "*",
       element: <ErrorComponent />
+    }, 
+    {
+      path: "/viewAllUsers",
+      element: <UserList />
     }
   ]);
 

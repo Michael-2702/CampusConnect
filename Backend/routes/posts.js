@@ -145,8 +145,7 @@ postRouter.get("/userPosts/:userId", userMiddleware, async (req, res) => {
         }
 
         const posts = await postModel.find({ postedBy: targetUserId })
-            .populate('postedBy', 'username')
-            .sort('-createdAt');
+            .sort({createdAt : -1});
 
         res.status(200).json({
             message: `Posts by ${targetUser.username} retrieved successfully`,
@@ -156,6 +155,34 @@ postRouter.get("/userPosts/:userId", userMiddleware, async (req, res) => {
         res.status(500).json({ message: "Error fetching user's posts", error: error.message });
     }
 });
+
+
+// postRouter.put("/like/:postId", userMiddleware, async (req, res) => {
+//     try {
+//         const postId = req.params.postId;
+//         const userId = req.userId;
+
+//         const post = await postModel.findById(postId);
+//         if (!post) {
+//             return res.status(404).json({ message: "Post not found" });
+//         }
+
+//         const isLiked = post.likes.includes(userId);
+//         if (isLiked) {
+//             post.likes = post.likes.filter(id => id.toString() !== userId); // iss se unlike hota hai
+//         } else {
+//             post.likes.push(userId);
+//         }
+
+//         await post.save();
+//         res.json({ 
+//             message: isLiked ? "Post unliked" : "Post liked", 
+//             post 
+//         });
+//     } catch (error) {
+//         res.status(500).json({ message: "Error liking/unliking post", error: error.message });
+//     }
+// });
 
 // Like/Unlike a post
 postRouter.put("/like/:postId", userMiddleware, async (req, res) => {
@@ -170,18 +197,40 @@ postRouter.put("/like/:postId", userMiddleware, async (req, res) => {
 
         const isLiked = post.likes.includes(userId);
         if (isLiked) {
-            post.likes = post.likes.filter(id => id.toString() !== userId); // iss se unlike hota hai
+            post.likes = post.likes.filter(id => id.toString() !== userId.toString());
         } else {
             post.likes.push(userId);
         }
 
         await post.save();
+
+        const likedUsers = await userModel.find({ _id: { $in: post.likes } }, 'username profileImagePath');
+
         res.json({ 
             message: isLiked ? "Post unliked" : "Post liked", 
-            post 
+            likes: post.likes,
+            likedUsers: likedUsers
         });
     } catch (error) {
         res.status(500).json({ message: "Error liking/unliking post", error: error.message });
+    }
+});
+
+// New route to fetch liked users
+postRouter.get("/likedUsers/:postId", userMiddleware, async (req, res) => {
+    try {
+        const { postId } = req.params;
+        
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const likedUsers = await userModel.find({ _id: { $in: post.likes } }, 'username profileImagePath');
+
+        res.json({ likedUsers });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching liked users", error: error.message });
     }
 });
 
@@ -289,30 +338,34 @@ postRouter.get("/getComments/:postId", userMiddleware, async (req, res) => {
     const { postId } = req.params
     const userId = req.userId
 
-    try{
+    try {
         const post = await postModel.findById(postId)
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
 
         const comments = post.comments
 
-        const user = await userModel.findById(userId)
-
-        const username = user.username
-        const profileImagePath = user.profileImagePath
-
-        const processedComments = comments.map(comment => {
+        // Fetch user information for each comment
+        const processedComments = await Promise.all(comments.map(async (comment) => {
+            const commentUser = await userModel.findById(comment.user)
             return {
                 ...comment._doc,
-                username,
-                profileImagePath
+                user: {
+                    _id: commentUser._id,
+                    username: commentUser.username,
+                    profileImagePath: commentUser.profileImagePath || ""
+                }
             }
-        })
+        }))
 
         res.json({
             msg: "Comments fetched Successfully", 
-            processedComments, 
+            comments: processedComments, 
         })
     }
-    catch(e){
+    catch(error) {
+        console.error("Error getting comments:", error);
         res.status(500).json({ message: "Error getting comments", error: error.message });
     }
 })

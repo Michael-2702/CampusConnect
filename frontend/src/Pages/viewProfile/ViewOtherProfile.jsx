@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import "./styles.css";
+import OthersPost from '../../Components/post/OthersPost';
 
 const ViewOtherProfile = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -32,7 +33,7 @@ const ViewOtherProfile = () => {
 
   return (
     <div className="container">
-      <button className="back-button" onClick={() => navigate('/home')}>
+      <button className="back-button" onClick={() => navigate(-1)}>
         <FaArrowLeft />
       </button>
       
@@ -66,10 +67,11 @@ const ViewOtherProfile = () => {
         </div>
 
         <div className="posts-card">
-          <h2 className="card-title">User's Posts</h2>
+
           <div className="posts-content">
             {/* You can add a component here to display the user's posts */}
-            <p>User's posts will be displayed here.</p>
+            
+            <OthersPost userId={userInfo._id} />
           </div>
         </div>
       </div>

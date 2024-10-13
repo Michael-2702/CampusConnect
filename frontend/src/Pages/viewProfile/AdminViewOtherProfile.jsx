@@ -26,17 +26,22 @@ const ViewOtherProfile = () => {
     fetchProfile();
   }, [id]);
 
+  const goBack = () => {
+    navigate(-1);  // This navigates back to the previous page
+  };
+
+
   if (!userInfo) return <div className="loading">Loading...</div>;
 
   const { profileImagePath, name, username, email, bio, department, graduationYear, friends } = userInfo;
 
   return (
     <div className="container">
-    <NavLink to="/adminHome">
-        <button className="back-button" >
-            <FaArrowLeft />
-        </button>
-    </NavLink>
+
+    <button className="back-button" onClick={goBack}>
+        <FaArrowLeft />
+    </button>
+
       
       
       <div className="profile-grid">
@@ -45,7 +50,7 @@ const ViewOtherProfile = () => {
           <div className="profile-content">
             <div className="profile-image-container">
               <img
-                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://via.placeholder.com/150"}
+                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                 alt="Profile"
                 className="profile-image"
               />
