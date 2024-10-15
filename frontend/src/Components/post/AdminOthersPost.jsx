@@ -1,68 +1,70 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from 'react-router-dom';
 import axios from "axios";
 import { Heart, MessageCircle, Edit2, Trash2, MoreVertical, Send, X } from 'lucide-react';
 
-const MyPostList = React.memo(() => {
+
+const OthersPost = React.memo(({ userId }) => {
   const [posts, setPosts] = useState([]);
-  const [like, setLike] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [showMenu, setShowMenu] = useState({}); // Track which post's menu is shown
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showMenu, setShowMenu] = useState({});
+  const [showComments, setShowComments] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
   const [newComments, setNewComments] = useState({});
   const [editingComments, setEditingComments] = useState({});
   const [showLikedUsers, setShowLikedUsers] = useState({});
-  const [showComments, setShowComments] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
+      if (!userId) {
+        setError("User ID is missing.");
+        setLoading(false);
+        return;
+      }
+
       try {
+        setLoading(true);
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/post/myPosts", {
+        
+        console.log("Fetching posts for userId:", userId);
+
+        const response = await axios.get(`http://localhost:3000/api/v1/post/userPosts/${userId}`, {
           headers: {
             authorization: token,
           },
         });
 
         console.log("Fetched Posts:", response.data);
-        setPosts(response.data);
-
+        setPosts(response.data.posts || []);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching posts data", err);
-
+        setError(`Failed to fetch posts: ${err.message}. 
+                  Status: ${err.response?.status}. 
+                  Response: ${JSON.stringify(err.response?.data)}`);
+        setLoading(false);
       }
     };
 
     fetchPosts();
-  }, []); // Empty dependency array ensures it runs once after mount
+  }, [userId]);
 
-  const likeHandler = () => {
-    setLike(isLiked ? like - 1 : like + 1);
-    setIsLiked(!isLiked);
-  };
+  if (loading) {
+    return <div>Loading posts...</div>;
+  }
 
-  const toggleMenu = (postId) => {
-    setShowMenu((prev) => ({
-      ...prev,
-      [postId]: !prev[postId], // Toggle the menu visibility for the clicked post
-    }));
-  };
+  if (error) {
+    return (
+      <div>
+        <h2>Error Loading Posts:</h2>
+        <pre>{error}</pre>
+      </div>
+    );
+  }
 
-  const deletePost = async (postId) => {
-    try {
-      const token = localStorage.getItem("authorization");
-      await axios.delete(`http://localhost:3000/api/v1/post/deletePost/${postId}`, {
-        headers: {
-          authorization: token,
-        },
-      });
-
-      // Remove the deleted post from the local state
-      setPosts(posts.filter(post => post._id !== postId));
-    } catch (err) {
-      console.error("Error deleting post", err);
-    }
-  };
+  if (posts.length === 0) {
+    return <div>No posts found for this user.</div>;
+  }
 
   const toggleComments = async (postId) => {
     setShowComments((prev) => ({
@@ -101,6 +103,24 @@ const MyPostList = React.memo(() => {
       ));
     } catch (err) {
       console.error("Error liking post", err);
+    }
+  };
+
+  const handleReportToggle = async (postId, isReported) => {
+    try {
+      const token = localStorage.getItem("authorization");
+      const endpoint = isReported ? 'unReportPost' : 'reportPost';
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/post/${endpoint}/${postId}`,
+        {},
+        { headers: { authorization: token } }
+      );
+      
+      setPosts(prevPosts => prevPosts.map(post => 
+        post._id === postId ? response.data.post : post
+      ));
+    } catch (err) {
+      console.error(`Error ${isReported ? 'unreporting' : 'reporting'} post`, err);
     }
   };
 
@@ -220,28 +240,45 @@ const MyPostList = React.memo(() => {
     }
   };
 
+  const toggleMenu = (postId) => {
+    setShowMenu((prev) => ({
+      ...prev,
+      [postId]: !prev[postId], // Toggle the menu visibility for the clicked post
+    }));
+  };
+
+  const deletePost = async (postId) => {
+    try {
+      const token = localStorage.getItem("authorization");
+      await axios.delete(`http://localhost:3000/api/v1/admin/deletePost/${postId}`, {
+        headers: {
+          authorization: token,
+        },
+      });
+
+      // Remove the deleted post from the local state
+      setPosts(posts.filter(post => post._id !== postId));
+    } catch (err) {
+      console.error("Error deleting post", err);
+    }
+  };
+
 
   return (
     <div>
+      <h2>User Posts</h2>
       {posts.map((post) => (
-        <div key={post._id} className="w-[800px] rounded-xl shadow-2xl m-5">
-          <div className="p-2 relative">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <img
-                  className="w-12 h-12 ml-4 mt-4 rounded-full object-cover border-2"
-                  src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
-                  alt="Profile"
-                />
-                <NavLink to="/profile" className="mt-4 inline-block text-blue-500">
-                  <span className="size-4 text-black font-medium my-2 mt-5 ml-3 pb-2">
-                    {post.username}
-                  </span>
-                </NavLink>
-              </div>
+        <div key={post._id} className="w-[50rem] rounded-xl shadow-md my-4 p-4">
+          <div className="flex items-center mb-2">
+            <img
+              className="w-10 h-10 rounded-full object-cover mr-3"
+              src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+              alt="Profile"
+            />
+            <span className="font-medium">{post.username}</span>
 
               {/* 3-dot menu */}
-              <div className="relative mr-8">
+              <div className="relative right-[-37rem]">
                 <button
                   className="text-black  hover:text-gray-800 focus:outline-none"
                   onClick={() => toggleMenu(post._id)}
@@ -251,7 +288,7 @@ const MyPostList = React.memo(() => {
                 </button>
                 
                 {showMenu[post._id] && (
-                  <div className="absolute top-0 right-0 mt-8 bg-white border rounded shadow-md z-10">
+                  <div className="absolute top-2 right-0 mt-8 bg-white border rounded shadow-md z-10">
                     <button
                       className="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
                       onClick={() => deletePost(post._id)}
@@ -261,19 +298,18 @@ const MyPostList = React.memo(() => {
                   </div>
                 )}
               </div>
-            </div>
-            <hr className="m-5 border-gray-500" />
-            <div className="postText ml-6 max-w-[800px]">{post.text}</div>
-            <div className="m-5 flex justify-center">
-              {post.postsImagePath && (
-                <img
-                  className="mt-5 max-h-[500px] w-auto object-fit:contain"
-                  src={`http://localhost:3000${post.postsImagePath}`} 
-                  alt="Post content"
-                />
-              )}
-            </div>
-            <div className="flex items-center space-x-3 mb-2">
+          </div>
+          
+          <p className="text-gray-800 mb-2">{post.text}</p>
+          {post.postsImagePath && (
+            <img
+              className="w-full max-h-96 object-contain rounded-3xl"
+              src={`http://localhost:3000${post.postsImagePath}`} 
+              alt="Post content"
+
+            />
+          )}
+          <div className="flex items-center space-x-3 mb-2 mt-4">
               <button 
                 onClick={() => handleLike(post._id)}
                 className="flex items-center space-x-1 text-gray-600 hover:text-red-500 transition"
@@ -405,12 +441,11 @@ const MyPostList = React.memo(() => {
                 </div>
               </div>
             )}
-
-            </div>
-          </div>
+        </div>
+        
       ))}
     </div>
   );
 });
 
-export default MyPostList;
+export default OthersPost;

@@ -41,7 +41,7 @@ function AdminTopbar() {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-slate-900 z-50">
+    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-blue-500 z-50">
       {/* Left - Logo */}
       <div className="flex-3">
         <span className="text-[39px] ml-6 font-bold text-white cursor-pointer">
@@ -60,7 +60,7 @@ function AdminTopbar() {
       <div>
         <button
           type="button"
-          className="border-2 mr-6 text-white py-1 px-3 h-10 rounded-md focus:outline-none flex items-center hover:bg-slate-700 hover:pointer"
+          className="bg-transparent relative right-4 border-2 border-white text-white py-1 px-4 h-10 rounded-md focus:outline-none flex items-center transition-all duration-300 hover:bg-white hover:text-slate-900 hover:border-transparent active:scale-95"
           onClick={handleLogout}
         >
           Log Out

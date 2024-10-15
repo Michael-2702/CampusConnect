@@ -47,12 +47,12 @@ export default function Topbar() {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-slate-900 z-50 px-6 shadow-md transition-all duration-300 ease-in-out">
+    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-blue-500 z-50 px-6 shadow-md transition-all duration-300 ease-in-out">
       {/* Left - Logo */}
       <div className="flex-3">
-        <span className="text-[39px] font-bold text-white cursor-pointer transition-all duration-300 hover:text-blue-400">
-          <a href="/home" onClick={handleLogoClick} className="no-underline text-inherit">
-            CampusConnect
+        <span className="text-[39px] font-bold text-white cursor-pointer transition-all  ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
+          <a href="/home" onClick={handleLogoClick} className="no-underline text-inherit ">
+            <h1 className="transition-all duration-300  ease-in-out delay-150  hover:font-extrabold">CampusConnect</h1>
           </a>
         </span>
       </div>

@@ -47,9 +47,17 @@ export default function Share() {
 
   const handleShare = async (e) => {
     e.preventDefault();
+    const file = e.target.files;
+    const validExtensions = ['image/jpeg', 'image/png', 'image/jpg'];
+
+    if (file && !validExtensions.includes(file.type)) {
+      alert("Please select a valid image file (PNG, JPEG, or JPG only).");
+      e.target.value = null; // Clear the file input
+      return;
+    }
     
     if (!postText.trim() && !selectedFile) {
-      setError("Please enter some text or select an image to post.");
+      alert("Please enter some text or select an image to post.");
       return;
     }
 
@@ -129,7 +137,7 @@ export default function Share() {
             </span>
           )}
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md font-semibold flex items-center space-x-2 hover:bg-blue-700 transition duration-300 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md font-semibold flex items-center space-x-2 hover:bg-blue-700   transition duration-300 disabled:opacity-50"
             onClick={handleShare}
             disabled={isLoading}
           >

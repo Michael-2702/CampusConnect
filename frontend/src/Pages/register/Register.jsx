@@ -157,15 +157,15 @@ function Register() {
           <div className="mt-5">
             <button
               type="submit"
-              className="border-2 border-red-700 bg-red-700 text-white py-1 w-full rounded-md hover:bg-red-600 focus:outline-none"
+              className="border-2  text-white py-1 w-full rounded-md transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-blue-600 duration-300"
             >
-              <i className="fa-solid fa-right-to-bracket"></i> Register
+              <i className="fa-solid fa-right-to-bracket"></i> <h3 className='font-black'>Register</h3> 
             </button>
           </div>
         </form>
         <div className="mt-3 flex justify-center">
-          <NavLink to="/Login" className="text-red-700 font-semibold">
-            Login
+          <NavLink to="/Login" className="text-blue-700 font-semibold">
+           <h3 className='font-bold'>Login</h3> 
           </NavLink>
         </div>
       </div>

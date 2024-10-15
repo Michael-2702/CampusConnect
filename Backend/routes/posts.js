@@ -23,7 +23,7 @@ postRouter.post("/createPost", userMiddleware, upload.single("picture"), async (
       // Ensure either text or an image is provided
       if (!text && !req.file) {
         return res.status(400).json({
-          msg: "Please provide either text or an image for the post"
+          msg: "Please provide either text or an image for the post",
         });
       }
   

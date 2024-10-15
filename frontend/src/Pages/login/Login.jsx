@@ -86,15 +86,15 @@ function Login() {
           <div className="mt-5">
             <button
               type="submit"
-              className="border-2 border-red-700 bg-red-700 text-white py-1 w-full rounded-md hover:bg-red-600 focus:outline-none"
+              className="border-2 border-blue-500 bg-blue-500 text-white py-1 w-full rounded-md hover:bg-blue-600 focus:outline-none transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
             >
-              <i className="fa-solid fa-right-to-bracket"></i> Login
+              <i className="fa-solid fa-right-to-bracket"></i> <h3 className='font-black'>Login</h3> 
             </button>
           </div>
         </form>
         <div className="mt-3 flex justify-center">
-          <NavLink to="/Register" className="text-red-700 font-semibold">
-            Register
+          <NavLink to="/Register" className="text-blue-700 font-semibold">
+          <h3 className='font-bold'>Register</h3> 
           </NavLink>
         </div>
       </div>

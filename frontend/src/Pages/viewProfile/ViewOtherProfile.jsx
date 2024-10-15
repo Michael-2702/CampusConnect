@@ -52,7 +52,6 @@ const ViewOtherProfile = () => {
             <div className="profile-details">
               <p><strong>Name:</strong> {name}</p>
               <p><strong>Username:</strong> {username}</p>
-              <p><strong>Email:</strong> {email}</p>
               <p><strong>Department:</strong> {department}</p>
               <p><strong>Graduation Year:</strong> {graduationYear}</p>
             </div>
@@ -68,7 +67,7 @@ const ViewOtherProfile = () => {
 
         <div className="posts-card">
 
-          <div className="posts-content">
+          <div className="posts-content" style={{overflowX: "hidden"}}>
             {/* You can add a component here to display the user's posts */}
             
             <OthersPost userId={userInfo._id} />

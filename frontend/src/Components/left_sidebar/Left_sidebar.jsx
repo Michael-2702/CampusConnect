@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
-import { User, Briefcase, Users } from 'lucide-react';
 
-function LeftSidebar() {
+function Left_sidebar() {
   const [userProfile, setUserProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -18,67 +15,49 @@ function LeftSidebar() {
           },
         });
         setUserProfile(response.data.userInfo);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching profile data", err);
-        setError("Failed to load profile. Please try again later.");
-        setLoading(false);
       }
     };
 
     fetchProfile();
   }, []);
 
-  if (loading) {
+  if (!userProfile) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4 animate-pulse"> {/* Adjusted padding */}
-        <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4"></div> {/* Adjusted size */}
-        <div className="h-5 bg-gray-300 rounded w-2/3 mx-auto mb-2"></div> {/* Adjusted size */}
-        <div className="h-3 bg-gray-300 rounded w-1/2 mx-auto mb-4"></div> {/* Adjusted size */}
-        <div className="h-16 bg-gray-300 rounded w-full mb-4"></div> {/* Adjusted size */}
+      <div className="fixed left-0 flex items-center justify-center w-72 h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl">
+        <div className="animate-pulse text-gray-400">Loading...</div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-red-50 rounded-lg shadow-md p-4"> {/* Adjusted padding */}
-        <p className="text-red-500 text-center font-medium">{error}</p>
-      </div>
-    );
-  }
-
-  const { profileImagePath, name, username, bio, department, friends } = userProfile;
+  const { profileImagePath, name, username, bio, department } = userProfile;
 
   return (
-    <div className="fixed left-0 w-72 h-screen p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-4 transition-all duration-300 ease-in-out hover:shadow-xl"> {/* Adjusted padding */}
-        <div className="profile-section mb-4 text-center"> {/* Adjusted margin */}
-          <div className="relative w-24 h-24 mx-auto mb-4 overflow-hidden rounded-full ring-2 ring-blue-500 ring-offset-2"> {/* Adjusted size */}
+    <div className="fixed left-0 w-72 max-h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-24"></div>
+      <div className="px-6 py-4 relative">
+        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+          <NavLink to="/profile" className="inline-block">
             <img
-              className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
               src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
               alt="Profile"
             />
-          </div>
-          <h2 className="text-xl font-bold text-gray-800 mb-1">{name}</h2> {/* Adjusted font size */}
-          <h3 className="text-sm text-gray-600 mb-2">@{username}</h3> {/* Adjusted margin */}
-          <p className="text-sm text-gray-700 mb-2 italic bg-gray-100 p-1 rounded-md">{bio || "No bio available"}</p> {/* Adjusted padding and margin */}
-          <div className="flex justify-center space-x-4 text-sm text-gray-700 mb-4"> {/* Adjusted space */}
-            <div className="flex flex-col items-center">
-              <Briefcase className="mb-1 text-blue-500" size={18} />
-              <span className="font-medium">{department}</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <Users className="mb-1 text-blue-500" size={18} />
-              <span className="font-medium">{friends?.length || 0} Friends</span>
-            </div>
+          </NavLink>
+        </div>
+        <div className="text-center mt-14">
+          <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
+          <h3 className="text-sm text-gray-500 mb-2">@{username}</h3>
+          <p className="text-sm text-gray-600 mb-4">{bio || "No bio available"}</p>
+          <div className=" rounded-lg p-3 mb-4">
+            <p className="text-sm">Department: <span className="font-semibold">{department}</span></p>
           </div>
           <NavLink 
             to="/profile" 
-            className="flex items-center justify-center w-full p-2 text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors duration-200 font-semibold"
+            className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
           >
-            <User className="mr-1" size={20} /> View Profile
+            View Profile
           </NavLink>
         </div>
       </div>
@@ -86,4 +65,4 @@ function LeftSidebar() {
   );
 }
 
-export default LeftSidebar;
+export default Left_sidebar;

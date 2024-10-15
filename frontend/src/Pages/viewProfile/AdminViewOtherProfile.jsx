@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import "./styles.css";
-import OthersPost from "../../Components/post/OthersPost";
+import AdminOthersPost from "../../Components/post/AdminOthersPost";
 
 const ViewOtherProfile = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -78,7 +78,7 @@ const ViewOtherProfile = () => {
          
           <div className="posts-content">
             {/* You can add a component here to display the user's posts */}
-            <OthersPost userId={userInfo._id} />
+            <AdminOthersPost userId={userInfo._id} />
           </div>
         </div>
       </div>

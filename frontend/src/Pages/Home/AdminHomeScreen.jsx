@@ -21,7 +21,7 @@ function AdminHomeScreen() {
       <div>
         <NavLink to="/viewAllUsers">
           <button
-              className="border-none p-2 rounded-md bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:bg-slate-700 fixed right-5 top-20 z-50"
+              className="border-none p-2 rounded-md bg-gradient-to-r from-blue-500 to-purple-600  font-bold mr-5 cursor-pointer text-white fixed right-5 top-20 z-50  focus:outline-none transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
               style={{ zIndex: 50 }}
             >
               View All Users
@@ -31,7 +31,7 @@ function AdminHomeScreen() {
       <div>
         <NavLink to="/reportedPosts">
           <button
-              className="border-none p-2 rounded-md bg-slate-900 font-bold mr-5 cursor-pointer text-white hover:bg-slate-700 fixed right-5 top-[8rem] z-50"
+              className="border-none p-2 rounded-md bg-gradient-to-r from-blue-500 to-purple-600 font-bold mr-5 cursor-pointer text-white hover:bg-blue-700 fixed right-5 top-[8rem] z-50  focus:outline-none transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
               style={{ zIndex: 50 }}
             >
               View reported Posts

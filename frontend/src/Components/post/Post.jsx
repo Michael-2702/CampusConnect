@@ -283,7 +283,7 @@ const PostList = React.memo(() => {
               {post.postsImagePath && (
                 <div className="flex justify-center mb-3">
                   <img
-                    className="max-h-[400px] w-auto object-contain rounded-md"
+                    className="max-h-[500px] max-w-full w-auto h-auto object-contain rounded-md"
                     src={`http://localhost:3000${post.postsImagePath}`} 
                     alt="Post content"
                   />
