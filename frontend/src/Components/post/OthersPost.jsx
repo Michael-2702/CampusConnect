@@ -26,16 +26,19 @@ const OthersPost = React.memo(({ userId }) => {
         setLoading(true);
         const token = localStorage.getItem("authorization");
         
-        console.log("Fetching posts for userId:", userId);
+        // Fetch posts and current user info in parallel
+        const [postsResponse, userResponse] = await Promise.all([
+          axios.get(`http://localhost:3000/api/v1/post/userPosts/${userId}`, {
+            headers: { authorization: token },
+          }),
+          axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+            headers: { authorization: token },
+          })
+        ]);
 
-        const response = await axios.get(`http://localhost:3000/api/v1/post/userPosts/${userId}`, {
-          headers: {
-            authorization: token,
-          },
-        });
-
-        console.log("Fetched Posts:", response.data);
-        setPosts(response.data.posts || []);
+        console.log("Fetched Posts:", postsResponse.data);
+        setPosts(postsResponse.data.posts || []);
+        setCurrentUserId(userResponse.data.userInfo._id);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching posts data", err);
@@ -106,6 +109,13 @@ const OthersPost = React.memo(({ userId }) => {
     }
   };
 
+  const toggleMenu = (postId) => {
+    setShowMenu((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+
   const handleReportToggle = async (postId, isReported) => {
     try {
       const token = localStorage.getItem("authorization");
@@ -119,10 +129,14 @@ const OthersPost = React.memo(({ userId }) => {
       setPosts(prevPosts => prevPosts.map(post => 
         post._id === postId ? response.data.post : post
       ));
+
+      // Close the menu after reporting/unreporting
+      setShowMenu(prev => ({ ...prev, [postId]: false }));
     } catch (err) {
       console.error(`Error ${isReported ? 'unreporting' : 'reporting'} post`, err);
     }
   };
+
 
   const handlePostComment = async (postId) => {
     try {
@@ -253,6 +267,29 @@ const OthersPost = React.memo(({ userId }) => {
               alt="Profile"
             />
             <span className="font-medium">{post.username}</span>
+            <span className="relative left-[37rem]">
+              {currentUserId !== post.postedBy && (
+                <div className="relative">
+                  <button
+                    onClick={() => toggleMenu(post._id)}
+                    className="p-1 hover:bg-gray-100 rounded-full transition"
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+                  
+                  {showMenu[post._id] && (
+                    <div className="absolute right-0 mt-1 w-40 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                      <button
+                        className="w-full px-3 py-1.5 text-left text-red-600 hover:bg-red-50 transition text-sm"
+                        onClick={() => handleReportToggle(post._id, post.isReported)}
+                      >
+                        {post.isReported ? 'Undo Report' : 'Report Post'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </span>
           </div>
           <p className="text-gray-800 mb-2">{post.text}</p>
           {post.postsImagePath && (
