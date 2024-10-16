@@ -58,7 +58,7 @@ export default function Topbar() {
       </div>
 
       {/* Right - Profile Section and Logout */}
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-6 md:relative md:right-20">
         <NavLink to="/profile" className="group">
           <div className="relative overflow-hidden rounded-full">
             <img
