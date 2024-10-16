@@ -1,6 +1,6 @@
 const Router = require("express")
 const userRouter = Router()
-const { userModel, postModel } = require("../models/db")
+const { userModel, postModel, otpModel } = require("../models/db")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("../config")
@@ -9,95 +9,226 @@ const { z } = require("zod")
 const { upload } = require("../middlewares/uploads")
 const fs = require("fs")
 const path = require("path")
+const { generateOTP, sendOTP } = require("../emailService")
 
 // signup
-userRouter.post("/signup", async (req, res) => {
-    const mySchema = z.object({
-        name: z.string(),
-        username: z.string(),
-        email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
-            message: "Only Emails ending with @pvppcoe.ac.in can login"
-        }),
-        password: z.string()
-                .min(8, "Password Should be of atleast 8 characters")
-                .max(100, "Password Should not exceed 100 characters")
-                .regex(/[a-z]/, "Password must contain atleast 1 lowercase letter")
-                .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
-                .regex(/[0-9]/, "Password must contain atleast 1 number")
-                .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character"),
-        // imagePath: z.string(), 
-        department: z.string(),
-        graduationYear: z.number()
-    }).strict({
-       messageg: "Extra Fields not allowed"
-    })
 
-    const response = mySchema.safeParse(req.body)
+// userRouter.post("/signup", async (req, res) => {
+//     const mySchema = z.object({
+//         name: z.string(),
+//         username: z.string(),
+//         email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
+//             message: "Only Emails ending with @pvppcoe.ac.in can login"
+//         }),
+//         password: z.string()
+//                 .min(8, "Password Should be of atleast 8 characters")
+//                 .max(100, "Password Should not exceed 100 characters")
+//                 .regex(/[a-z]/, "Password must contain atleast 1 lowercase letter")
+//                 .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
+//                 .regex(/[0-9]/, "Password must contain atleast 1 number")
+//                 .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character"),
+//         // imagePath: z.string(), 
+//         department: z.string(),
+//         graduationYear: z.number()
+//     }).strict({
+//        messageg: "Extra Fields not allowed"
+//     })
 
-    if(!response.success){
-        return res.status(403).json({
-            msg: "Incorrect Format",
-            error: response.error.errors
-        })
-    }
+//     const response = mySchema.safeParse(req.body)
 
-    const { name, username, email, password, department, graduationYear} = req.body
+//     if(!response.success){
+//         return res.status(403).json({
+//             msg: "Incorrect Format",
+//             error: response.error.errors
+//         })
+//     }
 
-    if (!email.endsWith('@pvppcoe.ac.in')) {
-        return res.status(403).json({
-           msg: "Only Emails ending with @pvppcoe.ac.in can Register"
-        });
-    }
+//     const { name, username, email, password, department, graduationYear} = req.body
+
+//     if (!email.endsWith('@pvppcoe.ac.in')) {
+//         return res.status(403).json({
+//            msg: "Only Emails ending with @pvppcoe.ac.in can Register"
+//         });
+//     }
     
 
-    try{    
-        const existingUserEmail = await userModel.findOne({
-            email: email
-        })
+//     try{    
+//         const existingUserEmail = await userModel.findOne({
+//             email: email
+//         })
 
-        if(existingUserEmail){
-            return res.status(403).json({
-                msg: "Email Already Exists"
-            })
-        }
+//         if(existingUserEmail){
+//             return res.status(403).json({
+//                 msg: "Email Already Exists"
+//             })
+//         }
 
-        const existingUserName = await userModel.findOne({
-            username
-        })
+//         const existingUserName = await userModel.findOne({
+//             username
+//         })
         
         
-        if(existingUserName){
-            return res.status(403).json({
-                msg: "Username Already Exists"
-            })
-        }
+//         if(existingUserName){
+//             return res.status(403).json({
+//                 msg: "Username Already Exists"
+//             })
+//         }
 
-        const hashedPassword = await bcrypt.hash(password, 3)
-        await userModel.create({
-            name,
-            username,
-            email, 
-            password: hashedPassword, 
-            profileImagePath: "",
-            department,
-            graduationYear,
-            bio: "",
-            posts: [],
-            friends: [],
-            friendRequests: []
-        })
+//         const hashedPassword = await bcrypt.hash(password, 3)
+//         await userModel.create({
+//             name,
+//             username,
+//             email, 
+//             password: hashedPassword, 
+//             profileImagePath: "",
+//             department,
+//             graduationYear,
+//             bio: "",
+//             posts: [],
+//             friends: [],
+//             friendRequests: []
+//         })
 
-        res.json({
-            msg: "Signed up Successfully"
-        })
+//         res.json({
+//             msg: "Signed up Successfully"
+//         })
+//     }
+//     catch(e){
+//         console.log(e);
+//         res.json({
+//             msg: "there's an error"
+//         })
+//     }
+// })
+
+// Step 1: Initiate registration
+userRouter.post("/initiate-signup", async (req, res) => {
+    const { email } = req.body;
+  
+    if (!email.endsWith('@pvppcoe.ac.in')) {
+      return res.status(403).json({
+        msg: "Only Emails ending with @pvppcoe.ac.in can Register"
+      });
     }
-    catch(e){
-        console.log(e);
-        res.json({
-            msg: "there's an error"
-        })
+  
+    try {
+      const existingUser = await userModel.findOne({ email });
+      if (existingUser) {
+        return res.status(403).json({
+          msg: "Email Already Exists"
+        });
+      }
+  
+      const otp = generateOTP();
+      await otpModel.findOneAndUpdate(
+        { email },
+        { otp, createdAt: new Date() },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      
+      const emailSent = await sendOTP(email, otp);
+      if (!emailSent) {
+        return res.status(500).json({
+          msg: "Failed to send OTP. Please try again."
+        });
+      }
+  
+      res.json({
+        msg: "OTP sent to your email. Please verify to continue registration."
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({
+        msg: "An error occurred. Please try again."
+      });
     }
-})
+  });
+  
+  // Step 2: Complete registration
+  userRouter.post("/complete-signup", async (req, res) => {
+    const mySchema = z.object({
+      name: z.string(),
+      username: z.string(),
+      email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
+        message: "Only Emails ending with @pvppcoe.ac.in can login"
+      }),
+      password: z.string()
+        .min(8, "Password Should be of atleast 8 characters")
+        .max(100, "Password Should not exceed 100 characters")
+        .regex(/[a-z]/, "Password must contain atleast 1 lowercase letter")
+        .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
+        .regex(/[0-9]/, "Password must contain atleast 1 number")
+        .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character"),
+      department: z.string(),
+      graduationYear: z.number(),
+      otp: z.string().length(6, "OTP must be 6 digits")
+    }).strict({
+      message: "Extra Fields not allowed"
+    });
+  
+    const response = mySchema.safeParse(req.body);
+  
+    if (!response.success) {
+      return res.status(403).json({
+        msg: "Incorrect Format",
+        error: response.error.errors
+      });
+    }
+  
+    const { name, username, email, password, department, graduationYear, otp } = req.body;
+  
+    try {
+      const otpRecord = await otpModel.findOne({ email });
+      if (!otpRecord || otpRecord.otp !== otp) {
+        return res.status(403).json({
+          msg: "Invalid OTP or Email"
+        });
+      }
+  
+      // Check OTP expiration (e.g., 10 minutes)
+      const otpAge = (new Date() - otpRecord.createdAt) / 60000; // in minutes
+      if (otpAge > 10) {
+        await otpModel.deleteOne({ email });
+        return res.status(403).json({
+          msg: "OTP has expired. Please request a new one."
+        });
+      }
+  
+      // Remove the OTP record
+      await otpModel.deleteOne({ email });
+  
+      const existingUsername = await userModel.findOne({ username });
+      if (existingUsername) {
+        return res.status(403).json({
+          msg: "Username Already Exists"
+        });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await userModel.create({
+        name,
+        username,
+        email, 
+        password: hashedPassword, 
+        profileImagePath: "",
+        department,
+        graduationYear,
+        bio: "",
+        posts: [],
+        friends: [],
+        friendRequests: []
+      });
+  
+      res.json({
+        msg: "Signed up Successfully"
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({
+        msg: "An error occurred. Please try again."
+      });
+    }
+  });
 
 // signin
 userRouter.post("/signin", async (req, res) => {

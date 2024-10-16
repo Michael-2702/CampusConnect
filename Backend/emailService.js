@@ -1,25 +1,22 @@
 // emailService.js
+require('dotenv').config(); 
 const nodemailer = require('nodemailer');
-const { otp } = require("./models/db")
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+  service: 'gmail',
   auth: {
-    user: 'your-email@gmail.com',
-    pass: 'your-app-password'
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS,
   }
 });
 
-const otp = function generateOTP() {
+function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
-await otpModel.create({ email, otp });
 
 async function sendOTP(email, otp) {
   const mailOptions = {
-    from: 'michaelhosamani27@gmail.com',
+    from: '"VPPCOE" <michaelhosamani27@gmail.com>',
     to: email,
     subject: 'Email Verification OTP',
     text: `Your OTP for email verification is: ${otp}`,
@@ -27,8 +24,10 @@ async function sendOTP(email, otp) {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    console.log('OTP email sent');
+    let info = await transporter.sendMail(mailOptions);
+    console.log('OTP email sent: %s', info.messageId);
+    // Ethereal URL for viewing the sent email (for testing purposes)
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     return true;
   } catch (error) {
     console.error('Error sending OTP email:', error);

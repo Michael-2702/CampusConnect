@@ -18,7 +18,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(express.json()); 
 
-
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/admin", adminRouter)
