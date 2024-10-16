@@ -15,6 +15,7 @@ import ViewOtherProfile from './Pages/viewProfile/ViewOtherProfile';
 import AdminViewOtherProfile from './Pages/viewProfile/AdminViewOtherProfile'
 import { ErrorComponent } from './Pages/errorPage/ErrorComponent';
 import UserList from './Components/user-Lists/UserList'
+import InitiateSignup from './Pages/email-verification/InitiateSignup'
 
 function App() {
   const router = createBrowserRouter([
@@ -64,6 +65,10 @@ function App() {
     {
       path: "/viewAllUsers",
       element: <UserList />
+    },
+    {
+      path: "/email-verification",
+      element: <InitiateSignup />
     }
   ]);
 

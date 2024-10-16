@@ -143,25 +143,14 @@ userRouter.post("/initiate-signup", async (req, res) => {
       });
     }
   });
-  
-  // Step 2: Complete registration
-  userRouter.post("/complete-signup", async (req, res) => {
+
+  // Step 2: Verify otp
+  userRouter.post("/verify-otp", async (req, res) => {
     const mySchema = z.object({
-      name: z.string(),
-      username: z.string(),
-      email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
-        message: "Only Emails ending with @pvppcoe.ac.in can login"
-      }),
-      password: z.string()
-        .min(8, "Password Should be of atleast 8 characters")
-        .max(100, "Password Should not exceed 100 characters")
-        .regex(/[a-z]/, "Password must contain atleast 1 lowercase letter")
-        .regex(/[A-Z]/, "Password must contain atleast 1 uppercase letter")
-        .regex(/[0-9]/, "Password must contain atleast 1 number")
-        .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 special character"),
-      department: z.string(),
-      graduationYear: z.number(),
-      otp: z.string().length(6, "OTP must be 6 digits")
+        email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
+            message: "Only Emails ending with @pvppcoe.ac.in can login"
+          }),
+        otp: z.string().length(6, "OTP must be 6 digits")
     }).strict({
       message: "Extra Fields not allowed"
     });
@@ -175,7 +164,7 @@ userRouter.post("/initiate-signup", async (req, res) => {
       });
     }
   
-    const { name, username, email, password, department, graduationYear, otp } = req.body;
+    const { email, otp } = req.body;
   
     try {
       const otpRecord = await otpModel.findOne({ email });
@@ -188,7 +177,7 @@ userRouter.post("/initiate-signup", async (req, res) => {
       // Check OTP expiration (e.g., 10 minutes)
       const otpAge = (new Date() - otpRecord.createdAt) / 60000; // in minutes
       if (otpAge > 10) {
-        await otpModel.deleteOne({ email });
+        await otpModel.delete({ email });
         return res.status(403).json({
           msg: "OTP has expired. Please request a new one."
         });
@@ -197,11 +186,71 @@ userRouter.post("/initiate-signup", async (req, res) => {
       // Remove the OTP record
       await otpModel.deleteOne({ email });
   
-      const existingUsername = await userModel.findOne({ username });
-      if (existingUsername) {
-        return res.status(403).json({
-          msg: "Username Already Exists"
-        });
+      res.json({
+        msg: "OTP verified Successfully"
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({
+        msg: "An error occurred. Please try again."
+      });
+    }
+  });
+
+  
+  // Step 3: Complete registration
+  userRouter.post("/complete-signup", async (req, res) => {
+    const mySchema = z.object({
+      name: z.string().min(1, "Name is required"),
+      username: z.string().min(1, "Username is required"),
+      email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
+        message: "Only Emails ending with @pvppcoe.ac.in can register"
+      }),
+      password: z.string()
+        .min(8, "Password should be at least 8 characters")
+        .max(100, "Password should not exceed 100 characters")
+        .regex(/[a-z]/, "Password must contain at least 1 lowercase letter")
+        .regex(/[A-Z]/, "Password must contain at least 1 uppercase letter")
+        .regex(/[0-9]/, "Password must contain at least 1 number")
+        .regex(/[^A-Za-z0-9]/, "Password must contain at least 1 special character"),
+      department: z.string().min(1, "Department is required"),
+      graduationYear: z.number().int().min(2000).max(2100),
+    }).strict({
+      message: "Extra fields are not allowed"
+    });
+  
+    const response = mySchema.safeParse(req.body);
+  
+    if (!response.success) {
+      return res.status(400).json({
+        msg: "Incorrect Format",
+        error: response.error.errors
+      });
+    }
+  
+    const { name, username, email, password, department, graduationYear } = response.data;
+  
+    try {
+      // Check if the email has been verified (you might want to add this check)
+      // const isEmailVerified = await otpModel.findOne({ email });
+      // if (!isEmailVerified) {
+      //   return res.status(403).json({
+      //     msg: "Email has not been verified"
+      //   });
+      // }
+  
+      const existingUser = await userModel.findOne({ $or: [{ email }, { username }] });
+      if (existingUser) {
+        if (existingUser.email === email) {
+          return res.status(400).json({
+            msg: "Email already registered"
+          });
+        }
+        if (existingUser.username === username) {
+          return res.status(400).json({
+            msg: "Username already exists"
+          });
+        }
       }
   
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -219,7 +268,7 @@ userRouter.post("/initiate-signup", async (req, res) => {
         friendRequests: []
       });
   
-      res.json({
+      res.status(201).json({
         msg: "Signed up Successfully"
       });
     } catch (e) {
