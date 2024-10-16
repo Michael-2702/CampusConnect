@@ -59,7 +59,7 @@ const AdminPost = React.memo(() => {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center flex-col items-center">
       {/* Conditional rendering to show message if no posts are reported */}
       {posts.length === 0 ? (
         <h1 className="mt-[20%] text-gray-400 p-4 text-[3rem]">No reported posts present</h1>

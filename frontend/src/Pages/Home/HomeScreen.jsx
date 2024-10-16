@@ -8,10 +8,10 @@ function HomeScreen() {
   return (
     <div>
       <Topbar />
-      <div className="flex w-full">
+      <div className="lg:flex lg:w-full md:hidden">
         <Left_sidebar />
       </div>
-      <div className="ml-[21rem]">
+      <div className="lg:ml-[21rem] md:ml-[-1rem]">
         <Feed />
       </div>
     </div>

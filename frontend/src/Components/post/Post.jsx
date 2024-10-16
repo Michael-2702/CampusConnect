@@ -240,7 +240,7 @@ const PostList = React.memo(() => {
     <div className="mt-8 ml-8">
       <div className="space-y-4">
         {posts.map((post) => (
-          <div key={post._id} className="w-[750px] rounded-lg shadow-xl bg-white">
+          <div key={post._id} className="w-[720px] rounded-lg shadow-xl bg-white">
             <div className="p-3">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">

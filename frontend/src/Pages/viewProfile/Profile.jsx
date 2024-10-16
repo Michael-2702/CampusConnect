@@ -120,9 +120,10 @@ function Profile() {
           <div className="profile-content">
             <div className="profile-image-container">
               <img
-                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://via.placeholder.com/150"}
+                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                 alt="Profile"
                 className="profile-image"
+                style={{position: "relative", left: "3rem"}}
               />
               <input
                 type="file"

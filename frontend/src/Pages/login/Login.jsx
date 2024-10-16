@@ -93,7 +93,7 @@ function Login() {
           </div>
         </form>
         <div className="mt-3 flex justify-center">
-          <NavLink to="/Register" className="text-blue-700 font-semibold">
+          <NavLink to="/email-verification" className="text-blue-700 font-semibold">
           <h3 className='font-bold'>Register</h3> 
           </NavLink>
         </div>

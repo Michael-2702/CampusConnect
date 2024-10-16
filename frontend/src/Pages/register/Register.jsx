@@ -20,7 +20,7 @@ function Register() {
 
   useEffect(() => {
     if (!emailFromInitiateSignup) {
-      navigate('/initiate-signup'); // Redirect if email is not provided
+      navigate('/email-verification'); // Redirect if email is not provided
     }
   }, [emailFromInitiateSignup, navigate]);
 
