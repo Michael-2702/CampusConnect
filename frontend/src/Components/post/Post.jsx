@@ -237,7 +237,7 @@ const PostList = React.memo(() => {
 
 
   return (
-    <div className="lg:mt-8 lg:ml-8 md:mt-8 mg:mr-8">
+    <div className="lg:mt-8 lg:ml-8 md:mt-8 md:mr-8">
       <div className="space-y-4 md:relative md:left-[4.9rem]">
         {posts.map((post) => (
           <div key={post._id} className="lg:w-[750px] rounded-lg shadow-xl bg-white md:w-[580px]">
