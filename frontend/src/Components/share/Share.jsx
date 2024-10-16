@@ -104,7 +104,7 @@ export default function Share() {
   const { profileImagePath } = userProfile;
 
   return (
-    <div className="lg:max-w-[750px] md:w-[580px] md:relative md:left-[3rem] mx-auto mt-19 ml-8">
+    <div className="lg:w-[750px] lg:relative lg:left-[-4.3rem] md:w-[580px] md:relative md:left-[-1.5rem] mx-auto mt-19 ">
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center mb-4">
           <img

@@ -222,14 +222,14 @@ const MyPostList = React.memo(() => {
 
 
   return (
-    <div>
+    <div >
       {posts.map((post) => (
-        <div key={post._id} className="w-[800px] rounded-xl shadow-2xl m-5">
+        <div key={post._id} className="lg:w-[800px] md:w-[500px] rounded-xl shadow-2xl m-5 md:relative md:left-8">
           <div className="p-2 relative">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <img
-                  className="w-12 h-12 ml-4 mt-4 rounded-full object-cover border-2"
+                  className="lg:w-12 lg:h-12 ml-4 mt-4 rounded-full object-cover border-2 md:w-12 md:h-12"
                   src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                   alt="Profile"
                 />
@@ -267,7 +267,7 @@ const MyPostList = React.memo(() => {
             <div className="m-5 flex justify-center">
               {post.postsImagePath && (
                 <img
-                  className="mt-5 max-h-[500px] w-auto object-fit:contain"
+                  className="mt-5 lg:max-h-[500px] lg:w-auto object-fit:contain lg:rounded-md md:rounded-md md:max-h-[400px] md:w-[30rem]"
                   src={`http://localhost:3000${post.postsImagePath}`} 
                   alt="Post content"
                 />

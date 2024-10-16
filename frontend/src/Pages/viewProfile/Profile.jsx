@@ -109,7 +109,7 @@ function Profile() {
   };
 
   return (
-    <div className="container">
+    <div className="container" >
       <button className="back-button" onClick={() => navigate(-1)}>
         <FaArrowLeft /> 
       </button>
@@ -173,7 +173,7 @@ function Profile() {
           </div>
         </div>
 
-        <div className="posts-card">
+        <div className="posts-card" style={{marginTop: "0.7rem"}}>
           <h2 className="card-title">My Posts</h2>
           <div className="posts-content">
             <MyPostList />

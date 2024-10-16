@@ -259,7 +259,7 @@ const OthersPost = React.memo(({ userId }) => {
     <div>
       <h2>User Posts</h2>
       {posts.map((post) => (
-        <div key={post._id} className="w-[50rem] rounded-xl shadow-md my-4 p-4">
+        <div key={post._id} className="lg:w-[50rem] md:w-[35rem] rounded-xl shadow-md my-4 p-4">
           <div className="flex items-center mb-2">
             <img
               className="w-10 h-10 rounded-full object-cover mr-3"
