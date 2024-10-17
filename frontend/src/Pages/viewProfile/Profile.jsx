@@ -173,7 +173,7 @@ function Profile() {
           </div>
         </div>
 
-        <div className="posts-card md:mt-1 lg:mt-[-1rem]">
+        <div className="posts-card md:mt-1 lg:mt-[-1rem] sm:mt-1">
           <h2 className="card-title">My Posts</h2>
           <div className="posts-content">
             <MyPostList />
