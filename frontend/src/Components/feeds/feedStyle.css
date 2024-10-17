@@ -1,0 +1,19 @@
+.feed {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow-x: hidden; 
+  }
+  
+  .feedWrapper {
+    max-width: 100%;
+    width: 100%;
+    padding: 0 10px;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto; 
+    object-fit: contain; 
+  }
+  
