@@ -47,9 +47,9 @@ export default function Topbar() {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-blue-500 z-50 px-6 shadow-md transition-all duration-300 ease-in-out">
+    <div className="flex justify-between items-center fixed top-0 h-[65px] w-full bg-blue-500 z-50 px-6 shadow-md">
       {/* Left - Logo */}
-      <div className="flex-3">
+      <div >
         <span className="text-[39px] font-bold text-white cursor-pointer transition-all  ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
           <a href="/home" onClick={handleLogoClick} className="no-underline text-inherit ">
             <h1 className="transition-all duration-300  ease-in-out delay-150  hover:font-extrabold">CampusConnect</h1>
@@ -58,7 +58,7 @@ export default function Topbar() {
       </div>
 
       {/* Right - Profile Section and Logout */}
-      <div className="flex items-center space-x-6 md:relative md:right-20">
+      <div className="flex items-center space-x-6 ">
         <NavLink to="/profile" className="group">
           <div className="relative overflow-hidden rounded-full">
             <img

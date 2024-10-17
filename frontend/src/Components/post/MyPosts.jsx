@@ -222,10 +222,10 @@ const MyPostList = React.memo(() => {
 
 
   return (
-    <div >
+    <div className="overflow-hidden p-10 object-cover bg-gray-50 rounded-xl">
       {posts.map((post) => (
-        <div key={post._id} className="lg:w-[800px] md:w-[500px] rounded-xl shadow-2xl m-5 md:relative md:left-8">
-          <div className="p-2 relative">
+        <div key={post._id} className="lg:w-[50rem] md:w-[35rem] rounded-xl shadow-md my-4 ">
+          <div className="p-2 ">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <img

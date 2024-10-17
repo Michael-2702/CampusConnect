@@ -65,7 +65,7 @@ const ViewOtherProfile = () => {
           </div>
         </div>
 
-        <div className="posts-card" style={{marginTop: "0.6rem"}}>
+        <div className="posts-card md:mt-1 sm:mt-1">
 
           <div className="posts-content" style={{overflowX: "hidden"}}>
             {/* You can add a component here to display the user's posts */}

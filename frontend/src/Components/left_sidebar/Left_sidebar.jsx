@@ -34,7 +34,7 @@ function Left_sidebar() {
   const { profileImagePath, name, username, bio, department } = userProfile;
 
   return (
-    <div className="fixed left-0 w-72 max-h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className="fixed left-0 w-72 max-h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl overflow-hidden sm:hidden 2xl:inline xl:inline">
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-24"></div>
       <div className="px-6 py-4 relative">
         <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">

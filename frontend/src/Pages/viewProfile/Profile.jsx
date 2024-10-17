@@ -115,7 +115,7 @@ function Profile() {
       </button>
       
       <div className="profile-grid">
-        <div className="profile-card">
+        <div className="profile-card lg:w-[22rem] ">
           <h2 className="card-title">Profile</h2>
           <div className="profile-content">
             <div className="profile-image-container">
@@ -173,7 +173,7 @@ function Profile() {
           </div>
         </div>
 
-        <div className="posts-card" style={{marginTop: "0.7rem"}}>
+        <div className="posts-card md:mt-1 lg:mt-[-1rem]">
           <h2 className="card-title">My Posts</h2>
           <div className="posts-content">
             <MyPostList />
