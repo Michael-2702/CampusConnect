@@ -16,7 +16,7 @@ function generateOTP() {
 
 async function sendOTP(email, otp) {
   const mailOptions = {
-    from: '"VPPCOE" <michaelhosamani27@gmail.com>',
+    from: `"VPPCOE" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Email Verification OTP',
     text: `Your OTP for email verification is: ${otp}`,
@@ -25,9 +25,9 @@ async function sendOTP(email, otp) {
 
   try {
     let info = await transporter.sendMail(mailOptions);
-    console.log('OTP email sent: %s', info.messageId);
+    // console.log('OTP email sent: %s', info.messageId);
     // Ethereal URL for viewing the sent email (for testing purposes)
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     return true;
   } catch (error) {
     console.error('Error sending OTP email:', error);
