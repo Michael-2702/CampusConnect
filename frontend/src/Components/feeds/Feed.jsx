@@ -1,6 +1,7 @@
 import React from 'react'
 import Share from '../share/Share'
 import Post from '../post/Post'
+import { RecoilRoot } from 'recoil'
 
 
 function Feed() {
@@ -8,11 +9,10 @@ function Feed() {
     <div className="feed">
       <div className="w-[750px] ml-20 mx-auto my-0">
         <Share />
-        {/* {Posts.map((p) => (
-          <Post key={p.id} post={p} />
-        ))} */}
-        <Post />
-        
+       
+        <RecoilRoot>
+          <Post />
+        </RecoilRoot>
       </div>
     </div>
   )

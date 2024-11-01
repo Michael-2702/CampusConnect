@@ -2,9 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { Heart, MessageCircle, Edit2, Trash2, MoreVertical, Send, X } from 'lucide-react';
+import { atom, useRecoilState } from 'recoil'
+
+const postsAtom = atom({
+  key: "posts",
+  default: []
+})
 
 const PostList = React.memo(() => {
-  const [posts, setPosts] = useState([]);
+  // const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useRecoilState(postsAtom)
   const [showMenu, setShowMenu] = useState({});
   const [showComments, setShowComments] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -238,6 +245,7 @@ const PostList = React.memo(() => {
 
   return (
     <div className="mt-8 ">
+   
       <div className="space-y-4 ">
         {posts.map((post) => (
           <div key={post._id} className="lg:w-[750px] rounded-lg shadow-xl bg-white md:w-[580px] mx-auto my-0 sm:w-[550px] ">
@@ -427,6 +435,7 @@ const PostList = React.memo(() => {
           </div>
         ))}
       </div>
+      
     </div>
   );
 });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import axios from "axios";
 
 function InitiateSignup() {
@@ -132,7 +132,13 @@ function InitiateSignup() {
           </>
         )}
         {generalError && <p className="text-red-500 text-sm mt-3">{generalError}</p>}
+        <div className="mt-3 flex justify-center">
+          <NavLink to="/Login" className="text-blue-700 font-semibold">
+            <h3 className='font-bold'><span className='text-gray-400'> Already have an account?</span> Login</h3> 
+          </NavLink>
+        </div>
       </div>
+      
     </div>
   );
 }

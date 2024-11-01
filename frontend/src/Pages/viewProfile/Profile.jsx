@@ -133,7 +133,7 @@ function Profile() {
                 style={{display: 'none'}}
               />
               <div className="profile-image-buttons">
-                <label htmlFor="profile-pic-input" className="button">Change Picture</label>
+                <label htmlFor="profile-pic-input" className="button">Upload Picture</label>
                 <button onClick={profilePicHandler} disabled={!selectedFile} className="button">
                   Save Picture
                 </button>
