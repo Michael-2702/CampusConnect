@@ -11,16 +11,18 @@ postRouter.get("/create", (req: Request, res: Response) => {
 
 })
 
-// get all posts
-
-// delete your own post
-
-// admin -  delete post
-
-// get my posts
+// view Posts handler
 postRouter.use("/getPosts", viewPostHandler)
 
-// get other user's posts
+// delete your own post
+postRouter.delete("/deletePost/:id", (req: Request, res: Response) => {
+
+})
+
+// admin -  delete post
+postRouter.delete("/AdminDeletePost/:id", (req: Request, res: Response) => {
+
+})
 
 // report posts
 postRouter.use("/report", reportPostHandler)
