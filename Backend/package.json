@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec ts-node ./src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,9 +20,17 @@
     "mongoose": "^8.7.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
-    "nodemon": "^3.1.7",
     "path": "^0.12.7",
     "zod": "^3.23.8"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^22.10.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
 }
