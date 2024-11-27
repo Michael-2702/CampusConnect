@@ -19,11 +19,11 @@ app.use("/api/v2/post", postRouter)
 
 async function main() {
     try {
-        await mongoose.connect(process.env.MONGO_URL as string);
+        await mongoose.connect("mongodb://localhost:27017/CampusConnect");
         console.log("Connected to DB")
     }
     catch(e) {
-        console.error("Error while connecting to DB", e)
+        console.error("Error while connecting to DB", e);
     }
 
     app.listen(3000);

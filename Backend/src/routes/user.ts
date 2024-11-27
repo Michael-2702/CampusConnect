@@ -1,22 +1,24 @@
-import express, { Express, Router, Request, Response } from "express";
-import { Jwt } from "jsonwebtoken";
+import { Router, Request, Response } from "express";
+import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import viewProfileHanler from "./handlers/viewProfileHandler";
 import friendHanler from "./handlers/friendHandler";
 import userBioHanler from "./handlers/userBioHandler";
 import PfpHanler from "./handlers/profilePicHandler";
+import { z } from "zod";
+import { userModel } from "../models/db";
+import { error } from "console";
+import JWT_SECRET from "../config";
+import { signupHandler } from "./handlers/signupHandler";
+import { loginHandler } from "./handlers/loginHandler";
 
-const userRouter: Router = express();
+const userRouter: Router = Router();
 
 // signup
-userRouter.get("/signup", (req: Request, res: Response) => {
+userRouter.post("/signup", signupHandler)
 
-})
-
-// signup
-userRouter.get("/signin", (req: Request, res: Response) => {
-
-})
+// signin
+userRouter.post("/signin", loginHandler)
 
 // view own profile
 userRouter.use("/viewProfile", viewProfileHanler)
