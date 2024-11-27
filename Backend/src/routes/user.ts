@@ -5,12 +5,13 @@ import viewProfileHanler from "./handlers/viewProfileHandler";
 import friendHanler from "./handlers/friendHandler";
 import userBioHanler from "./handlers/userBioHandler";
 import PfpHanler from "./handlers/profilePicHandler";
-import { z } from "zod";
+import { any, z } from "zod";
 import { userModel } from "../models/db";
 import { error } from "console";
 import JWT_SECRET from "../config";
 import { signupHandler } from "./handlers/signupHandler";
 import { loginHandler } from "./handlers/loginHandler";
+import { authMiddleware } from "../middlewares/auth";
 
 const userRouter: Router = Router();
 
@@ -20,17 +21,21 @@ userRouter.post("/signup", signupHandler)
 // signin
 userRouter.post("/signin", loginHandler)
 
+userRouter.get("/hello", authMiddleware, (req: Request, res: Response) => {
+    res.send("Hello")
+})
+
 // view own profile
-userRouter.use("/viewProfile", viewProfileHanler)
+userRouter.use("/viewProfile", authMiddleware, viewProfileHanler)
 
 // friends
-userRouter.use("/friends", friendHanler)
+userRouter.use("/friends", authMiddleware, friendHanler)
 
 // user Bio
-userRouter.use("/bio", userBioHanler)
+userRouter.use("/bio", authMiddleware, userBioHanler)
 
 // PFP
-userRouter.use("/profilePicture", PfpHanler)
+userRouter.use("/profilePicture", authMiddleware, PfpHanler)
 
 
 export default userRouter;
