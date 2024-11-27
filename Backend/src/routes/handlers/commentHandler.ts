@@ -1,6 +1,6 @@
-import express, { Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 
-const commentHandler: Router = express();
+const commentHandler: Router = Router();
 
 // upload a comment
 commentHandler.get("/signup", (req: Request, res: Response) => {

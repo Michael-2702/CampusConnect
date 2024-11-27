@@ -1,8 +1,8 @@
-import express, { Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { userModel } from "../../models/db";
 
 
-const viewProfileHanler: Router = express();
+const viewProfileHanler: Router = Router();
 
 // view profile
 viewProfileHanler.get("/", async (req: Request, res: Response): Promise<void> => {

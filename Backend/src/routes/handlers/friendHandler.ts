@@ -1,7 +1,6 @@
-import express, { Express, Router, Request, Response } from "express";
+import  {  Router, Request, Response } from "express";
 
-
-const friendHanler: Router = express();
+const friendHanler: Router = Router();
 
 // send request
 friendHanler.get("/signup", (req: Request, res: Response) => {

@@ -1,8 +1,8 @@
-import express, { Express, Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { userModel } from "../../models/db";
 
 
-const PfpHanler: Router = express();
+const PfpHanler: Router = Router();
 
 // set/change pfp
 PfpHanler.put("/", async (req: Request, res: Response): Promise<void> => {

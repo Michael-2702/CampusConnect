@@ -1,7 +1,7 @@
-import express, { Express, Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 
 
-const viewPostHandler: Router = express();
+const viewPostHandler: Router = Router();
 
 // get all posts
 viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {

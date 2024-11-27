@@ -1,7 +1,6 @@
-import express, { Express, Router, Request, Response } from "express";
+import {  Router, Request, Response } from "express";
 
-
-const likeHandler: Router = express();
+const likeHandler: Router = Router();
 
 // like/unlike a post
 likeHandler.get("/signup", (req: Request, res: Response) => {

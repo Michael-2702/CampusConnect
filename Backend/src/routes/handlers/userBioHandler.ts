@@ -1,8 +1,8 @@
-import express, { Express, Router, Request, Response } from "express";
+import  { Router, Request, Response } from "express";
 import { userModel } from "../../models/db";
 
 
-const userBioHanler: Router = express();
+const userBioHanler: Router = Router();
 
 // set bio
 userBioHanler.post("/", async (req: Request, res: Response): Promise<void> => {
