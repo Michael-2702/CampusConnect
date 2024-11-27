@@ -4,42 +4,41 @@ import reportPostHandler from "./handlers/reportPostHandler";
 import viewPostHandler from "./handlers/viewPostHandler";
 import postRouter from "./posts";
 import viewProfileHanler from "./handlers/viewProfileHandler";
+import { createAdminHandler } from "./handlers/createAdminHandler";
+import { adminLoginHandler } from "./handlers/adminLoginHandler";
+import { authMiddleware } from "../middlewares/auth";
 
 const adminRouter: Router = express();
 
 // create admin
-adminRouter.post("/createAdmin", (req: Request, res: Response) => {
-
-})
+adminRouter.post("/createAdmin", createAdminHandler)
 
 // admin login
-adminRouter.post("/adminLogin", (req: Request, res: Response) => {
-
-})
+adminRouter.post("/adminLogin", adminLoginHandler)
 
 // view admin info
-adminRouter.get("/viewAdminInfo", (req: Request, res: Response) => {
+// adminRouter.get("/viewAdminInfo", (req: Request, res: Response) => {
 
-})
+// })
 
 // delete a post
-adminRouter.use("/delete", postRouter)
+adminRouter.use("/delete", authMiddleware, postRouter)
 
 // view posts
-adminRouter.use("/viewPosts", viewPostHandler)
+adminRouter.use("/viewPosts", authMiddleware, viewPostHandler)
 
 // view reported posts
-adminRouter.use("/report", reportPostHandler)
+adminRouter.use("/report", authMiddleware, reportPostHandler)
 
 // view profile handler
-adminRouter.use("/viewProfile", viewProfileHanler)
+adminRouter.use("/viewProfile", authMiddleware, viewProfileHanler)
 
 // view user count
 
 // view user list
 
 // comment handler
-adminRouter.use("/comment", commentHandler)
+adminRouter.use("/comment", authMiddleware, commentHandler)
 
 
 export default adminRouter;

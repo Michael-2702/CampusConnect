@@ -3,6 +3,8 @@ import { Router, Request, Response } from "express";
 
 const viewPostHandler: Router = Router();
 
+// use zod 
+
 // get all posts
 viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
     try{

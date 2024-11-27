@@ -4,6 +4,8 @@ import { userModel } from "../../models/db";
 
 const userBioHanler: Router = Router();
 
+// use zod 
+
 // set bio
 userBioHanler.post("/", async (req: Request, res: Response): Promise<void> => {
     try{
