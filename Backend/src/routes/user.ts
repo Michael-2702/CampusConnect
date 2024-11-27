@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import viewProfileHanler from "./handlers/viewProfileHandler";
 import friendHanler from "./handlers/friendHandler";
 import userBioHanler from "./handlers/userBioHandler";
