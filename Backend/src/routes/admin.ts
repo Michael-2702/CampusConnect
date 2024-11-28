@@ -8,6 +8,7 @@ import { createAdminHandler } from "./handlers/createAdminHandler";
 import { adminLoginHandler } from "./handlers/adminLoginHandler";
 import { authMiddleware } from "../middlewares/auth";
 import { adminDeletePostHandler } from "./handlers/deletePostHandler";
+import { viewUsersHandler } from "./handlers/viewUsersHnalder";
 
 const adminRouter: Router = express();
 
@@ -37,9 +38,8 @@ adminRouter.use("/report", authMiddleware, reportPostHandler)
 // view profile handler
 adminRouter.use("/viewProfile", authMiddleware, viewProfileHanler)
 
-// view user count
-
-// view user list
+// view user count and user list
+adminRouter.get("/viewUsers", authMiddleware, viewUsersHandler)
 
 // comment handler
 adminRouter.use("/comment", authMiddleware, commentHandler)
