@@ -3,16 +3,16 @@ import commentHandler from "./handlers/commentHandler";
 import likeHandler from "./handlers/likeHandler";
 import reportPostHandler from "./handlers/reportPostHandler";
 import viewPostHandler from "./handlers/viewPostHandler";
+import { authMiddleware } from "../middlewares/auth";
+import { uploadPostsHandler } from "./handlers/uploadPostsHandler";
 
 const postRouter: Router = express();
 
 // upload posts
-postRouter.get("/create", (req: Request, res: Response) => {
-
-})
+postRouter.post("/create", authMiddleware, uploadPostsHandler)
 
 // view Posts handler
-postRouter.use("/getPosts", viewPostHandler)
+postRouter.use("/getPosts", authMiddleware, viewPostHandler)
 
 // delete your own post
 postRouter.delete("/deletePost/:id", (req: Request, res: Response) => {
