@@ -5,6 +5,7 @@ import reportPostHandler from "./handlers/reportPostHandler";
 import viewPostHandler from "./handlers/viewPostHandler";
 import { authMiddleware } from "../middlewares/auth";
 import { uploadPostsHandler } from "./handlers/uploadPostsHandler";
+import { adminDeletePostHandler, deletePostHandler } from "./handlers/deletePostHandler";
 
 const postRouter: Router = express();
 
@@ -15,14 +16,10 @@ postRouter.post("/create", authMiddleware, uploadPostsHandler)
 postRouter.use("/getPosts", authMiddleware, viewPostHandler)
 
 // delete your own post
-postRouter.delete("/deletePost/:id", (req: Request, res: Response) => {
-
-})
+postRouter.delete("/deletePost/:id", authMiddleware, deletePostHandler)
 
 // admin -  delete post
-postRouter.delete("/AdminDeletePost/:id", (req: Request, res: Response) => {
-
-})
+postRouter.delete("/adminDeletePost/:id", authMiddleware, adminDeletePostHandler)
 
 // report posts
 postRouter.use("/report", reportPostHandler)
