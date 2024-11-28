@@ -29,6 +29,13 @@ interface IAdmin extends Document {
   updatedAt: Date;
 }
 
+interface Comment {
+    _id?: mongoose.Types.ObjectId; 
+    content: string;
+    user: mongoose.Types.ObjectId;
+    date: Date;
+  }
+
 // Post Interface
 interface IPost extends Document {
   postedBy: mongoose.Types.ObjectId;
@@ -38,11 +45,7 @@ interface IPost extends Document {
   text: string;
   likes: mongoose.Types.ObjectId[];
   reportedBy: mongoose.Types.ObjectId[];
-  comments: {
-    content: string;
-    user: mongoose.Types.ObjectId;
-    date: Date;
-  }[];
+  comments: Comment[];
   _doc?: Omit<IPost, '_doc'>;
   createdAt: Date;
   updatedAt: Date;

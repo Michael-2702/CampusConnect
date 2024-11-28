@@ -9,6 +9,8 @@ import { adminLoginHandler } from "./handlers/adminLoginHandler";
 import { authMiddleware } from "../middlewares/auth";
 import { adminDeletePostHandler } from "./handlers/deletePostHandler";
 import { viewUsersHandler } from "./handlers/viewUsersHnalder";
+import { getCommentHandler } from "./handlers/getCommentHandler";
+import { adminDeleteCommentHandler } from "./handlers/deleteCommentHandler";
 
 const adminRouter: Router = express();
 
@@ -41,8 +43,11 @@ adminRouter.use("/viewProfile", authMiddleware, viewProfileHanler)
 // view user count and user list
 adminRouter.get("/viewUsers", authMiddleware, viewUsersHandler)
 
-// comment handler
-adminRouter.use("/comment", authMiddleware, commentHandler)
+// comment get handler
+adminRouter.get("/comment/:id", authMiddleware, getCommentHandler)
+
+// delete comment
+adminRouter.delete("/comment/:postId/:commentId", authMiddleware, adminDeleteCommentHandler)
 
 
 export default adminRouter;
