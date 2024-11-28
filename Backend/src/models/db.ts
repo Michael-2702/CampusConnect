@@ -173,7 +173,7 @@ const postSchema = new Schema<IPost>({
     date: { 
       type: Date, 
       default: Date.now 
-    },
+    }
   }]
 }, { 
   timestamps: true 
