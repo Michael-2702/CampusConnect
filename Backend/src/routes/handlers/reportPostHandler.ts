@@ -87,7 +87,7 @@ reportPostHandler.get("/", async (req: Request, res: Response): Promise<void> =>
             if(post.reportedBy.length > 0){
                 if(post !== null){
                     return {
-                        ...post.toObject(),
+                        ...post._doc,
                         reportCount: post.reportedBy.length
                     }
                 }

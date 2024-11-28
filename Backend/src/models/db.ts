@@ -13,6 +13,7 @@ interface IUser extends Document {
   posts: mongoose.Types.ObjectId[];
   friends: mongoose.Types.ObjectId[];
   friendRequests: mongoose.Types.ObjectId[];
+  _doc?: Omit<IUser, '_doc'>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +24,7 @@ interface IAdmin extends Document {
   adminId: string;
   password: string;
   role?: string;
+  _doc?: Omit<IAdmin, '_doc'>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +43,7 @@ interface IPost extends Document {
     user: mongoose.Types.ObjectId;
     date: Date;
   }[];
+  _doc?: Omit<IPost, '_doc'>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,6 +52,7 @@ interface IPost extends Document {
 interface IOTP extends Document {
   email: string;
   otp: string;
+  _doc?: Omit<IOTP, '_doc'>;
   createdAt: Date;
 }
 
