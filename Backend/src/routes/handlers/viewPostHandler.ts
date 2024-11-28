@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { postModel, userModel } from "../../models/db";
+import { mongo } from "mongoose";
 
 
 const viewPostHandler: Router = Router();
@@ -8,6 +9,7 @@ const viewPostHandler: Router = Router();
 // get all posts
 viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
     try{
+        const userId = req.userId
         const allPosts = await postModel.find({}).sort({ createdAt: -1});
 
         if(!allPosts){
@@ -16,8 +18,20 @@ viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
             })
         }
 
+        const processedPosts = allPosts.map(post => {
+            const isReported = post.reportedBy.includes(new mongo.ObjectId(userId?.toString())); // to check if the logged in user has reported a certain post or not
+            
+            return {
+                ...post.toObject(),
+                // attach these keys just to avoid complexity in db or model, 
+                isReported,
+                reportButtonText: isReported ? 'Unreport' : 'Report',
+                reportCount: post.reportedBy.length
+            };
+        });
+
         res.status(200).json({
-            allPosts
+            allPosts: processedPosts
         })
     }   
     catch (e) {
