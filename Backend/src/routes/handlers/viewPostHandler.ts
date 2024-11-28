@@ -1,15 +1,14 @@
 import { Router, Request, Response } from "express";
-import { postModel } from "../../models/db";
+import { postModel, userModel } from "../../models/db";
 
 
 const viewPostHandler: Router = Router();
 
-// use zod 
 
 // get all posts
 viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
     try{
-        const allPosts = await postModel.find({});
+        const allPosts = await postModel.find({}).sort({ createdAt: -1});
 
         if(!allPosts){
             res.status(401).json({
@@ -33,12 +32,26 @@ viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
 // get my posts
 viewPostHandler.get("/myPosts", async (req: Request, res: Response): Promise<void> => {
     try{
+        const userId = req.userId;
 
+        const userPosts = await postModel.find({ postedBy: userId }).sort({ createdAt: -1});
+
+        if(!userPosts){
+            res.status(401).json({
+                msg: "User posts not found"
+            })
+            return
+        }
+
+        res.status(200).json({
+            msg: "got my posts successfully",
+            myPosts: userPosts
+        })
     }
     catch (e) {
-        console.error("Error while getting all posts")
+        console.error("Error while getting my posts")
         res.status(401).json({
-            msg: "Error while getting all posts"
+            msg: "Error while getting my posts"
         })
         return
     }
@@ -47,7 +60,21 @@ viewPostHandler.get("/myPosts", async (req: Request, res: Response): Promise<voi
 // get other user's post
 viewPostHandler.get("/:id", async (req: Request, res: Response): Promise<void> => {
     try{
+        const userId = req.params.id;
 
+        const userPosts = await postModel.find({ postedBy: userId }).sort({ createdAt: -1});
+
+        if(!userPosts){
+            res.status(401).json({
+                msg: "User posts not found"
+            })
+            return
+        }
+
+        res.status(200).json({
+            msg: `got ${userId}'s posts successfully`,
+            myPosts: userPosts
+        })
     }
     catch (e) {
         console.error("Error while getting all posts")
