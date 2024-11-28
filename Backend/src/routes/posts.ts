@@ -1,33 +1,30 @@
-import express, { Express, Router, Request, Response } from "express";
+import {  Router } from "express";
 import commentHandler from "./handlers/commentHandler";
 import likeHandler from "./handlers/likeHandler";
 import reportPostHandler from "./handlers/reportPostHandler";
 import viewPostHandler from "./handlers/viewPostHandler";
 import { authMiddleware } from "../middlewares/auth";
 import { uploadPostsHandler } from "./handlers/uploadPostsHandler";
-import { adminDeletePostHandler, deletePostHandler } from "./handlers/deletePostHandler";
+import { deletePostHandler } from "./handlers/deletePostHandler";
 
-const postRouter: Router = express();
+const postRouter: Router = Router();
 
 // upload posts
 postRouter.post("/create", authMiddleware, uploadPostsHandler)
 
 // view Posts handler
-postRouter.use("/getPosts", authMiddleware, viewPostHandler)
+postRouter.use("/viewPosts", authMiddleware, viewPostHandler)
 
 // delete your own post
 postRouter.delete("/deletePost/:id", authMiddleware, deletePostHandler)
 
-// admin -  delete post
-postRouter.delete("/adminDeletePost/:id", authMiddleware, adminDeletePostHandler)
-
 // report posts
-postRouter.use("/report", reportPostHandler)
+postRouter.use("/report", authMiddleware, reportPostHandler)
 
 // Like handler
-postRouter.use("/like", likeHandler)
+postRouter.use("/like", authMiddleware, likeHandler)
 
 // comment handler
-postRouter.use("/comment", commentHandler)
+postRouter.use("/comment", authMiddleware, commentHandler)
 
 export default postRouter;

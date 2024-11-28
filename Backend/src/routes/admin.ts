@@ -7,6 +7,7 @@ import viewProfileHanler from "./handlers/viewProfileHandler";
 import { createAdminHandler } from "./handlers/createAdminHandler";
 import { adminLoginHandler } from "./handlers/adminLoginHandler";
 import { authMiddleware } from "../middlewares/auth";
+import { adminDeletePostHandler } from "./handlers/deletePostHandler";
 
 const adminRouter: Router = express();
 
@@ -26,6 +27,9 @@ adminRouter.use("/delete", authMiddleware, postRouter)
 
 // view posts
 adminRouter.use("/viewPosts", authMiddleware, viewPostHandler)
+
+// delete a post
+adminRouter.delete("/deletePost/:id", authMiddleware, adminDeletePostHandler)
 
 // view reported posts
 adminRouter.use("/report", authMiddleware, reportPostHandler)
