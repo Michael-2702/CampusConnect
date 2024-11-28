@@ -1,5 +1,4 @@
-import express, { Express, Router, Request, Response } from "express";
-import commentHandler from "./handlers/commentHandler";
+import { Router } from "express";
 import reportPostHandler from "./handlers/reportPostHandler";
 import viewPostHandler from "./handlers/viewPostHandler";
 import postRouter from "./posts";
@@ -12,7 +11,7 @@ import { viewUsersHandler } from "./handlers/viewUsersHnalder";
 import { getCommentHandler } from "./handlers/getCommentHandler";
 import { adminDeleteCommentHandler } from "./handlers/deleteCommentHandler";
 
-const adminRouter: Router = express();
+const adminRouter: Router = Router();
 
 // create admin
 adminRouter.post("/createAdmin", createAdminHandler)
