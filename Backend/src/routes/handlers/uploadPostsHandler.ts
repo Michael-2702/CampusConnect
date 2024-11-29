@@ -53,8 +53,7 @@ export const uploadPostsHandler = async (req: Request, res: Response): Promise<v
     } catch (error) {
         console.error("Error while uploading a post:", error);
         res.status(500).json({
-            msg: "Error while uploading a post",
-            error: error instanceof Error ? error.message : 'Unknown error'
+            msg: "Error while uploading a post"
         });
     }
 }

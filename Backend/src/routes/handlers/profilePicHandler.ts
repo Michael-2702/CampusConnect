@@ -72,7 +72,7 @@ PfpHanler.get("/", async (req: Request, res: Response): Promise<void> => {
         })
     }   
     catch (e) {
-        console.error("Error while getting pfp")
+        console.error("Error while getting pfp", e)
         res.status(401).json({
             msg: "Error while getting pfp"
         })
@@ -97,8 +97,7 @@ PfpHanler.get("/:id", async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error("Error getting profile picture:", error);
         res.status(500).json({ 
-            msg: "Error deleting getting picture", 
-            error: error instanceof Error ? error.message : 'Unknown error' 
+            msg: "Error deleting getting picture"
         });
     }
 })
@@ -136,8 +135,7 @@ PfpHanler.delete("/", async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error("Error deleting profile picture:", error);
         res.status(500).json({ 
-            msg: "Error deleting profile picture", 
-            error: error instanceof Error ? error.message : 'Unknown error' 
+            msg: "Error deleting profile picture",
         });
     }
 })

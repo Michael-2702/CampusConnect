@@ -52,8 +52,7 @@ export const updateCommentHandler = async (req: Request, res: Response): Promise
     } catch (error) {
         console.error("Error updating comment:", error);
         res.status(500).json({ 
-            message: "Error updating comment", 
-            error: error instanceof Error ? error.message : 'Unknown error' 
+            message: "Error updating comment"
         });
     }
 }

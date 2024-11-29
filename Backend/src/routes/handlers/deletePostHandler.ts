@@ -42,8 +42,7 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
     } catch (error) {
         console.error("Error while deleting post:", error);
         res.status(500).json({
-            msg: "Error while deleting post",
-            error: error instanceof Error ? error.message : 'Unknown error'
+            msg: "Error while deleting post"
         });
     }
 };
@@ -83,8 +82,7 @@ export const adminDeletePostHandler = async (req: Request, res: Response): Promi
     } catch (error) {
         console.error("Error while deleting post:", error);
         res.status(500).json({
-            msg: "Error while deleting post",
-            error: error instanceof Error ? error.message : 'Unknown error'
+            msg: "Error while deleting post"
         });
     }
 };
