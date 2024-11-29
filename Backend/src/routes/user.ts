@@ -7,6 +7,7 @@ import { signupHandler } from "./handlers/signupHandler";
 import { loginHandler } from "./handlers/loginHandler";
 import { authMiddleware } from "../middlewares/auth";
 import viewBioHandler from "./handlers/viewBioHandlers";
+import { upload } from "../middlewares/upload";
 
 const userRouter: Router = Router();
 

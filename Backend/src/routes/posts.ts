@@ -6,17 +6,18 @@ import viewPostHandler from "./handlers/viewPostHandler";
 import { authMiddleware } from "../middlewares/auth";
 import { uploadPostsHandler } from "./handlers/uploadPostsHandler";
 import { deletePostHandler } from "./handlers/deletePostHandler";
+import { upload } from "../middlewares/upload";
 
 const postRouter: Router = Router();
 
 // upload posts
-postRouter.post("/create", authMiddleware, uploadPostsHandler)
+postRouter.post("/createPost", authMiddleware, upload.single("picture"), uploadPostsHandler)
 
 // view Posts handler
 postRouter.use("/viewPosts", authMiddleware, viewPostHandler)
 
 // delete your own post
-postRouter.delete("/deletePost/:id", authMiddleware, deletePostHandler)
+postRouter.delete("/deletePost/:postId", authMiddleware, deletePostHandler)
 
 // report posts
 postRouter.use("/report", authMiddleware, reportPostHandler)

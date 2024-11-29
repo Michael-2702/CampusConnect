@@ -2,14 +2,17 @@ require('dotenv').config()
 import express, { Express } from "express";
 import mongoose from "mongoose";
 import cors from "cors"
-// import path from "path";
 import userRouter from "./routes/user";
 import adminRouter from "./routes/admin";
 import postRouter from "./routes/posts";
+import path from "path";
 const app: Express = express()
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false}))
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")))
 
 app.use("/api/v2/user", userRouter)
 app.use("/api/v2/admin", adminRouter)
