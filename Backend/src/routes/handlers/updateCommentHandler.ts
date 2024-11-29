@@ -30,7 +30,6 @@ export const updateCommentHandler = async (req: Request, res: Response): Promise
             return;
         }
 
-        // Update the comment's content
         comment.content = content;
         await post.save();
 

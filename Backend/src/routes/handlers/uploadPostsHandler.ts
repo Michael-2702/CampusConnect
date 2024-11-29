@@ -5,7 +5,7 @@ import { postModel, userModel } from "../../models/db";
 export const uploadPostsHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.userId;
-        const text = req.body.text || ""; // Default to an empty string if text is not provided
+        const text = req.body.text || ""; 
         const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
 
         // Validate text length
@@ -16,7 +16,7 @@ export const uploadPostsHandler = async (req: Request, res: Response): Promise<v
             return;
         }
 
-        // Ensure either text or an image is provided
+
         if (!text && !req.file) {
             res.status(400).json({
                 msg: "Please upload a text content or a picture or both",
@@ -37,8 +37,8 @@ export const uploadPostsHandler = async (req: Request, res: Response): Promise<v
             postedBy: userId,
             username: user.username,
             userImagePath: user.profileImagePath,
-            postsImagePath: imagePath, // Image may or may not be present
-            text, // Text can be empty
+            postsImagePath: imagePath, 
+            text,
             likes: [],
             reportedBy: [],
             comments: []

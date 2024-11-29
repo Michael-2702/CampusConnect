@@ -85,43 +85,19 @@ PfpHanler.get("/:id", async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.userId;
 
-        // Find the user by ID
         const user = await userModel.findById(userId);
-
-        // Check if the user exists
         if (!user) {
             res.status(404).json({ msg: "User not found" });
             return;
         }
 
-        // Check if the user has an existing profile picture
-        if (!user.profileImagePath) {
-            res.status(400).json({ msg: "No profile picture to delete" });
-            return;
-        }
-
-        // Construct the full file path of the current profile picture
-        const imagePath = path.join(__dirname, "..", user.profileImagePath);
-
-        // Check if the file exists and delete it
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath); // Delete the profile picture file
-        }
-
-        // Remove the profile picture path from the user's profile
-        user.profileImagePath = "";
-
-        // Save the updated user profile
-        await user.save();
-
         res.json({
-            msg: "Profile picture deleted successfully",
-            user
+            imagePath: user.profileImagePath
         });
     } catch (error) {
-        console.error("Error deleting profile picture:", error);
+        console.error("Error getting profile picture:", error);
         res.status(500).json({ 
-            msg: "Error deleting profile picture", 
+            msg: "Error deleting getting picture", 
             error: error instanceof Error ? error.message : 'Unknown error' 
         });
     }
@@ -132,33 +108,25 @@ PfpHanler.delete("/", async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.userId;
 
-        // Find the user by ID
         const user = await userModel.findById(userId);
-
-        // Check if the user exists
         if (!user) {
             res.status(404).json({ msg: "User not found" });
             return;
         }
 
-        // Check if the user has an existing profile picture
         if (!user.profileImagePath) {
             res.status(400).json({ msg: "No profile picture to delete" });
             return;
         }
 
-        // Construct the full file path of the current profile picture
         const imagePath = path.join(UPLOADS_BASE_PATH, 'profileImages', path.basename(user.profileImagePath));
 
-        // Check if the file exists and delete it
         if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath); // Delete the profile picture file
+            fs.unlinkSync(imagePath); 
         }
 
-        // Remove the profile picture path from the user's profile
         user.profileImagePath = "";
 
-        // Save the updated user profile
         await user.save();
 
         res.json({

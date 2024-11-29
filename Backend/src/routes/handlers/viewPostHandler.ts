@@ -23,7 +23,6 @@ viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
             
             return {
                 ...post.toObject(),
-                // attach these keys just to avoid complexity in db or model, 
                 isReported,
                 reportButtonText: isReported ? 'Unreport' : 'Report',
                 reportCount: post.reportedBy.length

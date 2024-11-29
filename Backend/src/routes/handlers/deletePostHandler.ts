@@ -5,10 +5,9 @@ import fs from 'fs';
 
 export const deletePostHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const postId = req.params.postId; // Changed from req.params.id to match JS route
+        const postId = req.params.postId; 
         const userId = req.userId;
 
-        // Find the post by ID
         const userPost = await postModel.findById(postId);
         
         if (!userPost) {
@@ -18,7 +17,6 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
             return;
         }   
 
-        // Ensure that the user deleting the post is the one who created it
         if (userId !== userPost.postedBy.toString()) {
             res.status(403).json({
                 msg: "You are not authorized to delete this post"
@@ -26,20 +24,16 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
             return;
         }
 
-        // If post has an image, attempt to delete it
         if (userPost.postsImagePath) {
             const imagePath = path.join(__dirname, "..", userPost.postsImagePath);
 
-            // Check if the file exists and then delete it
             if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath); // Delete the post image file
+                fs.unlinkSync(imagePath); 
             }
         }
 
-        // Delete the post from the database
         await postModel.findByIdAndDelete(postId);
         
-        // Remove the post from user's posts array
         await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } });
 
         res.status(200).json({
@@ -56,7 +50,7 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
 
 export const adminDeletePostHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const postId = req.params.postId; // Changed from req.params.id to match JS route
+        const postId = req.params.postId; 
 
         const userPost = await postModel.findById(postId);
 
@@ -69,20 +63,18 @@ export const adminDeletePostHandler = async (req: Request, res: Response): Promi
 
         const userId = userPost.postedBy;
 
-        // If post has an image, attempt to delete it
         if (userPost.postsImagePath) {
             const imagePath = path.join(__dirname, "..", userPost.postsImagePath);
 
-            // Check if the file exists and then delete it
+
             if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath); // Delete the post image file
+                fs.unlinkSync(imagePath); 
             }
         }
 
-        // Delete the post from the database
+
         await postModel.findByIdAndDelete(postId);
         
-        // Remove the post from user's posts array
         await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } });
 
         res.status(200).json({

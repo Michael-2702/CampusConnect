@@ -3,10 +3,9 @@ import path from 'path';
 import express, { Request } from 'express';
 
 const app = express();
-app.use(express.urlencoded({ extended: false })); // helps in parsing form data
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files from the 'uploads' directory
+app.use(express.urlencoded({ extended: false })); 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
 
-// Define a type for the file to improve type safety
 interface MulterFile {
   fieldname: string;
   originalname: string;
@@ -21,10 +20,8 @@ interface MulterFile {
 const storage = multer.diskStorage({
   destination: function (req: Request, file: MulterFile, cb: (error: Error | null, destination: string) => void) {
       if (req.route?.path === "/createPost") {
-          // Post images should go in 'uploads/userPostsImages'
           cb(null, './uploads/userPostsImages');
       } else {
-          // Profile images should go in 'uploads/profileImages'
           cb(null, './uploads/profileImages');
       }
   },
