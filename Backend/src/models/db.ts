@@ -59,6 +59,28 @@ interface IOTP extends Document {
   createdAt: Date;
 }
 
+// ChatRoom Interface
+interface IChatRoom extends Document {
+  type: 'private' | 'group'; // 'private' for one-to-one chat, 'group' for group chat
+  participants: mongoose.Types.ObjectId[]; // Array of User IDs
+  groupName?: string; // Only for group chats
+  groupImagePath?: string; // Optional image for group
+  lastMessage: mongoose.Types.ObjectId; // Reference to the last message
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Message Interface
+interface IMessage extends Document {
+  chatRoom: mongoose.Types.ObjectId; // Reference to ChatRoom
+  sender: mongoose.Types.ObjectId; // User ID of the sender
+  content: string; // Message text or media link
+  messageType: 'text' | 'image' | 'video' | 'file'; // Type of message
+  readBy: mongoose.Types.ObjectId[]; // Array of User IDs who read the message
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // User Schema
 const userSchema = new Schema<IUser>({
   name: { 
@@ -199,12 +221,69 @@ const otpSchema = new Schema<IOTP>({
   createdAt: { 
     type: Date, 
     default: Date.now, 
-    expires: 600 // OTP expires after 10 minutes
+    expires: 600 
   }
 });
 
-// Create and export models with type
+// chat schema
+const chatRoomSchema = new Schema<IChatRoom>({
+  type: { 
+    type: String, 
+    enum: ['private', 'group'], 
+    required: true 
+  },
+  participants: [{ 
+    type: Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
+  }],
+  groupName: { 
+    type: String, 
+    required: function () { return this.type === 'group'; } 
+  },
+  groupImagePath: { 
+    type: String, 
+    default: '' 
+  },
+  lastMessage: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Message' 
+  }
+}, { 
+  timestamps: true 
+});
+
+const messageSchema = new Schema<IMessage>({
+  chatRoom: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'ChatRoom', 
+    required: true 
+  },
+  sender: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
+  },
+  content: { 
+    type: String, 
+    required: true 
+  },
+  messageType: { 
+    type: String, 
+    enum: ['text', 'image', 'video', 'file'], 
+    default: 'text' 
+  },
+  readBy: [{ 
+    type: Schema.Types.ObjectId, 
+    ref: 'User' 
+  }]
+}, { 
+  timestamps: true 
+});
+
 export const userModel = mongoose.model<IUser, Model<IUser>>('User', userSchema);
 export const postModel = mongoose.model<IPost, Model<IPost>>('Post', postSchema);
 export const adminModel = mongoose.model<IAdmin, Model<IAdmin>>('Admin', adminSchema);
 export const otpModel = mongoose.model<IOTP, Model<IOTP>>('OTP', otpSchema);
+export const chatRoomModel = mongoose.model<IChatRoom, Model<IChatRoom>>('ChatRoom', chatRoomSchema);
+export const messageModel = mongoose.model<IMessage, Model<IMessage>>('Message', messageSchema);
