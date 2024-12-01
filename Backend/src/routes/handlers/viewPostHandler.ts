@@ -22,16 +22,14 @@ viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
             const isReported = post.reportedBy.includes(new mongo.ObjectId(userId?.toString())); // to check if the logged in user has reported a certain post or not
             
             return {
-                ...post.toObject(),
+                ...post._doc,
                 isReported,
                 reportButtonText: isReported ? 'Unreport' : 'Report',
                 reportCount: post.reportedBy.length
             };
         });
 
-        res.status(200).json({
-            allPosts: processedPosts
-        })
+        res.status(200).json(processedPosts)
     }   
     catch (e) {
         console.error("Error while getting all posts")

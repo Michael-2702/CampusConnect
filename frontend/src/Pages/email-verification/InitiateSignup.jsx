@@ -31,7 +31,7 @@ function InitiateSignup() {
       return;
     }
 
-    axios.post("http://localhost:3000/api/v1/user/initiate-signup", { email: data.email })
+    axios.post("http://localhost:3001/api/v2/user/initiate-signup", { email: data.email })
       .then((res) => {
         console.log("OTP Sent Successfully", res);
         setOtpSent(true);
@@ -52,7 +52,7 @@ function InitiateSignup() {
     e.preventDefault();
     setGeneralError("");
 
-    axios.post("http://localhost:3000/api/v1/user/verify-otp", data)
+    axios.post("http://localhost:3001/api/v2/user/verify-otp", data)
       .then((res) => {
         console.log("OTP Verified Successfully", res);
         navigate('/Register', { state: { email: data.email } }); 

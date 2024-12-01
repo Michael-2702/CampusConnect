@@ -1,9 +1,9 @@
-import express, { Express, Router, Request, Response } from "express";
-import { postModel, userModel } from "../../models/db";
+import { Router, Request, Response } from "express";
+import { postModel } from "../../models/db";
 import { mongo } from "mongoose";
 
 
-const reportPostHandler: Router = express();
+const reportPostHandler: Router = Router();
 
 // report/un-report a post
 reportPostHandler.put("/:id", async (req: Request, res: Response): Promise<void> => {
@@ -22,41 +22,24 @@ reportPostHandler.put("/:id", async (req: Request, res: Response): Promise<void>
         const userObjectId = new mongo.ObjectId(userId as string)
 
         const isReported = post.reportedBy.includes(userObjectId)
+
         if(!isReported){
-
             post.reportedBy.push(userObjectId);
-            console.log("hi")
             await post.save()
-            console.log("hello")
-            const updatedPost = {
-                ...post?.toObject(),
-                isReported: true,
-                reportButtonText: 'Unreport',
-                reportCount: post.reportedBy.length
-            };
-            console.log("hey")
-            res.status(200).json({
-                updatedPost
-            })
-            return
         }
-        else {
+        
+        const updatedPost = {
+            ...post._doc,
+            isReported: true,
+            reportButtonText: 'Unreport',
+            reportCount: post.reportedBy.length
+        };
 
-            post.reportedBy = post.reportedBy.filter(reporterId => !reporterId.equals(userObjectId));
-            await post.save();
-            
-            const updatedPost = {
-                ...post?.toObject(),
-                isReported: false,
-                reportButtonText: 'Report',
-                reportCount: post.reportedBy.length
-            };
-
-            res.status(200).json({
-                updatedPost
-            })
-            return
-        }
+        res.status(200).json({
+            message: 'Post reported successfully',
+            post: updatedPost
+        })
+        
     }
     catch(e) {
         console.error("Error while reporting a post", e)

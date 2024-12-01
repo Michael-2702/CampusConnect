@@ -33,10 +33,18 @@ export const uploadCommentHandler = async (req: Request, res: Response): Promise
             return
         }
 
-        res.status(200).json({
+        const username = user.username
+        const profileImagePath = user.profileImagePath
+
+        const processedComment = {
             content,
-            username: user.username,
-            profileImagePath: user.profileImagePath
+            username,
+            profileImagePath
+        }
+
+        res.status(200).json({
+            message: "Comment added successfully", 
+            processedComment
         })
     }
     catch (e) {

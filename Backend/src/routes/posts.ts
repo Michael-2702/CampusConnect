@@ -7,6 +7,7 @@ import { authMiddleware } from "../middlewares/auth";
 import { uploadPostsHandler } from "./handlers/uploadPostsHandler";
 import { deletePostHandler } from "./handlers/deletePostHandler";
 import { upload } from "../middlewares/upload";
+import unReportPostHandler from "./handlers/unReportPostHandler";
 
 const postRouter: Router = Router();
 
@@ -20,7 +21,10 @@ postRouter.use("/viewPosts", authMiddleware, viewPostHandler)
 postRouter.delete("/deletePost/:postId", authMiddleware, deletePostHandler)
 
 // report posts
-postRouter.use("/report", authMiddleware, reportPostHandler)
+postRouter.use("/reportPost", authMiddleware, reportPostHandler)
+
+// un-report posts
+postRouter.use("/unReportPost", authMiddleware, unReportPostHandler)
 
 // Like handler
 postRouter.use("/like", authMiddleware, likeHandler)

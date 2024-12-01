@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
 // User Interface
-interface IUser extends Document {
+export interface IUser extends Document {
   name: string;
   username: string;
   email: string;
@@ -29,15 +29,16 @@ interface IAdmin extends Document {
   updatedAt: Date;
 }
 
-interface Comment {
+export interface Comment {
     _id?: mongoose.Types.ObjectId; 
+    _doc?: Omit<IUser, '_doc'>;
     content: string;
     user: mongoose.Types.ObjectId;
     date: Date;
   }
 
 // Post Interface
-interface IPost extends Document {
+export interface IPost extends Document {
   postedBy: mongoose.Types.ObjectId;
   username: string;
   userImagePath?: string;
