@@ -5,11 +5,10 @@ import userBioHanler from "./handlers/userBioHandler";
 import PfpHanler from "./handlers/profilePicHandler";
 import { signupHandler } from "./handlers/signupHandler";
 import { loginHandler } from "./handlers/loginHandler";
-import { authMiddleware } from "../middlewares/auth";
 import viewBioHandler from "./handlers/viewBioHandlers";
-import { upload } from "../middlewares/upload";
 import { initiateSignUpHandler } from "./handlers/initiateSignupHandler";
 import { verifyOtpHandler } from "./handlers/verifyOTPHandler";
+import { authMiddleware } from "../middlewares/auth";
 
 const userRouter: Router = Router();
 
@@ -26,20 +25,22 @@ userRouter.post("/complete-signup", signupHandler)
 // signin
 userRouter.post("/signin", loginHandler)
 
+userRouter.use(authMiddleware)
+
 // view own profile
-userRouter.use("/viewProfile", authMiddleware, viewProfileHanler)
+userRouter.use("/viewProfile", viewProfileHanler)
 
 // friends
-userRouter.use("/friends", authMiddleware, friendHanler)
+userRouter.use("/friends", friendHanler)
 
 // user Bio
-userRouter.use("/bio", authMiddleware, userBioHanler)
+userRouter.use("/bio", userBioHanler)
 
 // view Bio
-userRouter.use("/viewBio", authMiddleware, viewBioHandler)
+userRouter.use("/viewBio", viewBioHandler)
 
 // PFP
-userRouter.use("/profilePicture", authMiddleware, PfpHanler)
+userRouter.use("/profilePicture", PfpHanler)
 
 
 export default userRouter;

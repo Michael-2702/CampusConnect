@@ -11,25 +11,27 @@ import unReportPostHandler from "./handlers/unReportPostHandler";
 
 const postRouter: Router = Router();
 
+postRouter.use(authMiddleware)
+
 // upload posts
-postRouter.post("/createPost", authMiddleware, upload.single("picture"), uploadPostsHandler)
+postRouter.post("/createPost", upload.single("picture"), uploadPostsHandler)
 
 // view Posts handler
-postRouter.use("/viewPosts", authMiddleware, viewPostHandler)
+postRouter.use("/viewPosts", viewPostHandler)
 
 // delete your own post
-postRouter.delete("/deletePost/:postId", authMiddleware, deletePostHandler)
+postRouter.delete("/deletePost/:postId", deletePostHandler)
 
 // report posts
-postRouter.use("/reportPost", authMiddleware, reportPostHandler)
+postRouter.use("/reportPost", reportPostHandler)
 
 // un-report posts
-postRouter.use("/unReportPost", authMiddleware, unReportPostHandler)
+postRouter.use("/unReportPost", unReportPostHandler)
 
 // Like handler
-postRouter.use("/like", authMiddleware, likeHandler)
+postRouter.use("/like", likeHandler)
 
 // comment handler
-postRouter.use("/comment", authMiddleware, commentHandler)
+postRouter.use("/comment", commentHandler)
 
 export default postRouter;

@@ -23,30 +23,30 @@ adminRouter.post("/adminLogin", adminLoginHandler)
 // adminRouter.get("/viewAdminInfo", (req: Request, res: Response) => {
 
 // })
-
+adminRouter.use(authMiddleware)
 // delete a post
-adminRouter.use("/delete", authMiddleware, postRouter)
+adminRouter.use("/delete", postRouter)
 
 // view posts
-adminRouter.use("/viewPosts", authMiddleware, viewPostHandler)
+adminRouter.use("/viewPosts", viewPostHandler)
 
 // delete a post
-adminRouter.delete("/deletePost/:id", authMiddleware, adminDeletePostHandler)
+adminRouter.delete("/deletePost/:id", adminDeletePostHandler)
 
 // view reported posts
-adminRouter.use("/report", authMiddleware, reportPostHandler)
+adminRouter.use("/report", reportPostHandler)
 
 // view profile handler
-adminRouter.use("/viewProfile", authMiddleware, viewProfileHanler)
+adminRouter.use("/viewProfile", viewProfileHanler)
 
 // view user count and user list
-adminRouter.get("/viewUsers", authMiddleware, viewUsersHandler)
+adminRouter.get("/viewUsers", viewUsersHandler)
 
 // comment get handler
-adminRouter.get("/comment/:id", authMiddleware, getCommentHandler)
+adminRouter.get("/comment/:id", getCommentHandler)
 
 // delete comment
-adminRouter.delete("/comment/:postId/:commentId", authMiddleware, adminDeleteCommentHandler)
+adminRouter.delete("/comment/:postId/:commentId", adminDeleteCommentHandler)
 
 
 export default adminRouter;
