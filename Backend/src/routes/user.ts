@@ -8,11 +8,20 @@ import { loginHandler } from "./handlers/loginHandler";
 import { authMiddleware } from "../middlewares/auth";
 import viewBioHandler from "./handlers/viewBioHandlers";
 import { upload } from "../middlewares/upload";
+import { initiateSignUpHandler } from "./handlers/initiateSignupHandler";
+import { verifyOtpHandler } from "./handlers/verifyOTPHandler";
 
 const userRouter: Router = Router();
 
 // signup
-userRouter.post("/signup", signupHandler)
+// step 1: initiate signup
+userRouter.post("/initiate-signup", initiateSignUpHandler)
+
+// step 2: verify otp
+userRouter.post("/verify-otp", verifyOtpHandler)
+
+// step 3: complete signup
+userRouter.post("/complete-signup", signupHandler)
 
 // signin
 userRouter.post("/signin", loginHandler)
