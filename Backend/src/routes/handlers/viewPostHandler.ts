@@ -80,8 +80,8 @@ viewPostHandler.get("/:id", async (req: Request, res: Response): Promise<void> =
         }
 
         res.status(200).json({
-            msg: `got ${userId}'s posts successfully`,
-            myPosts: userPosts
+            message: `Posts by ${userId} retrieved successfully`,
+            posts: userPosts
         })
     }
     catch (e) {

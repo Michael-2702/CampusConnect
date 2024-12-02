@@ -465,9 +465,9 @@ const PostList = React.memo(() => {
                 </div>
               )}
 
-            </div>
-          </div>
-        ))}
+                </div>
+              </div>
+            ))}
       </div>
       
     </div>
