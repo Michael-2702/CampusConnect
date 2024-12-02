@@ -9,7 +9,7 @@ function Left_sidebar() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+        const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
           headers: {
             authorization: token,
           },
@@ -41,7 +41,7 @@ function Left_sidebar() {
           <NavLink to="/profile" className="inline-block">
             <img
               className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
-              src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+              src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
               alt="Profile"
             />
           </NavLink>
