@@ -14,7 +14,7 @@ const ViewOtherProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('authorization');
-        const response = await axios.get(`http://localhost:3000/api/v1/user/viewOtherProfile/${id}`, {
+        const response = await axios.get(`http://localhost:3001/api/v2/user/viewProfile/${id}`, {
           headers: {
             authorization: token,
           },
