@@ -257,7 +257,7 @@ const MyPostList = React.memo(() => {
                 <div className="flex items-center space-x-2">
                   <img
                     className="w-10 h-10 rounded-full object-cover border border-gray-200"
-                    src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+                    src={post.userImagePath ? `http://localhost:3001${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                     alt={post.username}
                   />
                   <button 
@@ -295,7 +295,7 @@ const MyPostList = React.memo(() => {
                 <div className="flex justify-center mb-3">
                   <img
                     className="lg:max-h-[500px] lg:max-w-full lg:w-auto lg:h-auto object-contain lg:rounded-md md:rounded-xl"
-                    src={`http://localhost:3000${post.postsImagePath}`} 
+                    src={`http://localhost:3001${post.postsImagePath}`} 
                     alt="Post content"
                   />
                 </div>
@@ -343,7 +343,7 @@ const MyPostList = React.memo(() => {
                     <div key={user._id} className="flex items-center space-x-2 mb-2">
                       <img
                         className="w-6 h-6 rounded-full object-cover"
-                        src={user.profileImagePath ? `http://localhost:3000${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                        src={user.profileImagePath ? `http://localhost:3001${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                         alt={user.username}
                       />
                       <span className="text-sm">{user.username}</span>
@@ -381,7 +381,7 @@ const MyPostList = React.memo(() => {
                         className="w-8 h-8 rounded-full"
                         src={
                           comment.user && comment.user.profileImagePath
-                            ? `http://localhost:3000${comment.user.profileImagePath}`
+                            ? `http://localhost:3001${comment.user.profileImagePath}`
                             : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"
                         }
                         alt={comment.user ? comment.user.username : "User"}

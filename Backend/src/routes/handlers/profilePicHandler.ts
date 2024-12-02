@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { userModel } from "../../models/db";
+import { postModel, userModel } from "../../models/db";
 import { upload } from "../../middlewares/upload";
 import path from 'path';
 import fs from 'fs';
@@ -23,27 +23,27 @@ PfpHanler.put("/", upload.single("picture"), async (req: Request, res: Response)
             return;
         }
 
+        if (user.profileImagePath && user.profileImagePath !== "") {
+            const oldImagePath = path.join(__dirname, "..", user.profileImagePath); // Construct the old image path
+            if (fs.existsSync(oldImagePath)) {
+
+                fs.unlinkSync(oldImagePath); 
+            }
+        }
+
         user.profileImagePath = profileImagePath;
         await user.save();
+
+        await postModel.updateMany(
+            { postedBy: userId },
+            { $set: { userImagePath: profileImagePath } }
+        );
 
         res.json({
             msg: "Profile Picture uploaded successfully",
             user
         });
 
-        // if (!user.profileImagePath) {
-        //     user.profileImagePath = profileImagePath;
-        //     await user.save();
-
-        //     res.json({
-        //         msg: "Profile Picture uploaded successfully",
-        //         user
-        //     });
-        // } else {
-        //     res.status(400).json({
-        //         msg: "Profile picture is already uploaded, use updateProfilePicture endpoint to update it"
-        //     });
-        // }
     } catch (error) {
         console.error("Error uploading profile picture:", error);
         res.status(500).json({ 

@@ -62,7 +62,7 @@ export default function Topbar() {
         <NavLink to="/profile" className="group">
           <div className="relative overflow-hidden rounded-full">
             <img
-              src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+              src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
               alt="Profile"
               className="w-11 h-11 rounded-full object-cover bg-white cursor-pointer transition-transform duration-300 group-hover:scale-110"
             />

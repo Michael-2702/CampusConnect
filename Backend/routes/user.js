@@ -744,7 +744,6 @@ userRouter.post("/uploadProfilePicture", userMiddleware,  upload.single("picture
 userRouter.put("/updateProfilePicture", userMiddleware, upload.single("picture"), async (req, res) => {
     try {
         const userId = req.userId;
-        const { text } = req.body;
         const profileImagePath = req.file ? `/uploads/profileImages/${req.file.filename}` : null;
 
         const user = await userModel.findById(userId)
