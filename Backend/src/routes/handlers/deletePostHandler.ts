@@ -7,7 +7,7 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
     try {
         const postId = req.params.postId; 
         const userId = req.userId;
-
+        console.log(postId)
         const userPost = await postModel.findById(postId);
         
         if (!userPost) {
@@ -34,6 +34,7 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
 
         await postModel.findByIdAndDelete(postId);
         
+        // this is not working for some reason fix it 
         await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } });
 
         res.status(200).json({
@@ -50,7 +51,6 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
 export const adminDeletePostHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const postId = req.params.postId; 
-
         const userPost = await postModel.findById(postId);
 
         if (!userPost) {
@@ -74,6 +74,7 @@ export const adminDeletePostHandler = async (req: Request, res: Response): Promi
 
         await postModel.findByIdAndDelete(postId);
         
+         // this is not working for some reason fix it 
         await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } });
 
         res.status(200).json({

@@ -32,7 +32,7 @@ adminRouter.use("/delete", postRouter)
 adminRouter.use("/viewPosts", viewPostHandler)
 
 // delete a post
-adminRouter.delete("/deletePost/:id", adminDeletePostHandler)
+adminRouter.delete("/deletePost/:postId", adminDeletePostHandler)
 
 // view reported posts
 adminRouter.use("/report", reportPostHandler)

@@ -12,7 +12,7 @@ const AdminPost = React.memo(() => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/admin/viewReportedPosts", {
+        const response = await axios.get("http://localhost:3001/api/v2/admin/report", {
           headers: {
             authorization: token,
           },
@@ -45,7 +45,7 @@ const AdminPost = React.memo(() => {
   const deletePost = async (postId) => {
     try {
       const token = localStorage.getItem("authorization");
-      await axios.delete(`http://localhost:3000/api/v1/admin/deletePost/${postId}`, {
+      await axios.delete(`http://localhost:3001/api/v2/admin/deletePost/${postId}`, {
         headers: {
           authorization: token,
         },
@@ -73,7 +73,7 @@ const AdminPost = React.memo(() => {
                     className="w-12 h-12 ml-4 mt-4 rounded-full object-cover border-2"
                     src={
                       post.userImagePath
-                        ? `http://localhost:3000${post.userImagePath}`
+                        ? `http://localhost:3001${post.userImagePath}`
                         : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"
                     }
                     alt="Profile"
@@ -119,7 +119,7 @@ const AdminPost = React.memo(() => {
                 <div className="m-5 flex justify-center">
                   <img
                     className="mt-5 max-h-[500px] w-auto object-contain"
-                    src={`http://localhost:3000${post.postsImagePath}`}
+                    src={`http://localhost:3001${post.postsImagePath}`}
                     alt="Post content"
                   />
                 </div>

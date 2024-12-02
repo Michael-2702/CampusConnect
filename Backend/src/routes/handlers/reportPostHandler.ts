@@ -77,9 +77,7 @@ reportPostHandler.get("/", async (req: Request, res: Response): Promise<void> =>
             }
         })
 
-        res.status(200).json({
-            reportedPostsWithCount
-        })
+        res.status(200).json(reportedPostsWithCount)
     }
     catch(e) {
         console.error("Error while fetching reported posts", e)

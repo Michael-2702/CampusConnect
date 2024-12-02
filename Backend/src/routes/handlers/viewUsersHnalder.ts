@@ -12,10 +12,10 @@ export const viewUsersHandler = async (req: Request, res: Response): Promise<voi
             })
         }
 
-        res.status(200).json({
-            usersCount: userList.length,
+        res.status(200).json(
+
             userList
-        })
+        )
     } 
     catch(e) {
         console.error("Error while views user list or count");
