@@ -10,6 +10,7 @@ import { adminDeletePostHandler } from "./handlers/deletePostHandler";
 import { viewUsersHandler } from "./handlers/viewUsersHnalder";
 import { getCommentHandler } from "./handlers/getCommentHandler";
 import { adminDeleteCommentHandler } from "./handlers/deleteCommentHandler";
+import { adminInfoHandler } from "./handlers/adminInfoHandlert";
 
 const adminRouter: Router = Router();
 
@@ -17,13 +18,13 @@ const adminRouter: Router = Router();
 adminRouter.post("/createAdmin", createAdminHandler)
 
 // admin login
-adminRouter.post("/adminLogin", adminLoginHandler)
+adminRouter.post("/login", adminLoginHandler)
+
+adminRouter.use(authMiddleware)
 
 // view admin info
-// adminRouter.get("/viewAdminInfo", (req: Request, res: Response) => {
+adminRouter.get("/viewAdminInfo", adminInfoHandler)
 
-// })
-adminRouter.use(authMiddleware)
 // delete a post
 adminRouter.use("/delete", postRouter)
 
