@@ -19,7 +19,7 @@ function Profile() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("authorization");
-      const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+      const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
         headers: {
           authorization: token,
         },
@@ -62,7 +62,7 @@ function Profile() {
       const formData = new FormData();
       formData.append("picture", selectedFile);
   
-      await axios.put("http://localhost:3000/api/v1/user/updateProfilePicture", formData, {
+      await axios.put("http://localhost:3001/api/v2/user/profilePicture", formData, {
         headers: {
           authorization: token,
           "Content-Type": "multipart/form-data",
@@ -80,7 +80,7 @@ function Profile() {
   const bioHandler = async () => {
     try {
       const token = localStorage.getItem("authorization");
-      const response = await axios.put("http://localhost:3000/api/v1/user/updateBio", 
+      const response = await axios.put("http://localhost:3001/api/v2/user/bio", 
         { bio: formData.bio },
         {
           headers: {
@@ -120,7 +120,7 @@ function Profile() {
           <div className="profile-content">
             <div className="profile-image-container">
               <img
-                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                 alt="Profile"
                 className="profile-image"
                 style={{position: "relative", left: "3rem"}}

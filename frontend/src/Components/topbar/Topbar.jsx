@@ -12,7 +12,7 @@ export default function Topbar() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+        const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
           headers: {
             authorization: token,
           },

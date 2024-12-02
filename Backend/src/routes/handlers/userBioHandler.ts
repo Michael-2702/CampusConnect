@@ -39,7 +39,7 @@ userBioHanler.post("/", async (req: Request, res: Response): Promise<void> => {
 userBioHanler.put("/", async (req: Request, res: Response) => {
     try{
         const userId = req.userId
-        const { content } = req.body
+        const { bio } = req.body
 
         const user = await userModel.findById(userId)
 
@@ -50,12 +50,13 @@ userBioHanler.put("/", async (req: Request, res: Response) => {
             return
         }
 
-        user.bio = content
+        user.bio = bio
 
         user.save();
 
         res.status(200).json({
-            bio: user.bio
+            msg: "Bio updated successfully",
+            bio
         })
     }
     catch(e) {
