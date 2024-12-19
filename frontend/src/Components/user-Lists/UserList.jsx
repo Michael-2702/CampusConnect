@@ -15,12 +15,12 @@ const PostList = React.memo(() => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/admin/viewAllUsers", {
+        const response = await axios.get("http://localhost:3001/api/v2/admin/viewUsers", {
           headers: { authorization: token },
         });
         setUsers(response.data);
         
-        const userResponse = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+        const userResponse = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
           headers: { authorization: token },
         });
         setCurrentUserId(userResponse.data.userInfo._id);
@@ -36,7 +36,7 @@ const PostList = React.memo(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/admin/viewAdminInfo", {
+        const response = await axios.get("http://localhost:3001/api/v2/admin/viewAdminInfo", {
           headers: {
             authorization: token,
           },
@@ -91,7 +91,7 @@ const PostList = React.memo(() => {
                     <div className="flex items-center space-x-2">
                       <img
                         className="w-10 h-10 rounded-full object-cover border border-gray-200"
-                        src={user.profileImagePath ? `http://localhost:3000${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+                        src={user.profileImagePath ? `http://localhost:3001${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                         alt={user.username}
                       />
                       <NavLink 

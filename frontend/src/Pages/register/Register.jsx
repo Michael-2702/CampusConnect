@@ -145,7 +145,7 @@ function Register() {
           <div className="mt-3">
             <label htmlFor="password" className="block text-base mb-2">Password</label>
             <input
-              type="text"
+              type="password"
               name="password"
               className="border w-full text-base px-2 py-1 focus:outline-none"
               placeholder="Enter your password..."
@@ -189,11 +189,11 @@ function Register() {
             </button>
           </div>
         </form>
-        <div className="mt-3 flex justify-center">
+        {/* <div className="mt-3 flex justify-center">
           <NavLink to="/Login" className="text-blue-700 font-semibold">
             <h3 className='font-bold'>Already have an account? Login</h3> 
           </NavLink>
-        </div>
+        </div> */}
       </div>
     </div>
   );

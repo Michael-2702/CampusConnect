@@ -9,7 +9,7 @@ function Left_sidebar() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/admin/viewAdminInfo", {
+        const response = await axios.get("http://localhost:3001/api/v2/admin/viewAdminInfo", {
           headers: {
             authorization: token,
           },

@@ -28,7 +28,7 @@ const OthersPost = React.memo(({ userId }) => {
         
         console.log("Fetching posts for userId:", userId);
 
-        const response = await axios.get(`http://localhost:3000/api/v1/post/userPosts/${userId}`, {
+        const response = await axios.get(`http://localhost:3001/api/v2/post/viewPosts/${userId}`, {
           headers: {
             authorization: token,
           },
@@ -75,7 +75,7 @@ const OthersPost = React.memo(({ userId }) => {
     if (!showComments[postId]) {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get(`http://localhost:3000/api/v1/post/getComments/${postId}`, {
+        const response = await axios.get(`http://localhost:3001/api/v2/post/comment/${postId}`, {
           headers: { authorization: token },
         });
         setPosts(prevPosts => prevPosts.map(post => 
@@ -91,7 +91,7 @@ const OthersPost = React.memo(({ userId }) => {
     try {
       const token = localStorage.getItem("authorization");
       const response = await axios.put(
-        `http://localhost:3000/api/v1/post/like/${postId}`,
+        `http://localhost:3001/api/v2/post/like/${postId}`,
         {},
         { headers: { authorization: token } }
       );
@@ -111,7 +111,7 @@ const OthersPost = React.memo(({ userId }) => {
       const token = localStorage.getItem("authorization");
       const endpoint = isReported ? 'unReportPost' : 'reportPost';
       const response = await axios.put(
-        `http://localhost:3000/api/v1/post/${endpoint}/${postId}`,
+        `http://localhost:3001/api/v2/post/${endpoint}/${postId}`,
         {},
         { headers: { authorization: token } }
       );
@@ -128,7 +128,7 @@ const OthersPost = React.memo(({ userId }) => {
     try {
         const token = localStorage.getItem("authorization");
         const response = await axios.put(
-            `http://localhost:3000/api/v1/post/comment/${postId}`,
+            `http://localhost:3001/api/v2/post/comment/${postId}`,
             { content: newComments[postId] },
             { headers: { authorization: token } }
         );
@@ -162,7 +162,7 @@ const OthersPost = React.memo(({ userId }) => {
     try {
       const token = localStorage.getItem("authorization");
       await axios.delete(
-        `http://localhost:3000/api/v1/post/deleteComment/${postId}/${commentId}`,
+        `http://localhost:3001/api/v2/post/comment/${postId}/${commentId}`,
         { headers: { authorization: token } }
       );
       
@@ -182,7 +182,7 @@ const OthersPost = React.memo(({ userId }) => {
       try {
         const token = localStorage.getItem("authorization");
         const response = await axios.put(
-          `http://localhost:3000/api/v1/post/updateComment/${postId}/${commentId}`,
+          `http://localhost:3001/api/v2/post/comment/${postId}/${commentId}`,
           { content: editingComments[commentId] },
           { headers: { authorization: token } }
         );
@@ -227,7 +227,7 @@ const OthersPost = React.memo(({ userId }) => {
     } else {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get(`http://localhost:3000/api/v1/post/likedUsers/${postId}`, {
+        const response = await axios.get(`http://localhost:3001/api/v2/post/like/${postId}`, {
           headers: { authorization: token },
         });
         setPosts(prevPosts => prevPosts.map(post => 
@@ -250,7 +250,7 @@ const OthersPost = React.memo(({ userId }) => {
   const deletePost = async (postId) => {
     try {
       const token = localStorage.getItem("authorization");
-      await axios.delete(`http://localhost:3000/api/v1/admin/deletePost/${postId}`, {
+      await axios.delete(`http://localhost:3001/api/v2/admin/deletePost/${postId}`, {
         headers: {
           authorization: token,
         },
@@ -272,7 +272,7 @@ const OthersPost = React.memo(({ userId }) => {
           <div className="flex items-center mb-2">
             <img
               className="w-10 h-10 rounded-full object-cover mr-3"
-              src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+              src={post.userImagePath ? `http://localhost:3001${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
               alt="Profile"
             />
             <span className="font-medium">{post.username}</span>
@@ -304,7 +304,7 @@ const OthersPost = React.memo(({ userId }) => {
           {post.postsImagePath && (
             <img
               className="w-full max-h-96 object-contain rounded-3xl"
-              src={`http://localhost:3000${post.postsImagePath}`} 
+              src={`http://localhost:3001${post.postsImagePath}`} 
               alt="Post content"
 
             />
@@ -351,7 +351,7 @@ const OthersPost = React.memo(({ userId }) => {
                     <div key={user._id} className="flex items-center space-x-2 mb-2">
                       <img
                         className="w-6 h-6 rounded-full object-cover"
-                        src={user.profileImagePath ? `http://localhost:3000${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                        src={user.profileImagePath ? `http://localhost:3001${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                         alt={user.username}
                       />
                       <span className="text-sm">{user.username}</span>
@@ -386,7 +386,7 @@ const OthersPost = React.memo(({ userId }) => {
                       className="w-8 h-8 rounded-full"
                       src={
                         comment.user && comment.user.profileImagePath
-                          ? `http://localhost:3000${comment.user.profileImagePath}`
+                          ? `http://localhost:3001${comment.user.profileImagePath}`
                           : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"
                       }
                       alt={comment.user ? comment.user.username : "User"}

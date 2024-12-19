@@ -9,7 +9,7 @@ function Left_sidebar() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+        const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
           headers: {
             authorization: token,
           },
@@ -34,14 +34,14 @@ function Left_sidebar() {
   const { profileImagePath, name, username, bio, department } = userProfile;
 
   return (
-    <div className="hidden md:block fixed left-0 w-72 max-h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className="fixed left-0 w-72 max-h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl overflow-hidden sm:hidden 2xl:inline xl:inline">
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-24"></div>
       <div className="px-6 py-4 relative">
         <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
           <NavLink to="/profile" className="inline-block">
             <img
               className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
-              src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+              src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
               alt="Profile"
             />
           </NavLink>

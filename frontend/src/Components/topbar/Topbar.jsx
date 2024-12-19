@@ -12,7 +12,7 @@ export default function Topbar() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+        const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
           headers: {
             authorization: token,
           },
@@ -47,9 +47,9 @@ export default function Topbar() {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 h-[65px] w-full bg-blue-500 z-50 px-6 shadow-md transition-all duration-300 ease-in-out">
+    <div className="flex justify-between items-center fixed top-0 h-[65px] w-full bg-blue-500 z-50 px-6 shadow-md">
       {/* Left - Logo */}
-      <div className="flex-3">
+      <div >
         <span className="text-[39px] font-bold text-white cursor-pointer transition-all  ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
           <a href="/home" onClick={handleLogoClick} className="no-underline text-inherit ">
             <h1 className="transition-all duration-300  ease-in-out delay-150  hover:font-extrabold">CampusConnect</h1>
@@ -58,11 +58,11 @@ export default function Topbar() {
       </div>
 
       {/* Right - Profile Section and Logout */}
-      <div className="flex items-center space-x-6 md:relative md:right-20">
+      <div className="flex items-center space-x-6 ">
         <NavLink to="/profile" className="group">
           <div className="relative overflow-hidden rounded-full">
             <img
-              src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+              src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
               alt="Profile"
               className="w-11 h-11 rounded-full object-cover bg-white cursor-pointer transition-transform duration-300 group-hover:scale-110"
             />

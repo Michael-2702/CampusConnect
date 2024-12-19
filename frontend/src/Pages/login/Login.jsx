@@ -21,7 +21,7 @@ function Login() {
     e.preventDefault();
     setErrors({}); // Clear previous errors
     axios
-      .post('http://localhost:3000/api/v1/user/signin/', data)
+      .post('http://localhost:3001/api/v2/user/signin/', data)
       .then((res) => {
         if (res.data.token) {
           localStorage.setItem("authorization", res.data.token);
@@ -74,7 +74,7 @@ function Login() {
           <div className="mt-3">
             <label htmlFor="password" className="block text-base mb-2">Password</label>
             <input
-              type="text"
+              type="password"
               name="password"
               className="border w-full text-base px-2 py-1 focus:outline-none"
               placeholder="Enter your Password..."

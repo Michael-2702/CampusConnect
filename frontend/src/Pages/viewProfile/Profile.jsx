@@ -19,7 +19,7 @@ function Profile() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("authorization");
-      const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+      const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
         headers: {
           authorization: token,
         },
@@ -62,7 +62,7 @@ function Profile() {
       const formData = new FormData();
       formData.append("picture", selectedFile);
   
-      await axios.put("http://localhost:3000/api/v1/user/updateProfilePicture", formData, {
+      await axios.put("http://localhost:3001/api/v2/user/profilePicture", formData, {
         headers: {
           authorization: token,
           "Content-Type": "multipart/form-data",
@@ -80,7 +80,7 @@ function Profile() {
   const bioHandler = async () => {
     try {
       const token = localStorage.getItem("authorization");
-      const response = await axios.put("http://localhost:3000/api/v1/user/updateBio", 
+      const response = await axios.put("http://localhost:3001/api/v2/user/bio", 
         { bio: formData.bio },
         {
           headers: {
@@ -115,12 +115,12 @@ function Profile() {
       </button>
       
       <div className="profile-grid">
-        <div className="profile-card">
+        <div className="profile-card lg:w-[22rem] ">
           <h2 className="card-title">Profile</h2>
           <div className="profile-content">
             <div className="profile-image-container">
               <img
-                src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                 alt="Profile"
                 className="profile-image"
                 style={{position: "relative", left: "3rem"}}
@@ -133,7 +133,7 @@ function Profile() {
                 style={{display: 'none'}}
               />
               <div className="profile-image-buttons">
-                <label htmlFor="profile-pic-input" className="button">Change Picture</label>
+                <label htmlFor="profile-pic-input" className="button">Upload Picture</label>
                 <button onClick={profilePicHandler} disabled={!selectedFile} className="button">
                   Save Picture
                 </button>
@@ -173,7 +173,7 @@ function Profile() {
           </div>
         </div>
 
-        <div className="posts-card" style={{marginTop: "0.7rem"}}>
+        <div className="posts-card md:mt-1 lg:mt-[-1rem] sm:mt-1">
           <h2 className="card-title">My Posts</h2>
           <div className="posts-content">
             <MyPostList />

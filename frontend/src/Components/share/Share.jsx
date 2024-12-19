@@ -17,7 +17,7 @@ export default function Share() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/user/viewProfile", {
+        const response = await axios.get("http://localhost:3001/api/v2/user/viewProfile", {
           headers: {
             authorization: token,
           },
@@ -74,7 +74,7 @@ export default function Share() {
         formData.append("picture", selectedFile);
       }
 
-      const response = await axios.post("http://localhost:3000/api/v1/post/createPost", formData, {
+      const response = await axios.post("http://localhost:3001/api/v2/post/createPost", formData, {
         headers: {
           authorization: token,
           "Content-Type": "multipart/form-data",
@@ -104,12 +104,13 @@ export default function Share() {
   const { profileImagePath } = userProfile;
 
   return (
-    <div className="lg:w-[750px] lg:relative lg:left-[-4.3rem] md:w-[580px] md:relative md:left-[-1.5rem] mx-auto mt-19 ">
+    <div >
+    <div className="lg:w-[46.8rem] lg:relative  md:w-[580px] md:relative my-0 mx-auto  sm:w-[560px] ">
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center mb-4">
           <img
             className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-gray-200"
-            src={profileImagePath ? `http://localhost:3000${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+            src={profileImagePath ? `http://localhost:3001${profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
             alt="Profile"
           />
           <textarea
@@ -146,6 +147,7 @@ export default function Share() {
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -6,12 +6,15 @@ import Rightbar from '../../Components/right_bar/Rightbar'
 
 function HomeScreen() {
   return (
-    <div>
-      <Topbar />
-      <div className="lg:flex lg:w-full md:hidden">
+    <div className='overflow-x-hidden'>
+      
+        <Topbar />
+
+      
+      <div className="mt-20  lg:flex lg:w-full md:hidden 2xl:flex xl:flex">
         <Left_sidebar />
       </div>
-      <div className="lg:ml-[21rem] md:ml-[-1rem]">
+      <div className="absolute lg:ml-[21rem] md:top-20">
         <Feed />
       </div>
     </div>

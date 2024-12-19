@@ -19,7 +19,7 @@ const AdminPost = React.memo(() => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem("authorization");
-        const response = await axios.get("http://localhost:3000/api/v1/post/viewPosts", {
+        const response = await axios.get("http://localhost:3001/api/v2/post/viewPosts", {
           headers: {
             authorization: token,
           },
@@ -59,7 +59,7 @@ const AdminPost = React.memo(() => {
       if (!showComments[postId]) {
         try {
           const token = localStorage.getItem("authorization");
-          const response = await axios.get(`http://localhost:3000/api/v1/admin/getComments/${postId}`, {
+          const response = await axios.get(`http://localhost:3001/api/v2/admin/comment/${postId}`, {
             headers: { authorization: token },
           });
           setPosts(prevPosts => prevPosts.map(post => 
@@ -75,7 +75,7 @@ const AdminPost = React.memo(() => {
       try {
           const token = localStorage.getItem("authorization");
           const response = await axios.put(
-              `http://localhost:3000/api/v1/post/comment/${postId}`,
+              `http://localhost:3001/api/v2/post/comment/${postId}`,
               { content: newComments[postId] },
               { headers: { authorization: token } }
           );
@@ -109,7 +109,7 @@ const AdminPost = React.memo(() => {
       try {
         const token = localStorage.getItem("authorization");
         await axios.delete(
-          `http://localhost:3000/api/v1/admin/deleteComment/${postId}/${commentId}`,
+          `http://localhost:3001/api/v2/admin/comment/${postId}/${commentId}`,
           { headers: { authorization: token } }
         );
         
@@ -128,7 +128,7 @@ const AdminPost = React.memo(() => {
   const deletePost = async (postId) => {
     try {
       const token = localStorage.getItem("authorization");
-      await axios.delete(`http://localhost:3000/api/v1/admin/deletePost/${postId}`, {
+      await axios.delete(`http://localhost:3001/api/v2/admin/deletePost/${postId}`, {
         headers: {
           authorization: token,
         },
@@ -150,7 +150,7 @@ const AdminPost = React.memo(() => {
               <div className="flex items-center">
                 <img
                   className="w-12 h-12 ml-4 mt-4 rounded-full object-cover border-2"
-                  src={post.userImagePath ? `http://localhost:3000${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
+                  src={post.userImagePath ? `http://localhost:3001${post.userImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"} 
                   alt="Profile"
                 />
                 <NavLink to={`/adminViewProfile/${post.postedBy}`} className="mt-4 inline-block text-blue-500">
@@ -188,7 +188,7 @@ const AdminPost = React.memo(() => {
               {post.postsImagePath && (
                 <img
                   className="mt-5 max-h-[500px] w-auto object-fit:contain"
-                  src={`http://localhost:3000${post.postsImagePath}`} 
+                  src={`http://localhost:3001${post.postsImagePath}`} 
                   alt="Post content"
                 />
               )}
@@ -235,7 +235,7 @@ const AdminPost = React.memo(() => {
                     <div key={user._id} className="flex items-center space-x-2 mb-2">
                       <img
                         className="w-6 h-6 rounded-full object-cover"
-                        src={user.profileImagePath ? `http://localhost:3000${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
+                        src={user.profileImagePath ? `http://localhost:3001${user.profileImagePath}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"}
                         alt={user.username}
                       />
                       <span className="text-sm">{user.username}</span>
@@ -270,7 +270,7 @@ const AdminPost = React.memo(() => {
                       className="w-8 h-8 rounded-full"
                       src={
                         comment.user && comment.user.profileImagePath
-                          ? `http://localhost:3000${comment.user.profileImagePath}`
+                          ? `http://localhost:3001${comment.user.profileImagePath}`
                           : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfOc2xqD2qG5m9jhgVOuAzLQj8Yotn8Ydp-Q&s"
                       }
                       alt={comment.user ? comment.user.username : "User"}

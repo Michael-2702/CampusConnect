@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import axios from "axios";
 
 function InitiateSignup() {
@@ -31,7 +31,7 @@ function InitiateSignup() {
       return;
     }
 
-    axios.post("http://localhost:3000/api/v1/user/initiate-signup", { email: data.email })
+    axios.post("http://localhost:3001/api/v2/user/initiate-signup", { email: data.email })
       .then((res) => {
         console.log("OTP Sent Successfully", res);
         setOtpSent(true);
@@ -52,7 +52,7 @@ function InitiateSignup() {
     e.preventDefault();
     setGeneralError("");
 
-    axios.post("http://localhost:3000/api/v1/user/verify-otp", data)
+    axios.post("http://localhost:3001/api/v2/user/verify-otp", data)
       .then((res) => {
         console.log("OTP Verified Successfully", res);
         navigate('/Register', { state: { email: data.email } }); 
@@ -132,7 +132,13 @@ function InitiateSignup() {
           </>
         )}
         {generalError && <p className="text-red-500 text-sm mt-3">{generalError}</p>}
+        <div className="mt-3 flex justify-center">
+          <NavLink to="/Login" className="text-blue-700 font-semibold">
+            <h3 className='font-bold'><span className='text-gray-400'> Already have an account?</span> Login</h3> 
+          </NavLink>
+        </div>
       </div>
+      
     </div>
   );
 }
