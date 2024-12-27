@@ -25,7 +25,7 @@ function Left_sidebar() {
 
   if (!userProfile) {
     return (
-      <div className="fixed left-0 flex items-center justify-center w-72 h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl">
+      <div className="hidden md:flex fixed left-0 items-center justify-center w-72 h-[32rem] ml-8 mt-8 bg-white shadow-lg rounded-xl">
         <div className="animate-pulse text-gray-400">Loading...</div>
       </div>
     );
@@ -50,7 +50,7 @@ function Left_sidebar() {
           <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
           <h3 className="text-sm text-gray-500 mb-2">@{username}</h3>
           <p className="text-sm text-gray-600 mb-4">{bio || "No bio available"}</p>
-          <div className=" rounded-lg p-3 mb-4">
+          <div className="rounded-lg p-3 mb-4">
             <p className="text-sm">Department: <span className="font-semibold">{department}</span></p>
           </div>
           <NavLink 
