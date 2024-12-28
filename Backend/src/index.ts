@@ -1,4 +1,5 @@
-require('dotenv').config()
+import dotenv  from "dotenv"
+dotenv.config();
 import express, { Express } from "express";
 import mongoose from "mongoose";
 import cors from "cors"
@@ -6,10 +7,12 @@ import userRouter from "./routes/user";
 import adminRouter from "./routes/admin";
 import postRouter from "./routes/posts";
 import path from "path";
+import cookieParser from "cookie-parser";
 const app: Express = express()
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false}))
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")))
