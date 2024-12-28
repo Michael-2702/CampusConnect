@@ -2,14 +2,6 @@ import { NextFunction, Response, Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import JWT_SECRET from "../config";
 
-declare global {
-    namespace Express{
-        interface Request{
-            userId?: string | JwtPayload
-        }
-    }
-}
-
 interface customDecodedInterface {
     userId?: string
 }
