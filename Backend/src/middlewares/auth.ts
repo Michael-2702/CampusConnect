@@ -3,15 +3,6 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 import JWT_SECRET from "../config";
 import { IUser, userModel } from "../models/db";
 
-// declare global {
-//     namespace Express{
-//         interface Request{
-//             userId?: string | JwtPayload,
-//             user: IUser
-//         }
-//     }
-// }
-
 interface customDecodedInterface {
     userId?: string,
     user: IUser
