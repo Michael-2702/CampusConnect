@@ -9,6 +9,7 @@ import viewBioHandler from "./handlers/viewBioHandlers";
 import { initiateSignUpHandler } from "./handlers/initiateSignupHandler";
 import { verifyOtpHandler } from "./handlers/verifyOTPHandler";
 import { authMiddleware } from "../middlewares/auth";
+import { checkAuth } from "./handlers/checkAuthHandler";
 
 const userRouter: Router = Router();
 
@@ -26,6 +27,9 @@ userRouter.post("/complete-signup", signupHandler)
 userRouter.post("/signin", loginHandler)
 
 userRouter.use(authMiddleware)
+
+// check auth of user
+userRouter.get("/check", checkAuth)
 
 // view own profile
 userRouter.use("/viewProfile", viewProfileHanler)
