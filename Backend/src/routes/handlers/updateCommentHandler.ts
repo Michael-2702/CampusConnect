@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { postModel, userModel } from "../../models/db";
 
 
-export const updateCommentHandler = async (req: Request, res: Response): Promise<void> => {
+export const updateCommentHandler = async (req: Request, res: Response) => {
     try {
         const { postId, commentId } = req.params;
-        const userId = req.userId;
+        const userId = req.user._id;
         const { content } = req.body;
 
         if (!content) {

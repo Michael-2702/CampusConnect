@@ -3,7 +3,7 @@ import { adminModel, userModel } from "../../models/db"
 
 
 export const adminInfoHandler =  async (req: Request, res: Response) => {
-    const uniqueId = req.userId
+    const uniqueId = req.user._id
     try{
         const admin = await adminModel.findById(uniqueId)
 

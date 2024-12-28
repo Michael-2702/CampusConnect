@@ -3,7 +3,7 @@ import { z } from "zod";
 import { otpModel } from "../../models/db";
 
 
-export const verifyOtpHandler = async (req: Request, res: Response): Promise<void> => {
+export const verifyOtpHandler = async (req: Request, res: Response) => {
     const mySchema = z.object({
       email: z.string().email().refine((val) => val.endsWith('@pvppcoe.ac.in'), {
         message: "Only Emails ending with @pvppcoe.ac.in can login"

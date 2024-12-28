@@ -2,11 +2,11 @@ import { Request, Response } from "express"
 import { postModel, userModel } from "../../models/db"
 import { mongo } from "mongoose"
 
-export const uploadCommentHandler = async (req: Request, res: Response): Promise<void> => {
+export const uploadCommentHandler = async (req: Request, res: Response) => {
     try{
         const { content } = req.body
         const postId = req.params.id
-        const userId = req.userId
+        const userId = req.user._id
 
         const post = await postModel.findById(postId)
         if(!post){

@@ -9,9 +9,9 @@ const PfpHanler: Router = Router();
 const UPLOADS_BASE_PATH = path.join(process.cwd(), 'uploads');
 
 // set/change pfp
-PfpHanler.put("/", upload.single("picture"), async (req: Request, res: Response): Promise<void> => {
+PfpHanler.put("/", upload.single("picture"), async (req: Request, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const profileImagePath = req.file ? `/uploads/profileImages/${req.file.filename}` : undefined;
 
         const user = await userModel.findById(userId);
@@ -54,9 +54,9 @@ PfpHanler.put("/", upload.single("picture"), async (req: Request, res: Response)
 })
 
 // get pfp
-PfpHanler.get("/", async (req: Request, res: Response): Promise<void> => {
+PfpHanler.get("/", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId;
+        const userId = req.user._id;
 
         const user = await userModel.findById(userId);
 
@@ -81,9 +81,9 @@ PfpHanler.get("/", async (req: Request, res: Response): Promise<void> => {
 })
 
 // get other's pfp
-PfpHanler.get("/:id", async (req: Request, res: Response): Promise<void> => {
+PfpHanler.get("/:id", async (req: Request, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
 
         const user = await userModel.findById(userId);
         if (!user) {
@@ -103,9 +103,9 @@ PfpHanler.get("/:id", async (req: Request, res: Response): Promise<void> => {
 })
 
 // delete pfp
-PfpHanler.delete("/", async (req: Request, res: Response): Promise<void> => {
+PfpHanler.delete("/", async (req: Request, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
 
         const user = await userModel.findById(userId);
         if (!user) {

@@ -1,14 +1,25 @@
 import { NextFunction, Response, Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import JWT_SECRET from "../config";
+import { IUser, userModel } from "../models/db";
+
+// declare global {
+//     namespace Express{
+//         interface Request{
+//             userId?: string | JwtPayload,
+//             user: IUser
+//         }
+//     }
+// }
 
 interface customDecodedInterface {
-    userId?: string
+    userId?: string,
+    user: IUser
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try{
-        const token = req.header("Authorization")?.replace("Bearer ", "");
+        const token = req.cookies.jwt;
 
         if(!token){
             res.status(401).json({
@@ -20,7 +31,15 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
         const decoded = jwt.verify(token, JWT_SECRET as string) as JwtPayload;
 
         if(decoded){
-            req.userId = (decoded as customDecodedInterface).userId
+            const user = await userModel.findById((decoded as customDecodedInterface).userId).select("-password")
+            if(!user){
+                res.status(400).json({
+                    msg: "user not found"
+                })
+                return
+            }
+            // req.userId = (decoded as customDecodedInterface).userId
+            req.user = user
             next()
         }
         else{

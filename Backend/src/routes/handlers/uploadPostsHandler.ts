@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { postModel, userModel } from "../../models/db";
 
 
-export const uploadPostsHandler = async (req: Request, res: Response): Promise<void> => {
+export const uploadPostsHandler = async (req: Request, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const text = req.body.text || ""; 
         const imagePath = req.file ? `/uploads/userPostsImages/${req.file.filename}` : null;
 

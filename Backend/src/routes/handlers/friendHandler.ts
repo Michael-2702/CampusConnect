@@ -3,7 +3,7 @@ import  {  Router, Request, Response } from "express";
 const friendHanler: Router = Router();
 
 // send request
-friendHanler.get("/signup", (req: Request, res: Response) => {
+friendHanler.get("/send-friend-request", (req: Request, res: Response) => {
 
 })
 

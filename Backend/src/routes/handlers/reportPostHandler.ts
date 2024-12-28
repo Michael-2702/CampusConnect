@@ -6,10 +6,10 @@ import { mongo } from "mongoose";
 const reportPostHandler: Router = Router();
 
 // report/un-report a post
-reportPostHandler.put("/:id", async (req: Request, res: Response): Promise<void> => {
+reportPostHandler.put("/:id", async (req: Request, res: Response) => {
     try{
         const postId = req.params.id
-        const userId = req.userId
+        const userId = req.user._id
 
         const post = await postModel.findById(postId)
         if(!post){
@@ -52,7 +52,7 @@ reportPostHandler.put("/:id", async (req: Request, res: Response): Promise<void>
 
 
 // view reported posts
-reportPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
+reportPostHandler.get("/", async (req: Request, res: Response) => {
     try{
         const posts = await postModel.find()
 

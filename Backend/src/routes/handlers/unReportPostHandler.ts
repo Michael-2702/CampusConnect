@@ -6,10 +6,10 @@ import { mongo } from "mongoose";
 const unReportPostHandler: Router = Router();
 
 // un-report a post
-unReportPostHandler.put("/:id", async (req: Request, res: Response): Promise<void> => {
+unReportPostHandler.put("/:id", async (req: Request, res: Response) => {
     try{
         const postId = req.params.id
-        const userId = req.userId
+        const userId = req.user._id
 
         const post = await postModel.findById(postId)
         if(!post){

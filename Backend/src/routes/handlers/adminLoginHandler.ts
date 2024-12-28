@@ -3,9 +3,11 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { adminModel } from "../../models/db"
 import JWT_SECRET from "../../config"
+import { generateToken } from "../../lib/utils"
+import mongoose from "mongoose"
 
 
-export const adminLoginHandler = async (req: Request, res: Response): Promise<void> => {
+export const adminLoginHandler = async (req: Request, res: Response) => {
     try {
         const { adminId, password }  = req.body
 
@@ -30,6 +32,8 @@ export const adminLoginHandler = async (req: Request, res: Response): Promise<vo
         const token = jwt.sign({
             userId: admin._id
         }, JWT_SECRET as string)
+
+        generateToken(new mongoose.Types.ObjectId(admin._id as string), res)
 
         res.status(200).json({
             msg: "admin signed in successfully",

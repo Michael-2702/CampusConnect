@@ -2,8 +2,10 @@ import { z } from "zod";
 import bcrypt from "bcrypt"
 import { Request, RequestHandler, Response } from "express";
 import { userModel } from "../../models/db";
+import { generateToken } from "../../lib/utils";
+import mongoose, { Mongoose, ObjectId } from "mongoose";
 
-export const signupHandler: RequestHandler =  async (req: Request, res: Response): Promise<void> => {
+export const signupHandler: RequestHandler =  async (req: Request, res: Response) => {
     const mySchema = z.object({
         name: z.string().min(1, "Name is required"),
         username: z.string().min(1, "Username is required"),
@@ -54,7 +56,7 @@ export const signupHandler: RequestHandler =  async (req: Request, res: Response
 
         const hashedPassword = await bcrypt.hash(password, 6)
 
-        await userModel.create({
+        const newUser = await userModel.create({
             name, 
             username,
             email,
@@ -67,8 +69,14 @@ export const signupHandler: RequestHandler =  async (req: Request, res: Response
             friendRequests: [],  
         })
 
+        generateToken(new mongoose.Types.ObjectId(newUser._id as string), res);
+
         res.status(201).json({
-            msg: "signup successfull"
+            _id: newUser._id,
+            username: newUser.username,
+            email: newUser.email,
+            department: newUser.department,
+            graduationYear: newUser.graduationYear,
         })
     }
     catch (e) {

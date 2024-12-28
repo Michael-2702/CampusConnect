@@ -3,7 +3,7 @@ import { otpModel, userModel } from "../../models/db";
 import { generateOTP, sendOTP } from "../../emailService";
 
 
-export const initiateSignUpHandler = async (req: Request, res: Response): Promise<void> => {
+export const initiateSignUpHandler = async (req: Request, res: Response) => {
     const { email } = req.body;
   
     if (!email.endsWith('@pvppcoe.ac.in')) {

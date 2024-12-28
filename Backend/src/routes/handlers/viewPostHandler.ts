@@ -7,9 +7,9 @@ const viewPostHandler: Router = Router();
 
 
 // get all posts
-viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
+viewPostHandler.get("/", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId
+        const userId = req.user._id
         const allPosts = await postModel.find({}).sort({ createdAt: -1});
 
         if(!allPosts){
@@ -41,9 +41,9 @@ viewPostHandler.get("/", async (req: Request, res: Response): Promise<void> => {
 })
 
 // get my posts
-viewPostHandler.get("/myPosts", async (req: Request, res: Response): Promise<void> => {
+viewPostHandler.get("/myPosts", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId;
+        const userId = req.user._id;
 
         const posts = await postModel.find({ postedBy: userId }).sort({ createdAt: -1});
 
@@ -66,7 +66,7 @@ viewPostHandler.get("/myPosts", async (req: Request, res: Response): Promise<voi
 })
 
 // get other user's post
-viewPostHandler.get("/:id", async (req: Request, res: Response): Promise<void> => {
+viewPostHandler.get("/:id", async (req: Request, res: Response) => {
     try{
         const userId = req.params.id;
 

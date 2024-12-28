@@ -4,8 +4,10 @@ import { Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
 import { userModel } from "../../models/db";
 import JWT_SECRET from "../../config";
+import mongoose from "mongoose";
+import { generateToken } from "../../lib/utils";
 
-export const loginHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const loginHandler: RequestHandler = async (req: Request, res: Response) => {
     const mySchema = z.object({
         email: z.string().email().refine(val => val.endsWith("@pvppcoe.ac.in"), {
             message: "Only Emails existing with @pvppcoe.ac.in can login"
@@ -44,13 +46,18 @@ export const loginHandler: RequestHandler = async (req: Request, res: Response):
             })
         }
 
-        const token = jwt.sign({
-            userId: user._id
-        }, JWT_SECRET as string)
+        // const token = jwt.sign({
+        //     userId: user._id
+        // }, JWT_SECRET as string)
+
+        generateToken(new mongoose.Types.ObjectId(user._id as string), res);
 
         res.status(200).json({
-            msg: "signed in successfully",
-            token
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            department: user.department,
+            graduationYear: user.graduationYear,
         })
     }
     catch (e) {

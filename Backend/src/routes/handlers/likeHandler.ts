@@ -5,9 +5,9 @@ import { mongo } from "mongoose";
 const likeHandler: Router = Router();
 
 // like/unlike a post
-likeHandler.put("/:id", async (req: Request, res: Response): Promise<void> => {
+likeHandler.put("/:id", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId;
+        const userId = req.user._id;
         const postId = req.params.id
 
         if(!userId)
@@ -51,7 +51,7 @@ likeHandler.put("/:id", async (req: Request, res: Response): Promise<void> => {
 })
 
 // get users who have like a post
-likeHandler.get("/:id", async (req: Request, res: Response): Promise<void> => {
+likeHandler.get("/:id", async (req: Request, res: Response) => {
     try{
         const postId = req.params.id
 

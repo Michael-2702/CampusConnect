@@ -7,9 +7,9 @@ const userBioHanler: Router = Router();
 // use zod 
 
 // set bio
-userBioHanler.post("/", async (req: Request, res: Response): Promise<void> => {
+userBioHanler.post("/", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId
+        const userId = req.user._id
         const { content } = req.body
 
         const user = await userModel.findById(userId)
@@ -38,7 +38,7 @@ userBioHanler.post("/", async (req: Request, res: Response): Promise<void> => {
 // update bio 
 userBioHanler.put("/", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId
+        const userId = req.user._id
         const { bio } = req.body
 
         const user = await userModel.findById(userId)
@@ -67,7 +67,7 @@ userBioHanler.put("/", async (req: Request, res: Response) => {
 // delete bio
 userBioHanler.delete("/", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId
+        const userId = req.user._id
 
         const user = await userModel.findById(userId)
 

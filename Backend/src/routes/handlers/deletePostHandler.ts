@@ -3,10 +3,10 @@ import { postModel, userModel } from "../../models/db";
 import path from "path";
 import fs from 'fs';
 
-export const deletePostHandler = async (req: Request, res: Response): Promise<void> => {
+export const deletePostHandler = async (req: Request, res: Response) => {
     try {
         const postId = req.params.postId; 
-        const userId = req.userId;
+        const userId = req.user._id;
         console.log(postId)
         const userPost = await postModel.findById(postId);
         
@@ -48,7 +48,7 @@ export const deletePostHandler = async (req: Request, res: Response): Promise<vo
     }
 };
 
-export const adminDeletePostHandler = async (req: Request, res: Response): Promise<void> => {
+export const adminDeletePostHandler = async (req: Request, res: Response) => {
     try {
         const postId = req.params.postId; 
         const userPost = await postModel.findById(postId);

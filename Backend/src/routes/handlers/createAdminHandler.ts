@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import bcrypt from "bcrypt"
 import { adminModel } from "../../models/db"
 
-export const createAdminHandler = async (req: Request, res: Response): Promise<void> => {
+export const createAdminHandler = async (req: Request, res: Response) => {
     try {
         const { name, adminId, password } = req.body
 

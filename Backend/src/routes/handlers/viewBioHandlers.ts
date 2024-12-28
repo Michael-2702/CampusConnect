@@ -5,9 +5,9 @@ import { userModel } from "../../models/db";
 const viewBioHandler: Router = Router();
 
 // get my bio
-viewBioHandler.get("/", async (req: Request, res: Response): Promise<void> => {
+viewBioHandler.get("/", async (req: Request, res: Response) => {
     try{
-        const userId = req.userId
+        const userId = req.user._id
         
         const user = await userModel.findById(userId)
 

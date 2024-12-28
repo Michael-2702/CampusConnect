@@ -13,7 +13,7 @@ type ProcessedComment = Omit<Comment, 'user'> & {
     } | null;
 };
 
-export const getCommentHandler = async (req: Request, res: Response): Promise<void> => {
+export const getCommentHandler = async (req: Request, res: Response) => {
     try {
         const postId = req.params.id;
         

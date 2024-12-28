@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { userModel } from "../../models/db";
 
 
-export const viewUsersHandler = async (req: Request, res: Response): Promise<void> => {
+export const viewUsersHandler = async (req: Request, res: Response) => {
     try{ 
         const userList = await userModel.find({}).sort({ createdAt: -1});
 

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { postModel } from "../../models/db";
 
-export const deleteCommentHandler = async (req: Request, res: Response): Promise<void> => {
+export const deleteCommentHandler = async (req: Request, res: Response) => {
     try{
         const { postId, commentId } = req.params;
-        const userId = req.userId;
+        const userId = req.user._id;
 
         const post = await postModel.findById(postId);
         if (!post) {
@@ -40,7 +40,7 @@ export const deleteCommentHandler = async (req: Request, res: Response): Promise
     }
 }
 
-export const adminDeleteCommentHandler =  async (req: Request, res: Response): Promise<void> => {
+export const adminDeleteCommentHandler =  async (req: Request, res: Response) => {
     try{
         const { postId, commentId } = req.params;
 
