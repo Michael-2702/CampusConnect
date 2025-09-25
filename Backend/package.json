@@ -18,6 +18,7 @@
   "dependencies": {
     "@huggingface/hub": "^2.4.0",
     "@huggingface/transformers": "^3.7.1",
+    "@prisma/client": "^6.13.0",
     "@types/connect-redis": "^0.0.23",
     "@types/cookie-parser": "^1.4.8",
     "axios": "^1.8.4",
@@ -46,8 +47,7 @@
     "uuid": "^11.1.0",
     "uuidv4": "^6.2.13",
     "weaviate-ts-client": "^2.2.0",
-    "zod": "^3.23.8",
-    "@prisma/client": "^6.13.0"
+    "zod": "^3.23.8"
   },
   "description": "",
   "devDependencies": {
@@ -67,6 +67,7 @@
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
     "pm2": "^6.0.8",
+    "pm2-runtime": "^5.4.1",
     "prisma": "^6.13.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
