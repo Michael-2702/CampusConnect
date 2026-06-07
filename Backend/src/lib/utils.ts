@@ -15,7 +15,7 @@ export const generateToken = (userId: mongoose.Types.ObjectId, res: Response) =>
         httpOnly: true,
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production' ? '.cacheupp.com' : undefined,
+        domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN! : undefined,
         path: '/',
     });
 }

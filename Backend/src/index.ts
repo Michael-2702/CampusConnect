@@ -40,7 +40,7 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production', // Must be true in production
         httpOnly: true,
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        domain: process.env.NODE_ENV === 'production' ? '.cacheupp.com' : undefined,
+        domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : undefined,
         maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
         path: '/'
     },
