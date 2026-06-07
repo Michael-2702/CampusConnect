@@ -10,7 +10,7 @@ export const logOutHandler = async (req: Request, res: Response) => {
             secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.NODE_ENV === 'production' ? '.cacheupp.com' : undefined,
+            domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN! : undefined,
             path: '/',
         });        
           
